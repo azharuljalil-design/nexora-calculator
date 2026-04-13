@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { siteConfig } from "@/lib/seo";
 import { SiteLayout } from "@/components/layout/SiteLayout";
@@ -21,12 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <Script
-          id="adsense-script"
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9104351858655079"
-          crossOrigin="anonymous"
-          strategy="beforeInteractive"
+        {/* Google AdSense Verification Meta Tag */}
+        <meta
+          name="google-adsense-account"
+          content="ca-pub-9104351858655079"
         />
       </head>
       <body className={inter.className}>
