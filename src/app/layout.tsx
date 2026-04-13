@@ -17,12 +17,19 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
+ return (
     <html lang="en">
+      <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9104351858655079"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className={inter.className}>
         <SiteLayout>{children}</SiteLayout>
       </body>
     </html>
   );
 }
-
