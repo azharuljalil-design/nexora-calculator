@@ -21,12 +21,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* AdSense Verification */}
         <meta
           name="google-adsense-account"
           content="ca-pub-9104351858655079"
         />
       </head>
+
       <body className={inter.className}>
+        {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-2GN9YYLQJE"
           strategy="afterInteractive"
