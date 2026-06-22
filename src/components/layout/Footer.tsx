@@ -61,16 +61,19 @@ export function Footer() {
               ))}
             </div>
           </div>
+<div className="space-y-2">
+  <p className="text-sm font-semibold text-text">Company</p>
 
-          <div className="space-y-2">
-            <p className="text-sm font-semibold text-text">Company</p>
-            <div className="space-y-1 text-sm text-slate-500">
-              <Link href="/privacy" className="block hover:text-primary">
-  Privacy Policy
-</Link>
-              <p className="text-slate-500">Contact (coming soon)</p>
-            </div>
-          </div>
+  <div className="space-y-1 text-sm text-slate-500">
+    <Link href="/privacy" className="block hover:text-primary">
+      Privacy Policy
+    </Link>
+
+    <Link href="/contact" className="block hover:text-primary">
+      Contact
+    </Link>
+  </div>
+</div>
         </div>
 
         <div className="border-t border-slate-200 pt-4 text-sm text-slate-500">
