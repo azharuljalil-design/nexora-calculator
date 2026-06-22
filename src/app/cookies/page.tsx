@@ -13,7 +13,6 @@ export default function CookiePolicyPage() {
 return ( <main className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8"> <header className="mb-10"> <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
 Cookie Policy </h1>
 
-```
     <p className="mt-3 text-sm text-slate-600">
       Last updated: 22 June 2026
     </p>
@@ -350,7 +349,5 @@ Cookie Policy </h1>
     </section>
   </div>
 </main>
-```
-
 );
 }
