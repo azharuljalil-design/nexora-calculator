@@ -65,7 +65,9 @@ export function Footer() {
           <div className="space-y-2">
             <p className="text-sm font-semibold text-text">Company</p>
             <div className="space-y-1 text-sm text-slate-500">
-              <p className="text-slate-500">Privacy (coming soon)</p>
+              <Link href="/privacy" className="block hover:text-primary">
+  Privacy Policy
+</Link>
               <p className="text-slate-500">Contact (coming soon)</p>
             </div>
           </div>
