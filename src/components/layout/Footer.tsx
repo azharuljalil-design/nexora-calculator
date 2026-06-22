@@ -2,23 +2,12 @@ import Link from "next/link";
 
 import { calculatorCategories } from "@/data/categories";
 import { routes } from "@/lib/routes";
-import { AdPlaceholder } from "@/components/ads/AdPlaceholder";
 
 export function Footer() {
 const year = new Date().getFullYear();
 
-return ( <footer className="border-t border-slate-200 bg-white"> <div className="mx-auto max-w-6xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
-{/* Footer banner area reserved for future monetization */} <div className="sm:hidden"> <AdPlaceholder variant="footer" className="p-4" /> </div>
-
-    <div className="hidden sm:block">
-      <AdPlaceholder variant="footer" />
-    </div>
-
-    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-      <div className="space-y-2">
-        <p className="text-sm font-semibold text-text">
-          NexoraCalculator
-        </p>
+return ( <footer className="border-t border-slate-200 bg-white"> <div className="mx-auto max-w-6xl space-y-8 px-4 py-8 sm:px-6 lg:px-8"> <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4"> <div className="space-y-2"> <p className="text-sm font-semibold text-text">
+NexoraCalculator </p>
 
         <p className="text-sm text-slate-500">
           Fast, clear calculators for UK, Europe, and USA users.
@@ -73,31 +62,19 @@ return ( <footer className="border-t border-slate-200 bg-white"> <div className=
         <p className="text-sm font-semibold text-text">Company</p>
 
         <div className="space-y-1 text-sm text-slate-500">
-          <Link
-            href="/privacy"
-            className="block hover:text-primary"
-          >
+          <Link href="/privacy" className="block hover:text-primary">
             Privacy Policy
           </Link>
 
-          <Link
-            href="/cookies"
-            className="block hover:text-primary"
-          >
+          <Link href="/cookies" className="block hover:text-primary">
             Cookie Policy
           </Link>
 
-          <Link
-            href="/terms"
-            className="block hover:text-primary"
-          >
+          <Link href="/terms" className="block hover:text-primary">
             Terms and Conditions
           </Link>
 
-          <Link
-            href="/contact"
-            className="block hover:text-primary"
-          >
+          <Link href="/contact" className="block hover:text-primary">
             Contact
           </Link>
         </div>
@@ -109,6 +86,5 @@ return ( <footer className="border-t border-slate-200 bg-white"> <div className=
     </div>
   </div>
 </footer>
-
 );
 }
