@@ -24,7 +24,7 @@ export default function RootLayout({
         {/* AdSense Verification */}
         <meta
           name="google-adsense-account"
-          content="ca-pub-9104351858655079"
+          content="ca-pub-8506364468159741"
         />
       </head>
 
