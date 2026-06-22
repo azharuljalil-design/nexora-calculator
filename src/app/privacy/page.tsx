@@ -1,4 +1,3 @@
-```tsx
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -523,4 +522,3 @@ export default function PrivacyPolicyPage() {
     </main>
   );
 }
-```
