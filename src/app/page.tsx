@@ -4,7 +4,6 @@ import { SearchInput } from "@/components/ui/SearchInput";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { createPageMetadata } from "@/lib/seo";
 import { routes } from "@/lib/routes";
-import { AdPlaceholder } from "@/components/ads/AdPlaceholder";
 import { HomeCategoryColumns } from "@/components/home/HomeCategoryColumns";
 import { HomepageScientificCalculator } from "@/components/home/HomepageScientificCalculator";
 
@@ -73,10 +72,7 @@ export default function HomePage() {
         <HomepageScientificCalculator />
       </section>
 
-      {/* Subtle monetization placeholder (reserved) */}
-      <AdPlaceholder variant="homepage" />
-
-      {/* Category directory columns (side-by-side on desktop) */}
+            {/* Category directory columns (side-by-side on desktop) */}
       <HomeCategoryColumns />
 
       {/* Popular calculators text links */}
