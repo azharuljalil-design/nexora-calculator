@@ -9,7 +9,6 @@ import { AmortizationCalculator } from "@/components/calculators/AmortizationCal
 import { calculatorCategories } from "@/data/categories";
 import { routes } from "@/lib/routes";
 import { findCalculatorBySlug } from "@/calculators/calculatorRegistry";
-import { AdPlaceholderClient } from "@/components/ads/AdPlaceholderClient";
 
 type CalculatorClientProps = {
   slug: string;
@@ -57,7 +56,7 @@ export function CalculatorClient({ slug }: CalculatorClientProps) {
         subtitle={calculator.description}
       />
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <div className="grid gap-6">
         <div>
           {calculator.renderer === "scientific" ? (
             <ScientificCalculator config={calculator} />
@@ -68,10 +67,7 @@ export function CalculatorClient({ slug }: CalculatorClientProps) {
           )}
         </div>
 
-        <aside className="hidden lg:block">
-          <AdPlaceholderClient variant="sidebar" />
-        </aside>
-      </div>
+              </div>
 
     </div>
   );
