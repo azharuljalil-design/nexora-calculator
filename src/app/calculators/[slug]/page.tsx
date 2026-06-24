@@ -4,7 +4,6 @@ import { findCalculatorBySlug } from "@/calculators/calculatorRegistry";
 import { CalculatorClient } from "@/components/calculators/CalculatorClient";
 import { calculatorContentBySlug } from "@/calculators/calculatorContent";
 import { CalculatorPageSections } from "@/components/calculators/CalculatorPageSections";
-import { AdPlaceholder } from "@/components/ads/AdPlaceholder";
 
 type CalculatorPageProps = {
   params: {
@@ -35,9 +34,7 @@ export default function CalculatorEnginePage({
   return (
     <div className="space-y-10">
       <CalculatorClient slug={params.slug} />
-      {/* Reserved monetization slot placed after the result UI */}
-      <AdPlaceholder variant="between" />
-      <CalculatorPageSections slug={params.slug} />
+           <CalculatorPageSections slug={params.slug} />
     </div>
   );
 }
