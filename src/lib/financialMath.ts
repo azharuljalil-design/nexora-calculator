@@ -1,6 +1,9 @@
 export const FINANCIAL_INPUT_TOO_LARGE_MESSAGE =
   "The values entered are too large to calculate reliably. Please reduce the rate, term, contribution, or compounding frequency and try again.";
 
+export const LOAN_PAYMENT_INVALID_MESSAGE =
+  "The values entered are too large or invalid to calculate reliably. Please reduce the rate, loan term, or loan amount and try again.";
+
 export type CompoundInterestSummary = {
   finalBalance: number;
   totalContributions: number;
@@ -11,15 +14,15 @@ export function calculateMonthlyPayment(args: {
   principal: number;
   annualInterestRate: number;
   years: number;
-}): number {
+}): number | null {
   const { principal, annualInterestRate, years } = args;
   const months = years * 12;
-  if (!Number.isFinite(principal) || !Number.isFinite(annualInterestRate) || !Number.isFinite(years) || principal <= 0 || months <= 0) {
-    return 0;
+  if (!Number.isFinite(principal) || !Number.isFinite(annualInterestRate) || !Number.isFinite(years) || principal <= 0 || months <= 0 || annualInterestRate < 0) {
+    return null;
   }
 
   const monthlyRate = annualInterestRate / 12 / 100;
-  if (monthlyRate <= 0) {
+  if (monthlyRate === 0) {
     return principal / months;
   }
 
@@ -28,11 +31,11 @@ export function calculateMonthlyPayment(args: {
     return principal / months;
   }
   if (!Number.isFinite(factor)) {
-    return 0;
+    return null;
   }
 
   const payment = (principal * monthlyRate * factor) / (factor - 1);
-  return Number.isFinite(payment) ? payment : 0;
+  return Number.isFinite(payment) ? payment : null;
 }
 
 export function calculateCompoundGrowth(args: {

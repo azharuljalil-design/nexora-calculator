@@ -2,7 +2,7 @@ import type { CalculatorConfig } from "@/types/calculatorTypes";
 import { formatCurrency, formatInteger, formatNumber } from "@/lib/format";
 import { convertCurrency, convertUnit, unitOptions, type CurrencyCode, type UnitCategory } from "@/lib/conversions";
 import { evaluateExpression } from "@/lib/mathExpression";
-import { FINANCIAL_INPUT_TOO_LARGE_MESSAGE, calculateCompoundInterestSummary, calculateMonthlyPayment } from "@/lib/financialMath";
+import { FINANCIAL_INPUT_TOO_LARGE_MESSAGE, LOAN_PAYMENT_INVALID_MESSAGE, calculateCompoundInterestSummary, calculateMonthlyPayment } from "@/lib/financialMath";
 
 export const calculatorRegistry: CalculatorConfig[] = [
   {
@@ -153,6 +153,19 @@ export const calculatorRegistry: CalculatorConfig[] = [
         years
       });
 
+      if (monthlyPI === null) {
+        return {
+          loanAmount: formatCurrency(loanAmount, currency),
+          monthlyPrincipalAndInterest: LOAN_PAYMENT_INVALID_MESSAGE,
+          monthlyPropertyTax: LOAN_PAYMENT_INVALID_MESSAGE,
+          monthlyInsurance: LOAN_PAYMENT_INVALID_MESSAGE,
+          monthlyHOA: LOAN_PAYMENT_INVALID_MESSAGE,
+          totalMonthlyPayment: LOAN_PAYMENT_INVALID_MESSAGE,
+          totalLoanPayment: LOAN_PAYMENT_INVALID_MESSAGE,
+          totalInterestPaid: LOAN_PAYMENT_INVALID_MESSAGE
+        };
+      }
+
       const monthlyPropertyTax = annualPropertyTax / 12;
       const monthlyInsurance = annualHomeInsurance / 12;
 
@@ -236,6 +249,14 @@ export const calculatorRegistry: CalculatorConfig[] = [
         annualInterestRate: annualRate,
         years
       });
+
+      if (monthlyPayment === null) {
+        return {
+          monthlyPayment: LOAN_PAYMENT_INVALID_MESSAGE,
+          totalPayment: LOAN_PAYMENT_INVALID_MESSAGE,
+          totalInterest: LOAN_PAYMENT_INVALID_MESSAGE
+        };
+      }
 
       const totalPayment = monthlyPayment * months;
       const totalInterest = totalPayment - loanAmount;
