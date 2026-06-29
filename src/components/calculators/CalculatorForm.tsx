@@ -51,7 +51,7 @@ export function CalculatorForm({ config }: CalculatorFormProps) {
             const shouldShowHelper = Boolean(helperText) && !error;
             return (
               <div key={input.name} className="space-y-1">
-                <label className="flex items-center justify-between text-xs font-medium text-slate-700">
+                <label htmlFor={`${config.slug}-${input.name}`} className="flex items-center justify-between text-xs font-medium text-slate-700">
                   <span>{input.label}</span>
                   {isInputRequired(input, values) ? (
                     <span className="text-[11px] font-normal text-slate-400">
@@ -61,7 +61,7 @@ export function CalculatorForm({ config }: CalculatorFormProps) {
                 </label>
                 {renderInputControl(
                   {
-                    input,
+                    input: { ...input, name: `${config.slug}-${input.name}` },
                     value,
                     values,
                     onChange: (val) => handleChange(input.name, val),

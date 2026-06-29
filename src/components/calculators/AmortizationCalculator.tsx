@@ -108,7 +108,7 @@ export function AmortizationCalculator({ config }: AmortizationCalculatorProps) 
 
               return (
                 <div key={input.name} className="space-y-1">
-                  <label className="flex items-center justify-between text-xs font-medium text-slate-700">
+                  <label htmlFor={`${config.slug}-${input.name}`} className="flex items-center justify-between text-xs font-medium text-slate-700">
                     <span>{input.label}</span>
                     {isInputRequired(input, engine.values) ? (
                       <span className="text-[11px] font-normal text-slate-400">
@@ -118,7 +118,7 @@ export function AmortizationCalculator({ config }: AmortizationCalculatorProps) 
                   </label>
 
                   {renderInputControl({
-                    input,
+                    input: { ...input, name: `${config.slug}-${input.name}` },
                     value,
                     values: engine.values,
                     onChange: (val) => engine.handleChange(input.name, val),

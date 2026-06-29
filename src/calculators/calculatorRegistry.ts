@@ -2,6 +2,7 @@ import type { CalculatorConfig } from "@/types/calculatorTypes";
 import { formatCurrency, formatInteger, formatNumber } from "@/lib/format";
 import { convertCurrency, convertUnit, unitOptions, type CurrencyCode, type UnitCategory } from "@/lib/conversions";
 import { evaluateExpression } from "@/lib/mathExpression";
+import { FINANCIAL_INPUT_TOO_LARGE_MESSAGE, LOAN_PAYMENT_INVALID_MESSAGE, calculateCompoundInterestSummary, calculateMonthlyPayment } from "@/lib/financialMath";
 
 export const calculatorRegistry: CalculatorConfig[] = [
   {
@@ -146,14 +147,23 @@ export const calculatorRegistry: CalculatorConfig[] = [
 
       const loanAmount = Math.max(homePrice - downPayment, 0);
       const months = years * 12;
-      const monthlyRate = annualRate / 12 / 100;
+      const monthlyPI = calculateMonthlyPayment({
+        principal: loanAmount,
+        annualInterestRate: annualRate,
+        years
+      });
 
-      let monthlyPI = 0;
-      if (monthlyRate === 0 || !Number.isFinite(monthlyRate)) {
-        monthlyPI = months > 0 ? loanAmount / months : 0;
-      } else {
-        const factor = Math.pow(1 + monthlyRate, months);
-        monthlyPI = (loanAmount * monthlyRate * factor) / (factor - 1);
+      if (monthlyPI === null) {
+        return {
+          loanAmount: formatCurrency(loanAmount, currency),
+          monthlyPrincipalAndInterest: LOAN_PAYMENT_INVALID_MESSAGE,
+          monthlyPropertyTax: LOAN_PAYMENT_INVALID_MESSAGE,
+          monthlyInsurance: LOAN_PAYMENT_INVALID_MESSAGE,
+          monthlyHOA: LOAN_PAYMENT_INVALID_MESSAGE,
+          totalMonthlyPayment: LOAN_PAYMENT_INVALID_MESSAGE,
+          totalLoanPayment: LOAN_PAYMENT_INVALID_MESSAGE,
+          totalInterestPaid: LOAN_PAYMENT_INVALID_MESSAGE
+        };
       }
 
       const monthlyPropertyTax = annualPropertyTax / 12;
@@ -234,15 +244,18 @@ export const calculatorRegistry: CalculatorConfig[] = [
       const annualRate = Number(values.annualInterestRate) || 0;
       const years = Number(values.loanTermYears) || 0;
       const months = years * 12;
-      const monthlyRate = annualRate / 12 / 100;
+      const monthlyPayment = calculateMonthlyPayment({
+        principal: loanAmount,
+        annualInterestRate: annualRate,
+        years
+      });
 
-      let monthlyPayment = 0;
-      if (monthlyRate === 0 || !Number.isFinite(monthlyRate)) {
-        monthlyPayment = months > 0 ? loanAmount / months : 0;
-      } else {
-        const factor = Math.pow(1 + monthlyRate, months);
-        monthlyPayment =
-          (loanAmount * monthlyRate * factor) / (factor - 1);
+      if (monthlyPayment === null) {
+        return {
+          monthlyPayment: LOAN_PAYMENT_INVALID_MESSAGE,
+          totalPayment: LOAN_PAYMENT_INVALID_MESSAGE,
+          totalInterest: LOAN_PAYMENT_INVALID_MESSAGE
+        };
       }
 
       const totalPayment = monthlyPayment * months;
@@ -522,37 +535,29 @@ export const calculatorRegistry: CalculatorConfig[] = [
     ],
     calculate: (values) => {
       const currency = (values.currency as "GBP" | "EUR" | "USD") || "GBP";
-      const initialInvestment = Number(values.initialInvestment) || 0;
-      const monthlyContribution = Number(values.monthlyContribution) || 0;
-      const annualRate = Number(values.annualInterestRate) || 0;
-      const years = Number(values.years) || 0;
+      const initialInvestment = Number(values.initialInvestment);
+      const monthlyContribution = Number(values.monthlyContribution);
+      const annualRate = Number(values.annualInterestRate);
+      const years = Number(values.years);
       const compoundsPerYear = Number(values.compoundsPerYear) || 1;
 
-      const r = annualRate / 100;
-      const n = compoundsPerYear;
-      const t = years;
+      const summary = calculateCompoundInterestSummary({
+        initialInvestment,
+        monthlyContribution,
+        annualInterestRate: annualRate,
+        years,
+        compoundsPerYear
+      });
 
-      // Base compound growth for initial investment
-      const base =
-        n > 0 ? initialInvestment * Math.pow(1 + r / n, n * t) : initialInvestment;
-
-      // Monthly contributions approximated with monthly deposits and compounding at chosen frequency
-      const totalMonths = years * 12;
-      let contributionsFutureValue = 0;
-      const monthlyRate = r / 12;
-
-      if (monthlyRate === 0) {
-        contributionsFutureValue = monthlyContribution * totalMonths;
-      } else {
-        const factor = Math.pow(1 + monthlyRate, totalMonths);
-        contributionsFutureValue =
-          monthlyContribution * ((factor - 1) / monthlyRate);
+      if (summary === null) {
+        return {
+          finalBalance: FINANCIAL_INPUT_TOO_LARGE_MESSAGE,
+          totalContributions: FINANCIAL_INPUT_TOO_LARGE_MESSAGE,
+          totalInterestEarned: FINANCIAL_INPUT_TOO_LARGE_MESSAGE
+        };
       }
 
-      const finalBalance = base + contributionsFutureValue;
-      const totalContributions =
-        initialInvestment + monthlyContribution * totalMonths;
-      const totalInterestEarned = finalBalance - totalContributions;
+      const { finalBalance, totalContributions, totalInterestEarned } = summary;
 
       return {
         finalBalance: formatCurrency(finalBalance, currency),

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { calculatorSummaries } from "@/data/calculators";
+import { findCalculatorBySlug } from "@/calculators/calculatorRegistry";
 import { createPageMetadata } from "@/lib/seo";
 
 type CalculatorPageProps = {
@@ -12,9 +12,7 @@ type CalculatorPageProps = {
 export function generateMetadata({
   params
 }: CalculatorPageProps): Metadata {
-  const calculator = calculatorSummaries.find(
-    (item) => item.slug === params.slug
-  );
+  const calculator = findCalculatorBySlug(params.slug);
 
   if (!calculator) {
     return createPageMetadata({ title: "Calculator not found" });
@@ -23,16 +21,14 @@ export function generateMetadata({
   return createPageMetadata({
     title: calculator.name,
     path: `/calculators/${calculator.slug}`,
-    description: calculator.shortDescription
+    description: calculator.description
   });
 }
 
 export default function CalculatorPage({
   params
 }: CalculatorPageProps) {
-  const calculator = calculatorSummaries.find(
-    (item) => item.slug === params.slug
-  );
+  const calculator = findCalculatorBySlug(params.slug);
 
   if (!calculator) {
     notFound();
