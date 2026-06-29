@@ -2,7 +2,7 @@ import type { CalculatorConfig } from "@/types/calculatorTypes";
 import { formatCurrency, formatInteger, formatNumber } from "@/lib/format";
 import { convertCurrency, convertUnit, unitOptions, type CurrencyCode, type UnitCategory } from "@/lib/conversions";
 import { evaluateExpression } from "@/lib/mathExpression";
-import { calculateCompoundGrowth, calculateMonthlyPayment } from "@/lib/financialMath";
+import { FINANCIAL_INPUT_TOO_LARGE_MESSAGE, calculateCompoundInterestSummary, calculateMonthlyPayment } from "@/lib/financialMath";
 
 export const calculatorRegistry: CalculatorConfig[] = [
   {
@@ -514,39 +514,29 @@ export const calculatorRegistry: CalculatorConfig[] = [
     ],
     calculate: (values) => {
       const currency = (values.currency as "GBP" | "EUR" | "USD") || "GBP";
-      const initialInvestment = Number(values.initialInvestment) || 0;
-      const monthlyContribution = Number(values.monthlyContribution) || 0;
-      const annualRate = Number(values.annualInterestRate) || 0;
-      const years = Number(values.years) || 0;
+      const initialInvestment = Number(values.initialInvestment);
+      const monthlyContribution = Number(values.monthlyContribution);
+      const annualRate = Number(values.annualInterestRate);
+      const years = Number(values.years);
       const compoundsPerYear = Number(values.compoundsPerYear) || 1;
 
-      const r = annualRate / 100;
-
-      // Base compound growth for initial investment
-      const base = calculateCompoundGrowth({
-        principal: initialInvestment,
+      const summary = calculateCompoundInterestSummary({
+        initialInvestment,
+        monthlyContribution,
         annualInterestRate: annualRate,
         years,
         compoundsPerYear
       });
 
-      // Monthly contributions approximated with monthly deposits and compounding at chosen frequency
-      const totalMonths = years * 12;
-      let contributionsFutureValue = 0;
-      const monthlyRate = r / 12;
-
-      if (monthlyRate === 0) {
-        contributionsFutureValue = monthlyContribution * totalMonths;
-      } else {
-        const factor = Math.pow(1 + monthlyRate, totalMonths);
-        contributionsFutureValue =
-          monthlyContribution * ((factor - 1) / monthlyRate);
+      if (summary === null) {
+        return {
+          finalBalance: FINANCIAL_INPUT_TOO_LARGE_MESSAGE,
+          totalContributions: FINANCIAL_INPUT_TOO_LARGE_MESSAGE,
+          totalInterestEarned: FINANCIAL_INPUT_TOO_LARGE_MESSAGE
+        };
       }
 
-      const finalBalance = base + contributionsFutureValue;
-      const totalContributions =
-        initialInvestment + monthlyContribution * totalMonths;
-      const totalInterestEarned = finalBalance - totalContributions;
+      const { finalBalance, totalContributions, totalInterestEarned } = summary;
 
       return {
         finalBalance: formatCurrency(finalBalance, currency),

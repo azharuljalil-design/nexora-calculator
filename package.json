@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "rm -rf .tmp-test && tsc --outDir .tmp-test --module commonjs --moduleResolution node --target es2020 --skipLibCheck tests/financialMath.test.ts src/lib/financialMath.ts && node --test .tmp-test/tests/financialMath.test.js"
+    "test": "node scripts/run-tests.js"
   },
   "dependencies": {
     "next": "14.2.5",
