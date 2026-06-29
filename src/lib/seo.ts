@@ -4,7 +4,7 @@ export const siteConfig = {
   name: "NexoraCalculator",
   description:
     "NexoraCalculator is a modern, SEO-friendly hub for financial, health, math, date, conversion, and daily life calculators.",
-  url: "https://www.nexoracalculator.com",
+  url: "https://nexoracalculator.com",
   keywords: [
     "online calculators",
     "financial calculators",
