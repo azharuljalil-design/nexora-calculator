@@ -110,7 +110,7 @@ export function ScientificCalculator({
           }}
         >
           <div className="space-y-1">
-            <label className="flex items-center justify-between text-xs font-medium text-slate-700">
+            <label htmlFor={`${config.slug}-expression`} className="flex items-center justify-between text-xs font-medium text-slate-700">
               <span>Expression</span>
               <span className="text-[11px] font-normal text-slate-400">
                 {inputConfig && isInputRequired(inputConfig, engine.values)
@@ -119,6 +119,7 @@ export function ScientificCalculator({
               </span>
             </label>
             <input
+              id={`${config.slug}-expression`}
               type="text"
               aria-invalid={inputError ? true : undefined}
               aria-describedby={

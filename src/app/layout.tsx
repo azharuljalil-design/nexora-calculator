@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { siteConfig } from "@/lib/seo";
 import { SiteLayout } from "@/components/layout/SiteLayout";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: siteConfig.name,
@@ -28,7 +25,7 @@ export default function RootLayout({
         />
       </head>
 
-      <body className={inter.className}>
+      <body>
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-2GN9YYLQJE"

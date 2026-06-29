@@ -43,6 +43,7 @@ export function renderInputControl({
 
     return (
       <select
+        id={input.name}
         aria-invalid={hasError || undefined}
         aria-describedby={ariaDescribedBy}
         className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-primary/10 focus:border-primary/60 focus:ring-2"
@@ -63,6 +64,7 @@ export function renderInputControl({
     return (
       <div className="space-y-1">
         <input
+          id={input.name}
           aria-invalid={hasError || undefined}
           aria-describedby={ariaDescribedBy}
           type="range"
@@ -85,6 +87,7 @@ export function renderInputControl({
   if (input.type === "date") {
     return (
       <input
+        id={input.name}
         aria-invalid={hasError || undefined}
         aria-describedby={ariaDescribedBy}
         type="date"
@@ -98,6 +101,7 @@ export function renderInputControl({
   if (input.type === "datetime") {
     return (
       <input
+        id={input.name}
         aria-invalid={hasError || undefined}
         aria-describedby={ariaDescribedBy}
         type="datetime-local"
@@ -111,6 +115,7 @@ export function renderInputControl({
   if (input.type === "text") {
     return (
       <input
+        id={input.name}
         aria-invalid={hasError || undefined}
         aria-describedby={ariaDescribedBy}
         type="text"
@@ -124,6 +129,7 @@ export function renderInputControl({
   if (input.type === "textarea") {
     return (
       <textarea
+        id={input.name}
         aria-invalid={hasError || undefined}
         aria-describedby={ariaDescribedBy}
         className="min-h-[96px] w-full resize-y rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-primary/10 focus:border-primary/60 focus:ring-2"
@@ -135,6 +141,7 @@ export function renderInputControl({
 
   return (
     <input
+      id={input.name}
       aria-invalid={hasError || undefined}
       aria-describedby={ariaDescribedBy}
       type="number"
