@@ -189,7 +189,7 @@ export function AmortizationCalculator({ config }: AmortizationCalculatorProps) 
                 </tr>
               </thead>
               <tbody className="text-slate-700">
-                {schedule.rows.slice(0, 360).map((row) => (
+                {schedule.rows.map((row) => (
                   <tr key={row.month} className="border-t border-slate-100">
                     <td className="py-2 pr-3">{row.month}</td>
                     <td className="py-2 pr-3">
@@ -210,7 +210,7 @@ export function AmortizationCalculator({ config }: AmortizationCalculatorProps) 
             </table>
           </div>
           <p className="text-[11px] text-slate-500">
-            Showing up to {schedule.rows.length} months. Values are rounded for display.
+            Showing {schedule.rows.length} months. Values are rounded for display.
           </p>
         </section>
       ) : null}
