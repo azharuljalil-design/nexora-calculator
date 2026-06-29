@@ -29,7 +29,7 @@ export function CalculatorResult({
       {!hasSubmitted && !hasResult ? (
         <p className="text-xs text-slate-500">
           Enter values on the left and select{" "}
-          <span className="font-medium text-primary">Equals</span>{" "}
+          <span className="font-medium text-primary">Calculate</span>{" "}
           to see the result here.
         </p>
       ) : null}
