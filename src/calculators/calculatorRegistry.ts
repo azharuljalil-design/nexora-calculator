@@ -2209,6 +2209,15 @@ function uniq(list: string[]): string[] {
 }
 
 const relatedGroups: string[][] = [
+  // Core money calculators: tightly interlink finance, tax, and percentage helpers.
+  [
+    "mortgage-calculator",
+    "loan-calculator",
+    "amortization-calculator",
+    "compound-interest-calculator",
+    "vat-calculator",
+    "percentage-calculator"
+  ],
   // Loan & mortgage family
   ["mortgage-calculator", "loan-calculator", "amortization-calculator"],
   // Savings & investing family
@@ -2216,7 +2225,8 @@ const relatedGroups: string[][] = [
     "compound-interest-calculator",
     "savings-calculator",
     "investment-calculator",
-    "retirement-calculator"
+    "retirement-calculator",
+    "percentage-calculator"
   ],
   // Tax & salary family (shares percentage + income context)
   [
