@@ -144,6 +144,27 @@ export function CalculatorPageSections({ slug }: CalculatorPageSectionsProps) {
         ) : null}
       </section>
 
+
+      {content?.mistakesOrLimitations?.length ? (
+        <section className="space-y-3">
+          <h2 className="text-base font-semibold text-text">
+            Common mistakes and limitations
+          </h2>
+          <ul className="list-disc space-y-1 pl-5 text-sm text-slate-600">
+            {content.mistakesOrLimitations.map((t) => (
+              <li key={t}>{t}</li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {content?.disclaimer ? (
+        <section className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <h2 className="text-base font-semibold">Important note</h2>
+          <p className="mt-2">{content.disclaimer}</p>
+        </section>
+      ) : null}
+
       <section className="space-y-3">
         <h2 className="text-base font-semibold text-text">
           {calculator.name} FAQs
