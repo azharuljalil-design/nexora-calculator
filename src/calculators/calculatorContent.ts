@@ -20,38 +20,62 @@ export type CalculatorContent = {
 export const calculatorContentBySlug: Record<string, CalculatorContent> = {
   "percentage-calculator": {
     slug: "percentage-calculator",
-    metaTitle: "Percentage Calculator",
+    metaTitle: "Percentage Calculator for Everyday Maths",
     metaDescription:
-      "Calculate a percentage of a number instantly. Useful for discounts, tax estimates, and quick comparisons.",
+      "Calculate percentages of numbers for discounts, tax estimates, markups, comparisons, and quick everyday maths.",
     whatItDoes: [
-      "Finds the value of a given percentage of a number.",
-      "Helps you estimate discounts, markups, and portions quickly."
+      "Finds the value of a percentage of a number, such as 15% of 200 or 7.5% of an invoice.",
+      "Helps with discounts, sale prices, tax add-ons, tips, grade checks, and simple proportional comparisons.",
+      "Keeps the calculation deliberately simple so the result is easy to verify by hand."
     ],
     howToUse: [
-      "Enter the base number.",
-      "Enter the percentage (0–100).",
-      "Click Calculate to see the percentage value."
+      "Enter the base number you want to take a percentage from.",
+      "Enter the percentage value. The form is designed for 0–100% calculations.",
+      "Click Calculate and use the percentage value in your wider calculation, such as subtracting it for a discount or adding it for a tax estimate."
     ],
     methodology: [
-      "Uses \(result = number × (percentage ÷ 100)\).",
-      "Rounds the displayed result to 2 decimals for readability."
+      "The calculator uses: percentage value = number × (percentage ÷ 100).",
+      "For example, 15% is treated as 0.15 before multiplying by the base number.",
+      "The displayed result is rounded to 2 decimal places for readability."
     ],
     example: {
-      scenario: "What is 15% of 200?",
-      steps: ["Number = 200", "Percentage = 15", "Compute 200 × 0.15"],
-      result: "Percentage value = 30.00"
+      scenario: "A £80 item has a 25% discount.",
+      steps: [
+        "Number = 80",
+        "Percentage = 25",
+        "Percentage value = 80 × (25 ÷ 100) = 20"
+      ],
+      result: "The discount value is £20. The sale price would be £60 if you subtract the discount from the original price."
     },
     faqs: [
       {
-        question: "Can I use decimals in the percentage?",
-        answer: "Yes. You can enter values like 7.5%."
+        question: "Can I use this as a discount calculator?",
+        answer:
+          "Yes. Calculate the discount value, then subtract it from the original price. For a dedicated sale-price workflow, use the result as the discount amount."
+      },
+      {
+        question: "Can I enter decimal percentages?",
+        answer:
+          "Yes. Values such as 2.5 or 7.5 are accepted, subject to the calculator input range."
       },
       {
         question: "Is this the same as percentage change?",
         answer:
-          "No. This calculator finds a portion of a number. Percentage change compares two numbers (old vs new)."
+          "No. This calculator finds a percentage of one number. Percentage change compares an old value with a new value."
+      },
+      {
+        question: "Why is the result rounded?",
+        answer:
+          "Rounding to 2 decimals makes money-style and everyday results easier to read. Keep the underlying method in mind if you need more precision."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "Do not type 0.15 when you mean 15%; enter 15 because the calculator divides by 100 internally.",
+      "This tool calculates the percentage value only; it does not automatically add or subtract that value from the original number.",
+      "Check whether your real-world task needs percentage change, markup, margin, or compounding instead of a simple percentage of a number."
+    ],
+    disclaimer:
+      "This is a general maths helper. It does not provide financial, tax, retail, or legal advice."
   },
 
   "mortgage-calculator": {
@@ -173,35 +197,63 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "bmi-calculator": {
     slug: "bmi-calculator",
-    metaTitle: "BMI Calculator (Metric & Imperial)",
+    metaTitle: "BMI Calculator for Metric and Imperial Units",
     metaDescription:
-      "Calculate BMI using metric (cm/kg) or imperial (ft/in/lbs) units and see the BMI category.",
+      "Calculate Body Mass Index from height and weight using metric or imperial units and view the broad BMI category.",
     whatItDoes: [
-      "Calculates Body Mass Index (BMI) from height and weight.",
-      "Returns a BMI category (Underweight, Normal, Overweight, Obese)."
+      "Calculates Body Mass Index (BMI) from height and weight using either metric or imperial inputs.",
+      "Returns a broad category label: Underweight, Normal weight, Overweight, or Obese.",
+      "Provides a quick screening-style number that can be compared with other health calculators, but it does not diagnose health status."
     ],
     howToUse: [
-      "Choose Metric or Imperial units.",
-      "Enter height and weight for the selected unit system.",
-      "Click Calculate to see BMI and category."
+      "Choose metric units for centimetres and kilograms, or imperial units for feet, inches, and pounds.",
+      "Enter height and weight in the fields for the selected unit system.",
+      "Click Calculate to see BMI rounded to 1 decimal place and the broad category label.",
+      "Use related calculators such as Body Fat, BMR, TDEE, and Calorie Calculator for extra context."
     ],
     methodology: [
-      "Metric: \(BMI = kg ÷ (m²), where m = cm ÷ 100).",
-      "Imperial: \(BMI = (lbs ÷ inches²) × 703).",
-      "Category thresholds follow standard BMI bands."
+      "Metric BMI = weight in kilograms ÷ (height in metres × height in metres).",
+      "Imperial BMI = weight in pounds ÷ (height in inches × height in inches) × 703.",
+      "The current category cut-offs in the calculator are: below 18.5 Underweight, 18.5 to below 25 Normal weight, 25 to below 30 Overweight, and 30 or above Obese."
     ],
     example: {
-      scenario: "Metric: 170 cm and 65 kg.",
-      steps: ["Height in meters = 1.70", "BMI = 65 ÷ (1.7²)"],
-      result: "BMI ≈ 22.5 → Normal weight"
+      scenario: "A person is 175 cm tall and weighs 70 kg.",
+      steps: [
+        "Height in metres = 175 ÷ 100 = 1.75",
+        "BMI = 70 ÷ (1.75 × 1.75)",
+        "BMI = 22.9 when rounded to 1 decimal place"
+      ],
+      result: "The calculator returns BMI 22.9 and the category Normal weight."
     },
     faqs: [
       {
         question: "Is BMI a diagnosis?",
         answer:
-          "No. BMI is a screening metric and doesn’t account for muscle mass, age, or body composition."
+          "No. BMI is a broad height-to-weight screening measure. It does not diagnose body composition, fitness, or medical risk."
+      },
+      {
+        question: "Can BMI be misleading?",
+        answer:
+          "Yes. BMI does not distinguish muscle, fat, bone, age, sex, pregnancy, or ethnicity-related differences."
+      },
+      {
+        question: "Which units should I use?",
+        answer:
+          "Use metric if you know centimetres and kilograms, or imperial if you know feet, inches, and pounds. The calculator applies the matching formula."
+      },
+      {
+        question: "Why compare BMI with body fat percentage?",
+        answer:
+          "Body fat estimates use body measurements and can provide different context from BMI, although they are still estimates with limitations."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "Entering centimetres in the imperial fields, or pounds in the kilogram field, will produce an incorrect result.",
+      "BMI categories are broad and may not be suitable for children, pregnant people, athletes, or some clinical contexts.",
+      "The result should be interpreted alongside wider health information, not in isolation."
+    ],
+    disclaimer:
+      "This calculator provides general educational information only and is not medical, nutritional, fitness, or healthcare advice."
   },
 
   "age-calculator": {
@@ -368,36 +420,63 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "salary-calculator": {
     slug: "salary-calculator",
-    metaTitle: "Salary / Take‑Home Pay Calculator (Simple)",
+    metaTitle: "Salary Calculator for Simple Take-Home Pay Estimates",
     metaDescription:
-      "Estimate take-home pay after tax for UK, Europe, and USA using a simple effective tax rate.",
+      "Estimate gross salary deductions and take-home pay using your own effective tax or withholding rate.",
     whatItDoes: [
-      "Estimates tax amount and take-home pay from a gross annual salary.",
-      "Supports UK/EU/USA selection with appropriate currency display."
+      "Estimates annual tax or withholding amount from a gross salary and an effective percentage rate you provide.",
+      "Shows a simple estimated take-home pay figure in GBP, EUR, or USD depending on the selected region.",
+      "Helps compare salary scenarios before using the income tax or hourly wage conversion calculators."
     ],
     howToUse: [
-      "Choose UK, Europe, or USA.",
-      "Enter your gross annual salary.",
-      "Enter an estimated effective tax rate (simple model).",
-      "Click Calculate."
+      "Select the region so the result is displayed in the right currency.",
+      "Enter the gross annual salary before deductions.",
+      "Enter your estimated effective tax or withholding rate as a percentage, including any deductions you want reflected.",
+      "Click Calculate and review the estimated tax amount and estimated take-home pay."
     ],
     methodology: [
-      "Tax = gross × (rate ÷ 100).",
-      "Net salary = gross − tax.",
-      "This is a simple model designed for quick estimates; it is not a full tax engine."
+      "Estimated tax = gross salary × (tax rate ÷ 100).",
+      "Estimated take-home pay = gross salary − estimated tax.",
+      "The calculator does not apply tax bands, personal allowances, pension deductions, student loans, benefits, filing status, or local rules automatically."
     ],
     example: {
-      scenario: "UK salary £45,000 with 22% effective tax.",
-      steps: ["Tax = 45,000 × 0.22", "Net = 45,000 − tax"],
-      result: "Outputs estimated tax and take-home pay in GBP."
+      scenario: "A UK salary of £45,000 with an estimated effective deduction rate of 22%.",
+      steps: [
+        "Estimated tax = 45,000 × (22 ÷ 100) = 9,900",
+        "Estimated take-home pay = 45,000 − 9,900",
+        "Currency display is GBP because the UK region is selected"
+      ],
+      result: "The estimated annual tax is £9,900 and the estimated take-home pay is £35,100."
     },
     faqs: [
       {
-        question: "Does this include national insurance/social security?",
+        question: "Does this calculate exact UK take-home pay?",
         answer:
-          "Not automatically. Include those in your effective tax rate for a closer estimate."
+          "No. It uses the effective rate you enter. It does not automatically apply current UK tax bands, National Insurance, pensions, student loans, or benefits."
+      },
+      {
+        question: "What tax rate should I enter?",
+        answer:
+          "Use an effective overall rate that matches the deductions you want to estimate. If you are unsure, check official payslip or tax information rather than guessing."
+      },
+      {
+        question: "Can I compare salary and hourly work?",
+        answer:
+          "Yes. Use this calculator for a simple take-home estimate, then use the Salary to Hourly Calculator or Hourly to Salary Calculator for pay-rate comparisons."
+      },
+      {
+        question: "Does the result include monthly pay?",
+        answer:
+          "This calculator returns annual figures. Divide by 12 for a rough average monthly amount, but actual payroll dates and deductions can vary."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "Do not treat the selected region as a full tax rules engine; it currently controls currency display only.",
+      "A marginal tax rate is not the same as an effective overall rate, so using the wrong type of rate can overstate or understate deductions.",
+      "Employer benefits, pension contributions, overtime, bonuses, and unpaid leave are not modelled separately."
+    ],
+    disclaimer:
+      "This calculator is for general planning only and is not financial, tax, employment, payroll, or legal advice."
   },
 
   "currency-converter": {
@@ -540,33 +619,64 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "calorie-calculator": {
     slug: "calorie-calculator",
-    metaTitle: "Calorie Calculator (Maintenance & Targets)",
+    metaTitle: "Calorie Calculator for Maintenance and Weight Targets",
     metaDescription:
-      "Estimate maintenance calories and simple weight change targets based on your stats and activity level.",
+      "Estimate daily maintenance calories and simple calorie targets using Mifflin-St Jeor BMR and activity multipliers.",
     whatItDoes: [
-      "Estimates daily maintenance calories.",
-      "Shows mild loss, loss, and gain targets for quick planning."
+      "Estimates daily maintenance calories from age, sex, height, weight, and activity level.",
+      "Shows simple daily targets for mild weight loss, weight loss, and weight gain by adjusting maintenance calories.",
+      "Complements the BMR and TDEE calculators by combining the same style of energy estimate into practical targets."
     ],
     howToUse: [
-      "Enter age, sex, height, weight, and activity level.",
-      "Click Calculate to see daily calorie targets."
+      "Enter age, sex, height in centimetres, and weight in kilograms.",
+      "Choose the activity level that best represents your usual week.",
+      "Click Calculate to see estimated maintenance calories and target calorie levels.",
+      "Treat the outputs as starting estimates and adjust based on real-world progress and professional guidance where needed."
     ],
     methodology: [
-      "Uses BMR (Mifflin–St Jeor) × activity multiplier for maintenance.",
-      "Applies -250, -500, and +500 kcal/day adjustments for targets."
+      "BMR is estimated with the Mifflin-St Jeor method: 10 × weight(kg) + 6.25 × height(cm) − 5 × age + s.",
+      "The sex adjustment used by the calculator is s = 5 for male and s = −161 for female.",
+      "Maintenance calories = estimated BMR × activity multiplier, using multipliers from 1.2 to 1.9 depending on selected activity.",
+      "Targets are calculated as maintenance − 250, maintenance − 500, and maintenance + 500 kcal/day, with loss targets not allowed below zero."
     ],
     example: {
-      scenario: "Maintenance planning for a moderately active adult.",
-      steps: ["Enter stats", "Select activity", "Calculate"],
-      result: "Outputs maintenance and target calorie levels."
+      scenario: "A 35-year-old male, 180 cm, 80 kg, with moderate activity.",
+      steps: [
+        "BMR = 10 × 80 + 6.25 × 180 − 5 × 35 + 5 = 1,755 kcal/day",
+        "Moderate activity multiplier = 1.55",
+        "Maintenance = 1,755 × 1.55 = 2,720 kcal/day when rounded"
+      ],
+      result: "The calculator estimates about 2,720 kcal/day for maintenance, about 2,470 for mild loss, 2,220 for loss, and 3,220 for gain."
     },
     faqs: [
       {
-        question: "Are these medical recommendations?",
+        question: "Are these calories exact?",
         answer:
-          "No. They’re general estimates. For medical needs, consult a qualified professional."
+          "No. They are estimates based on a formula and activity multiplier. Actual energy needs vary between people and over time."
+      },
+      {
+        question: "How should I choose activity level?",
+        answer:
+          "Pick the option that best matches your typical week. Overestimating activity is a common reason calorie estimates are too high."
+      },
+      {
+        question: "Does this make a diet plan?",
+        answer:
+          "No. It gives calorie estimates only. Food choices, medical needs, training, appetite, and sustainability require separate consideration."
+      },
+      {
+        question: "Why are the loss targets 250 and 500 kcal lower?",
+        answer:
+          "Those are simple planning offsets used by this calculator. They are not personalised recommendations or guarantees."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "The calculator uses binary sex options because the underlying formula uses those constants; this may not represent everyone accurately.",
+      "Activity multipliers are broad estimates and can be the largest source of error.",
+      "Pregnancy, illness, eating disorders, athletic training, medications, and clinical nutrition needs are not modelled."
+    ],
+    disclaimer:
+      "This calculator is for general educational planning only and is not medical, nutritional, dietetic, fitness, or healthcare advice."
   },
 
   "tip-calculator": {
@@ -827,34 +937,64 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "body-fat-calculator": {
     slug: "body-fat-calculator",
-    metaTitle: "Body Fat Percentage Calculator (US Navy Method)",
+    metaTitle: "Body Fat Calculator Using the US Navy Method",
     metaDescription:
-      "Estimate body fat percentage using waist/neck (and hip for females) with the US Navy method.",
+      "Estimate body fat percentage from body measurements using the US Navy circumference method in centimetres.",
     whatItDoes: [
-      "Estimates body fat percentage from body measurements.",
-      "Returns a simple category label for context."
+      "Estimates body fat percentage from height, waist, neck, and, for female mode, hip measurements.",
+      "Returns a body fat percentage rounded to 1 decimal place plus a broad category label.",
+      "Offers a measurement-based estimate that can be compared with BMI, calorie, BMR, and TDEE results."
     ],
     howToUse: [
-      "Choose sex and enter height, waist, and neck measurements in cm.",
-      "If female, also enter hip measurement.",
-      "Click Calculate to see estimated body fat percentage."
+      "Select male or female mode because the formula uses different circumference inputs.",
+      "Enter height, waist, and neck measurements in centimetres; enter hip measurement as well when female mode is selected.",
+      "Measure consistently with a flexible tape and avoid pulling it too tight.",
+      "Click Calculate to see the estimated body fat percentage and category."
     ],
     methodology: [
-      "Uses the US Navy body fat formula (log-based).",
-      "Accuracy depends on consistent measurement technique."
+      "Male mode uses: 495 ÷ (1.0324 − 0.19077 × log10(waist − neck) + 0.15456 × log10(height)) − 450.",
+      "Female mode uses: 495 ÷ (1.29579 − 0.35004 × log10(waist + hip − neck) + 0.221 × log10(height)) − 450.",
+      "Measurements are entered in centimetres and the calculator uses base-10 logarithms.",
+      "The category label is a broad contextual label generated from the calculator's internal ranges."
     ],
     example: {
-      scenario: "Male, height 180 cm, waist 90 cm, neck 40 cm.",
-      steps: ["Enter measurements", "Apply Navy formula", "Round to 1 decimal"],
-      result: "Outputs body fat % and a category label."
+      scenario: "Male mode with height 180 cm, waist 90 cm, and neck 40 cm.",
+      steps: [
+        "waist − neck = 90 − 40 = 50",
+        "Apply the male US Navy equation with height 180 and circumference difference 50",
+        "Round the calculated percentage to 1 decimal place"
+      ],
+      result: "The estimate is about 22.7% body fat, with the calculator's broad category shown as Average."
     },
     faqs: [
       {
-        question: "Where should I measure waist and neck?",
+        question: "Is the US Navy method exact?",
         answer:
-          "Use a consistent method each time. Waist is typically at the navel; neck is measured just below the larynx."
+          "No. It is an estimate from circumference measurements. Tape placement, posture, hydration, and body shape can affect the result."
+      },
+      {
+        question: "Why does female mode ask for hip measurement?",
+        answer:
+          "The calculator's female-mode formula includes waist, hip, neck, and height, while male mode uses waist, neck, and height."
+      },
+      {
+        question: "Does weight affect the result?",
+        answer:
+          "Weight is collected for context in the form, but the US Navy percentage formula used here is based on circumference and height measurements."
+      },
+      {
+        question: "How often should I remeasure?",
+        answer:
+          "If tracking trends, use a consistent schedule and the same measuring method each time rather than focusing on one isolated result."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "Small measurement errors can noticeably change the estimate.",
+      "The formula is not suitable for diagnosis and may be less accurate for some body types or clinical situations.",
+      "Use centimetres consistently; mixing inches and centimetres will invalidate the calculation."
+    ],
+    disclaimer:
+      "This calculator provides a general body-composition estimate only and is not medical, fitness, nutritional, or healthcare advice."
   },
 
   "ideal-weight-calculator": {
@@ -1099,97 +1239,185 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "income-tax-calculator": {
     slug: "income-tax-calculator",
-    metaTitle: "Income Tax Calculator (Simple)",
+    metaTitle: "Income Tax Calculator for Simple Effective-Rate Estimates",
     metaDescription:
-      "Estimate income tax and after-tax income for UK, Europe, or USA using a simple effective tax rate.",
+      "Estimate income tax and after-tax income with a simple percentage-rate method for quick planning.",
     whatItDoes: [
-      "Estimates tax and after-tax income based on annual income and a tax-rate estimate.",
-      "Designed as a quick planner with room for future regional rules."
+      "Estimates tax on annual income using an effective tax rate that you enter.",
+      "Shows the estimated tax amount and after-tax income in GBP, EUR, or USD depending on the selected region.",
+      "Provides a quick comparison tool without pretending to be a full tax-return calculator."
     ],
     howToUse: [
-      "Choose UK, Europe, or USA.",
-      "Enter annual income and an estimated effective tax rate.",
-      "Click Calculate."
+      "Choose UK, Europe, or United States to set the result currency.",
+      "Enter annual income before tax.",
+      "Enter the estimated effective tax rate you want to test.",
+      "Click Calculate and review the estimated tax and after-tax income."
     ],
     methodology: [
-      "Estimated tax = income × (rate ÷ 100).",
-      "After-tax income = income − tax."
+      "Estimated tax = annual income × (estimated tax rate ÷ 100).",
+      "After-tax income = annual income − estimated tax.",
+      "The calculator uses one effective percentage rate and does not apply changing tax bands, allowances, credits, deductions, local taxes, or filing-status rules."
     ],
     example: {
-      scenario: "USA income $75,000 at 24% effective tax.",
-      steps: ["Tax = 75,000 × 0.24", "After-tax = 75,000 − tax"],
-      result: "Outputs estimated tax and after-tax income."
+      scenario: "Annual income of £60,000 with an estimated effective tax rate of 25%.",
+      steps: [
+        "Estimated tax = 60,000 × (25 ÷ 100) = 15,000",
+        "After-tax income = 60,000 − 15,000",
+        "The UK selection displays the result in GBP"
+      ],
+      result: "The estimated tax is £15,000 and the estimated after-tax income is £45,000."
     },
     faqs: [
       {
-        question: "Is this a full tax return calculation?",
+        question: "Does this use current tax brackets?",
         answer:
-          "No. It’s a simple effective-rate estimate. Brackets, deductions, and credits are not modeled yet."
+          "No. It uses the single effective rate you enter and does not automatically look up current tax bands or allowances."
+      },
+      {
+        question: "Is this different from the Salary Calculator?",
+        answer:
+          "The maths is similar, but this page is focused on income tax estimates. The Salary Calculator frames the same simple method as take-home pay planning."
+      },
+      {
+        question: "Can I include deductions or credits?",
+        answer:
+          "Only indirectly. Adjust the effective rate to reflect deductions, credits, or withholdings if you have reliable information."
+      },
+      {
+        question: "Why is the tax rate capped in the form?",
+        answer:
+          "The input range keeps quick estimates within a practical range for this simple calculator. It is not a statement about any country's tax law."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "Do not rely on this for filing, payroll, self-assessment, or withholding decisions.",
+      "Tax systems often use bands, allowances, credits, and local rules; this calculator does not model those details.",
+      "Use an effective overall rate, not a marginal rate, unless you specifically want to model a marginal-rate scenario."
+    ],
+    disclaimer:
+      "This is a general estimate only and is not financial, tax, accounting, payroll, employment, or legal advice."
   },
 
   "salary-to-hourly-calculator": {
     slug: "salary-to-hourly-calculator",
-    metaTitle: "Salary to Hourly Calculator",
+    metaTitle: "Hourly Wage Calculator from Annual Salary",
     metaDescription:
-      "Convert annual salary to an hourly rate using hours per week and weeks per year.",
+      "Convert annual salary into an estimated hourly wage using hours per week and weeks worked per year.",
     whatItDoes: [
-      "Converts an annual salary into an estimated hourly rate.",
-      "Useful for comparing salaried vs hourly opportunities."
+      "Converts an annual salary into an estimated hourly wage based on your working pattern.",
+      "Helps compare salaried roles with hourly work, freelance rates, or overtime assumptions.",
+      "Uses your chosen hours per week and weeks per year rather than assuming one fixed schedule."
     ],
     howToUse: [
-      "Enter annual salary.",
-      "Enter hours per week and weeks per year you work.",
-      "Click Calculate to see hourly rate."
+      "Enter the annual salary before tax or deductions.",
+      "Enter the typical hours worked per week.",
+      "Enter the number of paid or worked weeks per year you want to use.",
+      "Click Calculate to see the estimated hourly rate."
     ],
     methodology: [
-      "Hourly rate = annual salary ÷ (hours per week × weeks per year).",
-      "Use realistic weeks per year if you take unpaid time off."
+      "Annual hours = hours per week × weeks per year.",
+      "Hourly wage = annual salary ÷ annual hours.",
+      "The calculator returns a numeric hourly rate rounded to 2 decimal places."
     ],
     example: {
-      scenario: "£52,000 salary, 40 hours/week, 52 weeks/year.",
-      steps: ["Compute 40×52 = 2080 hours/year", "52,000 ÷ 2080"],
-      result: "Hourly rate ≈ £25.00"
+      scenario: "A £52,000 annual salary with 40 hours per week and 52 weeks per year.",
+      steps: [
+        "Annual hours = 40 × 52 = 2,080",
+        "Hourly wage = 52,000 ÷ 2,080",
+        "Rounded to 2 decimal places"
+      ],
+      result: "The estimated hourly wage is 25.00 before tax or other deductions."
     },
     faqs: [
       {
+        question: "Is this the Hourly Wage Calculator?",
+        answer:
+          "Yes. In this site it is implemented as the Salary to Hourly Calculator, which converts annual salary into an hourly wage estimate."
+      },
+      {
         question: "Should I use 52 weeks per year?",
         answer:
-          "Use the weeks you actually work. If you take unpaid leave, reduce the weeks for a more accurate hourly rate."
+          "Use 52 for a paid full-year salary comparison. Use fewer weeks if you want to reflect unpaid leave, seasonal work, or contract gaps."
+      },
+      {
+        question: "Does this include tax?",
+        answer:
+          "No. It converts gross annual salary to a gross hourly equivalent. Use the Salary Calculator for a simple deduction estimate."
+      },
+      {
+        question: "Should overtime be included?",
+        answer:
+          "Include overtime hours only if you want the hourly equivalent of total salary spread across those extra hours."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "Using contracted hours may produce a different result from using actual hours worked.",
+      "The result does not account for taxes, benefits, pension contributions, holiday pay rules, or employment rights.",
+      "Currency symbols are not applied in the result because the calculation is a generic rate conversion."
+    ],
+    disclaimer:
+      "This calculator is for general pay comparison only and is not financial, tax, payroll, employment, or legal advice."
   },
 
   "hourly-to-salary-calculator": {
     slug: "hourly-to-salary-calculator",
     metaTitle: "Hourly to Salary Calculator",
     metaDescription:
-      "Convert an hourly rate into weekly, monthly, and annual salary estimates based on your schedule.",
+      "Convert an hourly wage into weekly, monthly, and annual salary estimates from your working schedule.",
     whatItDoes: [
-      "Estimates weekly, monthly, and annual pay from an hourly rate.",
-      "Helps translate hourly offers into annual equivalents."
+      "Converts an hourly wage into estimated weekly, monthly, and annual pay.",
+      "Helps compare hourly roles, part-time schedules, and annual salary equivalents.",
+      "Uses your chosen hours per week and weeks per year so you can model full-year, seasonal, or reduced schedules."
     ],
     howToUse: [
-      "Enter hourly rate, hours per week, and weeks per year.",
-      "Click Calculate to see weekly, monthly, and annual amounts."
+      "Enter the hourly wage before tax or deductions.",
+      "Enter typical hours worked each week.",
+      "Enter weeks worked or paid per year.",
+      "Click Calculate to see weekly, average monthly, and annual estimates."
     ],
     methodology: [
-      "Weekly = hourly × hours/week.",
-      "Annual = weekly × weeks/year; monthly = annual ÷ 12."
+      "Weekly pay = hourly wage × hours per week.",
+      "Annual pay = weekly pay × weeks per year.",
+      "Average monthly pay = annual pay ÷ 12."
     ],
     example: {
-      scenario: "$20/hour, 35 hours/week, 50 weeks/year.",
-      steps: ["Weekly = 20×35", "Annual = weekly×50", "Monthly = annual÷12"],
-      result: "Outputs weekly, monthly, and annual salary estimates."
+      scenario: "An hourly wage of 20, working 35 hours per week for 50 weeks per year.",
+      steps: [
+        "Weekly pay = 20 × 35 = 700",
+        "Annual pay = 700 × 50 = 35,000",
+        "Average monthly pay = 35,000 ÷ 12 = 2,916.67"
+      ],
+      result: "The estimate is 700 weekly, 2,916.67 average monthly, and 35,000 annually before deductions."
     },
     faqs: [
       {
-        question: "Why is monthly divided by 12?",
+        question: "Does monthly pay mean every month will be the same?",
         answer:
-          "It’s a simple average monthly estimate. Actual pay cycles can vary by employer."
+          "No. It is an annual average divided by 12. Actual pay can vary with rota patterns, pay dates, overtime, or unpaid leave."
+      },
+      {
+        question: "Can I use this for part-time work?",
+        answer:
+          "Yes. Enter the part-time hours and weeks that match the schedule you want to compare."
+      },
+      {
+        question: "Does it include tax or deductions?",
+        answer:
+          "No. The outputs are gross pay estimates before tax, payroll deductions, benefits, or expenses."
+      },
+      {
+        question: "How do I convert salary back to an hourly wage?",
+        answer:
+          "Use the Salary to Hourly Calculator to divide an annual salary by annual working hours."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "Do not mix paid weeks and worked weeks unless that is the comparison you intend.",
+      "Overtime premiums, shift allowances, commission, tips, benefits, and statutory rules are not modelled.",
+      "The result is currency-neutral; interpret it in the currency of the hourly rate you entered."
+    ],
+    disclaimer:
+      "This calculator is a general wage-conversion tool and is not financial, tax, payroll, employment, or legal advice."
   },
 
   "pounds-kilograms-converter": {
