@@ -2202,42 +2202,46 @@ export const calculatorRegistry: CalculatorConfig[] = [
 // Ensure every calculator page has 4-6 safe, closely related internal links.
 // We do this centrally so we don't have to manually tune `relatedSlugs` for every entry.
 const registryBySlug = new Map(calculatorRegistry.map((c) => [c.slug, c]));
-const allSlugs = calculatorRegistry.map((c) => c.slug);
 
 function uniq(list: string[]): string[] {
   return Array.from(new Set(list));
 }
 
 const relatedGroups: string[][] = [
-  // Core money calculators: tightly interlink finance, tax, and percentage helpers.
+  // Mortgage, loans, and repayment planning.
   [
     "mortgage-calculator",
     "loan-calculator",
     "amortization-calculator",
     "compound-interest-calculator",
-    "vat-calculator",
     "percentage-calculator"
   ],
-  // Loan & mortgage family
-  ["mortgage-calculator", "loan-calculator", "amortization-calculator"],
-  // Savings & investing family
+  // Saving, investing, and long-term planning.
   [
-    "compound-interest-calculator",
     "savings-calculator",
     "investment-calculator",
     "retirement-calculator",
+    "compound-interest-calculator",
     "percentage-calculator"
   ],
-  // Tax & salary family (shares percentage + income context)
+  // Tax, salary, and pay-rate estimates.
+  [
+    "salary-calculator",
+    "income-tax-calculator",
+    "salary-to-hourly-calculator",
+    "hourly-to-salary-calculator",
+    "vat-calculator",
+    "percentage-calculator"
+  ],
+  // Sales, VAT, tips, and everyday percentage-based costs.
   [
     "vat-calculator",
     "sales-tax-calculator",
-    "income-tax-calculator",
-    "salary-calculator",
     "tip-calculator",
-    "percentage-calculator"
+    "percentage-calculator",
+    "currency-converter"
   ],
-  // Health metrics family
+  // Body composition and weight-related health estimates.
   [
     "bmi-calculator",
     "body-fat-calculator",
@@ -2246,7 +2250,15 @@ const relatedGroups: string[][] = [
     "bmr-calculator",
     "tdee-calculator"
   ],
-  // Date & personal milestones family
+  // Nutrition and energy-expenditure estimates.
+  [
+    "calorie-calculator",
+    "bmr-calculator",
+    "tdee-calculator",
+    "bmi-calculator",
+    "body-fat-calculator"
+  ],
+  // Date, time, and milestone planning.
   [
     "age-calculator",
     "date-calculator",
@@ -2254,27 +2266,21 @@ const relatedGroups: string[][] = [
     "ovulation-calculator",
     "pregnancy-calculator"
   ],
-  // Education & grading family
-  ["gpa-calculator", "grade-calculator", "percentage-calculator"],
-  // Math tooling family
+  // Education, fractions, statistics, and general maths helpers.
   [
+    "percentage-calculator",
     "scientific-calculator",
     "fraction-calculator",
     "standard-deviation-calculator",
-    "percentage-calculator"
+    "gpa-calculator",
+    "grade-calculator"
   ],
-  // Conversions family
+  // Unit and currency conversion tools.
   [
-    "currency-converter",
     "unit-converter",
     "pounds-kilograms-converter",
-    "miles-kilometers-converter"
-  ],
-  // Pay rate conversions
-  [
-    "salary-to-hourly-calculator",
-    "hourly-to-salary-calculator",
-    "salary-calculator"
+    "miles-kilometers-converter",
+    "currency-converter"
   ]
 ];
 
@@ -2297,20 +2303,16 @@ function buildRelatedSlugs(calculator: CalculatorConfig): string[] {
     .filter((c) => c.slug !== currentSlug && c.category === calculator.category)
     .map((c) => c.slug);
 
-  const global = allSlugs.filter((s) => s !== currentSlug);
-
   let candidates = uniq([
     ...existing,
     ...groupCandidates,
-    ...sameCategory,
-    ...global
+    ...sameCategory
   ]).filter((s) => registryBySlug.has(s) && s !== currentSlug);
 
-  // Requirement: 4–6 internal links per calculator page.
+  // Keep recommendations concise and relevant: approximately 3–6 links where a
+  // calculator has enough close neighbours, without falling back to unrelated
+  // site-wide links just to hit a quota.
   candidates = candidates.slice(0, 6);
-  if (candidates.length < 4) {
-    candidates = uniq([...candidates, ...global]).slice(0, 6);
-  }
 
   return candidates;
 }
