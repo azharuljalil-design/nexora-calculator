@@ -631,8 +631,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
       },
       {
         name: "mode",
-        label: "Mode",
+        label: "Standard deviation mode",
         type: "select",
+        helperText: "Sample divides by n−1; Population divides by n. Default is Sample.",
         required: true,
         defaultValue: "add",
         options: [
@@ -1339,7 +1340,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "gpa-calculator",
     category: "Math Calculators",
     description:
-      "Calculate GPA from multiple courses using credits and letter grades (simple 4.0 scale).",
+      "Estimate GPA from entered credits and letter grades using a simple 4.0 scale.",
     inputs: [
       {
         name: "courseCount",
@@ -1359,16 +1360,18 @@ export const calculatorRegistry: CalculatorConfig[] = [
         return [
           {
             name: `course${idx}Credits`,
-            label: `Course ${idx} credits`,
+            label: `Course ${idx} credits or weight`,
             type: "number" as const,
             min: 0,
+            helperText: "Enter the course credit value or weighting used for this estimate.",
             requiredWhen: showWhen,
             showWhen
           },
           {
             name: `course${idx}Grade`,
-            label: `Course ${idx} grade`,
+            label: `Course ${idx} letter grade`,
             type: "select" as const,
+            helperText: "Uses the calculator's built-in simple 4.0 grade-point scale, not an official transcript scale.",
             requiredWhen: showWhen,
             showWhen,
             options: [
@@ -1421,8 +1424,8 @@ export const calculatorRegistry: CalculatorConfig[] = [
       };
     },
     resultLabels: {
-      gpa: "GPA",
-      totalCredits: "Total credits"
+      gpa: "Estimated GPA (simple 4.0 scale)",
+      totalCredits: "Total entered credits"
     },
     relatedSlugs: ["grade-calculator", "percentage-calculator"]
   },
@@ -1431,12 +1434,12 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "grade-calculator",
     category: "Math Calculators",
     description:
-      "Estimate the final exam grade required to reach a desired overall grade.",
+      "Estimate the final exam grade required to reach a desired overall grade based on entered weights.",
     inputs: [
-      { name: "currentGrade", label: "Current grade (%)", type: "number", required: true, min: 0, max: 100, step: 0.01 },
-      { name: "completedWeight", label: "Completed weight (%)", type: "number", required: true, min: 0, max: 100, step: 0.01 },
-      { name: "desiredFinalGrade", label: "Desired final grade (%)", type: "number", required: true, min: 0, max: 100, step: 0.01 },
-      { name: "finalExamWeight", label: "Final exam weight (%)", type: "number", required: true, min: 0.01, max: 100, step: 0.01 }
+      { name: "currentGrade", label: "Current grade so far (%)", type: "number", required: true, min: 0, max: 100, step: 0.01, helperText: "Enter the percentage for completed work represented by the completed weight." },
+      { name: "completedWeight", label: "Completed coursework weight (%)", type: "number", required: true, min: 0, max: 100, step: 0.01, helperText: "Enter 70 for 70%, not 0.70." },
+      { name: "desiredFinalGrade", label: "Desired overall grade (%)", type: "number", required: true, min: 0, max: 100, step: 0.01, helperText: "Target overall course percentage before any institution-specific rounding or curve." },
+      { name: "finalExamWeight", label: "Final exam weight (%)", type: "number", required: true, min: 0.01, max: 100, step: 0.01, helperText: "Enter the final exam's contribution to the overall grade as a percent." }
     ],
     calculate: (values) => {
       const current = Number(values.currentGrade) || 0;
@@ -1454,7 +1457,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
       };
     },
     resultLabels: {
-      requiredFinalExamGrade: "Required final exam grade (%)"
+      requiredFinalExamGrade: "Estimated required final exam grade (%)"
     },
     relatedSlugs: ["gpa-calculator", "percentage-calculator"]
   },
@@ -1804,7 +1807,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
         type: "text",
         required: true,
         helperText:
-          "Supported: + - * / ^ ( ), sqrt(), sin(), cos(), tan(), log() (base 10), ln(), pi"
+          "Supported: + - * / ^ ( ), sqrt(), sin(), cos(), tan(), log() base 10, ln(), and pi. Trig uses radians; results are rounded for display."
       }
     ],
     calculate: (values) => {
@@ -1818,9 +1821,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
       }
     },
     resultLabels: {
-      result: "Result"
+      result: "Calculated result"
     },
-    relatedSlugs: ["fraction-calculator", "standard-deviation-calculator"]
+    relatedSlugs: ["fraction-calculator", "standard-deviation-calculator", "percentage-calculator"]
   },
   {
     name: "Fraction Calculator",
@@ -1829,7 +1832,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     description:
       "Add, subtract, multiply, or divide fractions and see simplified and decimal results.",
     inputs: [
-      { name: "fraction1", label: "Fraction 1 (e.g. 3/4)", type: "text", required: true },
+      { name: "fraction1", label: "Fraction 1 (a/b)", type: "text", required: true, helperText: "Use numerator/denominator format, such as 3/4 or -5/8. Convert mixed numbers first." },
       {
         name: "operator",
         label: "Operator",
@@ -1843,7 +1846,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "/", label: "Divide (÷)" }
         ]
       },
-      { name: "fraction2", label: "Fraction 2 (e.g. 1/6)", type: "text", required: true }
+      { name: "fraction2", label: "Fraction 2 (a/b)", type: "text", required: true, helperText: "Denominator cannot be 0. For division, the second fraction cannot be 0/anything." }
     ],
     calculate: (values) => {
       function parseFraction(s: string) {
@@ -1914,9 +1917,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
       }
     },
     resultLabels: {
-      resultFraction: "Result fraction",
-      simplifiedFraction: "Simplified",
-      decimalEquivalent: "Decimal"
+      resultFraction: "Raw fraction result",
+      simplifiedFraction: "Simplified fraction",
+      decimalEquivalent: "Decimal equivalent (rounded)"
     },
     relatedSlugs: ["scientific-calculator", "percentage-calculator"]
   },
@@ -1932,17 +1935,18 @@ export const calculatorRegistry: CalculatorConfig[] = [
         label: "List of numbers",
         type: "textarea",
         required: true,
-        helperText: "Enter values separated by commas or spaces (e.g. 1, 2, 3.5 4)."
+        helperText: "Enter values separated by commas or spaces (e.g. 2, 4, 4, 4, 5). Non-numeric entries are ignored."
       },
       {
         name: "mode",
-        label: "Mode",
+        label: "Standard deviation mode",
         type: "select",
+        helperText: "Sample divides by n−1; Population divides by n. Default is Sample.",
         required: true,
         defaultValue: "sample",
         options: [
-          { value: "sample", label: "Sample" },
-          { value: "population", label: "Population" }
+          { value: "sample", label: "Sample (divide by n−1)" },
+          { value: "population", label: "Population (divide by n)" }
         ]
       }
     ],
@@ -1971,9 +1975,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
       };
     },
     resultLabels: {
-      mean: "Mean",
-      variance: "Variance",
-      standardDeviation: "Standard deviation"
+      mean: "Mean (average)",
+      variance: "Variance (selected mode)",
+      standardDeviation: "Standard deviation (selected mode)"
     },
     relatedSlugs: ["scientific-calculator", "gpa-calculator"]
   },
