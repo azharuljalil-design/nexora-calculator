@@ -576,7 +576,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     name: "VAT Calculator",
     slug: "vat-calculator",
     category: "Financial Calculators",
-    description: "Calculate VAT for UK and European countries.",
+    description: "Estimate VAT by adding or removing the user-entered VAT rate.",
     inputs: [
       {
         name: "currency",
@@ -588,7 +588,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "GBP", label: "GBP (£)" },
           { value: "EUR", label: "EUR (€)" }
         ],
-        helperText: "Choose GBP for UK pricing or EUR for European pricing."
+        helperText: "Choose display currency only; VAT rules and rates still depend on your country, product, or service."
       },
       {
         name: "amount",
@@ -599,7 +599,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
       },
       {
         name: "vatRate",
-        label: "VAT rate",
+        label: "VAT rate (user selected)",
         type: "select",
         required: true,
         defaultValue: "20",
@@ -619,7 +619,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
         step: 0.01,
         showWhen: (values) => values.vatRate === "custom",
         requiredWhen: (values) => values.vatRate === "custom",
-        helperText: "Enter a custom VAT rate percentage (e.g. 19, 21)."
+        helperText: "Enter the exact VAT rate you want to estimate. Rates vary by country and item type."
       },
       {
         name: "mode",
@@ -725,10 +725,10 @@ export const calculatorRegistry: CalculatorConfig[] = [
     relatedSlugs: ["vat-calculator", "mortgage-calculator"]
   },
   {
-    name: "Salary / Take-Home Pay Calculator",
+    name: "Salary Take-Home Estimate Calculator",
     slug: "salary-calculator",
     category: "Financial Calculators",
-    description: "Estimate take-home pay after tax for UK, EU, and USA users.",
+    description: "Estimate take-home pay from gross salary using the effective rate you enter.",
     inputs: [
       {
         name: "country",
@@ -758,7 +758,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
         max: 60,
         step: 0.01,
         helperText:
-          "Simple estimate for now. Enter your effective tax rate (income tax + other withholdings)."
+          "Enter your own effective deduction rate. This does not automatically calculate PAYE, National Insurance, pensions, student loans, benefits, or allowances."
       }
     ],
     calculate: (values) => {
@@ -2028,7 +2028,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "income-tax-calculator",
     category: "Financial Calculators",
     description:
-      "Estimate income tax and after-tax income (simple model; ready for future regional rules).",
+      "Estimate income tax and after-tax income with a simplified user-entered rate.",
     inputs: [
       {
         name: "countryMode",
@@ -2043,7 +2043,17 @@ export const calculatorRegistry: CalculatorConfig[] = [
         ]
       },
       { name: "annualIncome", label: "Annual income", type: "number", required: true, min: 0 },
-      { name: "taxRate", label: "Estimated tax rate (%)", type: "number", required: true, min: 0, max: 60, step: 0.01 }
+      {
+        name: "taxRate",
+        label: "Estimated effective tax rate (%)",
+        type: "number",
+        required: true,
+        min: 0,
+        max: 60,
+        step: 0.01,
+        helperText:
+          "Enter a manual effective rate. This simplified estimate does not automatically apply official brackets, allowances, credits, payroll deductions, or local taxes."
+      }
     ],
     calculate: (values) => {
       const mode = String(values.countryMode || "UK");

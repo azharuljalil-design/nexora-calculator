@@ -339,28 +339,28 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "vat-calculator": {
     slug: "vat-calculator",
-    metaTitle: "VAT Calculator to Add or Remove VAT",
+    metaTitle: "VAT Calculator Estimate to Add or Remove VAT",
     metaDescription:
-      "Add VAT to a net price or remove VAT from a gross price using common rates or a custom VAT percentage.",
+      "Estimate adding or removing VAT using the rate you select or enter; VAT rates vary by country and product.",
     whatItDoes: [
-      "Calculates the VAT amount, net price, and gross price for a chosen VAT rate.",
+      "Estimates the VAT amount, net price, and gross price for the VAT rate you choose or enter.",
       "Supports both adding VAT to a pre-tax amount and extracting VAT from a VAT-inclusive amount.",
-      "Helps check invoices, quotes, product prices, and cross-border price comparisons."
+      "Helps check invoices, quotes, product prices, and cross-border comparisons without deciding which VAT rate legally applies."
     ],
     howToUse: [
       "Choose the currency you want the answer displayed in.",
       "Enter the amount: use the net amount when adding VAT, or the gross amount when removing VAT.",
-      "Select a preset VAT rate or choose Custom and type the exact percentage.",
+      "Select a preset VAT rate or choose Custom and type the exact percentage you want to estimate.",
       "Pick Add VAT or Remove VAT, then calculate the net, VAT, and gross totals."
     ],
     methodology: [
       "To add VAT, the VAT amount is net amount × (VAT rate ÷ 100), and gross price is net plus VAT.",
       "To remove VAT, net price is gross amount ÷ (1 + VAT rate ÷ 100).",
       "The extracted VAT amount is gross price minus net price.",
-      "Displayed currency formatting does not change the VAT rate or tax rules."
+      "Displayed currency formatting does not change the VAT rate or tax rules; the calculation uses only the selected or entered percentage."
     ],
     example: {
-      scenario: "A UK supplier quotes £480 excluding VAT at 20%.",
+      scenario: "A quote is £480 excluding VAT and you choose a 20% VAT rate.",
       steps: [
         "Net amount = £480",
         "VAT rate = 20% = 0.20",
@@ -371,17 +371,18 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
     },
     mistakesOrLimitations: [
       "Check whether the amount you entered is net or gross before choosing Add VAT or Remove VAT.",
-      "VAT rates and exemptions vary by country, product type, and business status.",
+      "VAT rates, exemptions, reverse-charge rules, and registration requirements vary by country, product or service type, and business status.",
       "Rounding on real invoices may differ when VAT is calculated per line item rather than on the total.",
-      "This tool does not decide whether you should charge VAT or reclaim VAT."
+      "This tool does not decide whether you should charge VAT, reclaim VAT, use a reduced rate, or treat a transaction as exempt or zero-rated."
     ],
     disclaimer:
-      "This VAT calculation is for quick checking only and is not tax advice. Confirm applicable rates and rules with official guidance or an accountant.",
+      "This VAT calculator is an estimate based only on the rate you enter or select. It is not official guidance or tax advice; verify the applicable rate and treatment with the relevant tax authority or a qualified adviser.",
     faqs: [
       { question: "What is the difference between net and gross?", answer: "Net is the price before VAT. Gross is the VAT-inclusive price after VAT has been added." },
       { question: "How do I remove 20% VAT from a price?", answer: "Choose Remove VAT, enter the VAT-inclusive amount, and use a 20% rate. The net amount is calculated by dividing by 1.20." },
-      { question: "Can I enter a reduced VAT rate?", answer: "Yes. Select Custom and enter the exact percentage you need, such as 5 or 12.5." },
-      { question: "Is VAT the same as sales tax?", answer: "No. VAT and sales tax are different tax systems. Use the Sales Tax Calculator for a simple sales-tax style calculation." }
+      { question: "Can I enter a reduced VAT rate?", answer: "Yes. Select Custom and enter the exact percentage you want to estimate, such as 5 or 12.5. Check that the rate applies to your item and location before relying on it." },
+      { question: "Is VAT the same as sales tax?", answer: "No. VAT and sales tax are different tax systems. Use the Sales Tax Calculator for a simple public sales-tax style calculation." },
+      { question: "Does this calculator know my country's VAT rules?", answer: "No. It uses the rate you select or enter and does not validate whether that rate is correct for your country, product, service, or business situation." }
     ]
   },
 
@@ -419,44 +420,44 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "salary-calculator": {
     slug: "salary-calculator",
-    metaTitle: "Salary Calculator for Simple Take-Home Pay Estimates",
+    metaTitle: "Salary Take-Home Estimate Based on Entered Rate",
     metaDescription:
-      "Estimate gross salary deductions and take-home pay using your own effective tax or withholding rate.",
+      "Estimate take-home pay from gross salary using your own effective tax or withholding rate; simplified and not payroll advice.",
     whatItDoes: [
-      "Estimates annual tax or withholding amount from a gross salary and an effective percentage rate you provide.",
+      "Estimates annual deductions from a gross salary using the effective percentage rate you provide.",
       "Shows a simple estimated take-home pay figure in GBP, EUR, or USD depending on the selected region.",
       "Helps compare salary scenarios before using the income tax or hourly wage conversion calculators."
     ],
     howToUse: [
       "Select the region so the result is displayed in the right currency.",
       "Enter the gross annual salary before deductions.",
-      "Enter your estimated effective tax or withholding rate as a percentage, including any deductions you want reflected.",
+      "Enter your estimated effective tax or withholding rate as a percentage, including only the deductions you intentionally want reflected.",
       "Click Calculate and review the estimated tax amount and estimated take-home pay."
     ],
     methodology: [
       "Estimated tax = gross salary × (tax rate ÷ 100).",
       "Estimated take-home pay = gross salary − estimated tax.",
-      "The calculator does not apply tax bands, personal allowances, pension deductions, student loans, benefits, filing status, or local rules automatically."
+      "The calculator does not automatically calculate full UK PAYE, National Insurance, pension, student loan repayments, benefits, allowances, filing status, immigration rules, or local payroll rules."
     ],
     example: {
       scenario: "A UK salary of £45,000 with an estimated effective deduction rate of 22%.",
       steps: [
-        "Estimated tax = 45,000 × (22 ÷ 100) = 9,900",
-        "Estimated take-home pay = 45,000 − 9,900",
+        "Estimated deductions = £45,000 × (22 ÷ 100) = £9,900",
+        "Estimated take-home pay = £45,000 − £9,900 = £35,100",
         "Currency display is GBP because the UK region is selected"
       ],
-      result: "The estimated annual tax is £9,900 and the estimated take-home pay is £35,100."
+      result: "The simplified estimated annual deductions are £9,900 and the estimated annual take-home pay is £35,100, before any payroll rules not included in the entered rate."
     },
     faqs: [
       {
         question: "Does this calculate exact UK take-home pay?",
         answer:
-          "No. It uses the effective rate you enter. It does not automatically apply current UK tax bands, National Insurance, pensions, student loans, or benefits."
+          "No. It uses the effective rate you enter. It does not automatically apply current UK PAYE bands, National Insurance, pensions, student loans, benefits, allowances, salary sacrifice, or local payroll rules."
       },
       {
         question: "What tax rate should I enter?",
         answer:
-          "Use an effective overall rate that matches the deductions you want to estimate. If you are unsure, check official payslip or tax information rather than guessing."
+          "Use an effective overall rate that matches the deductions you want to estimate. If you are unsure, use a payslip, employer payroll estimate, official tax information, or qualified advice rather than guessing."
       },
       {
         question: "Can I compare salary and hourly work?",
@@ -470,12 +471,12 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
       }
     ],
     mistakesOrLimitations: [
-      "Do not treat the selected region as a full tax rules engine; it currently controls currency display only.",
+      "Do not treat the selected region as a payroll or tax rules engine; it currently controls currency display only.",
       "A marginal tax rate is not the same as an effective overall rate, so using the wrong type of rate can overstate or understate deductions.",
-      "Employer benefits, pension contributions, overtime, bonuses, and unpaid leave are not modelled separately."
+      "Employer benefits, pension contributions, overtime, bonuses, unpaid leave, visa or immigration requirements, and payroll timing are not modelled separately."
     ],
     disclaimer:
-      "This calculator is for general planning only and is not financial, tax, employment, payroll, or legal advice."
+      "This calculator is a simplified estimate for general planning only. It is not payroll, tax, immigration, legal, financial, employment, or accounting advice."
   },
 
   "currency-converter": {
@@ -1238,39 +1239,39 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "income-tax-calculator": {
     slug: "income-tax-calculator",
-    metaTitle: "Income Tax Calculator for Simple Effective-Rate Estimates",
+    metaTitle: "Simplified Income Tax Estimate Calculator",
     metaDescription:
-      "Estimate income tax and after-tax income with a simple percentage-rate method for quick planning.",
+      "Estimate income tax and after-tax income with a simplified manual effective-rate method; verify rates with official tax authorities.",
     whatItDoes: [
-      "Estimates tax on annual income using an effective tax rate that you enter.",
+      "Estimates tax on annual income using a manual effective tax rate that you enter.",
       "Shows the estimated tax amount and after-tax income in GBP, EUR, or USD depending on the selected region.",
-      "Provides a quick comparison tool without pretending to be a full tax-return calculator."
+      "Provides a quick comparison tool without pretending to be an official, complete, payroll, or tax-return calculator."
     ],
     howToUse: [
       "Choose UK, Europe, or United States to set the result currency.",
       "Enter annual income before tax.",
-      "Enter the estimated effective tax rate you want to test.",
+      "Enter the manual estimated effective tax rate you want to test, after checking whether it is appropriate for your situation.",
       "Click Calculate and review the estimated tax and after-tax income."
     ],
     methodology: [
       "Estimated tax = annual income × (estimated tax rate ÷ 100).",
       "After-tax income = annual income − estimated tax.",
-      "The calculator uses one effective percentage rate and does not apply changing tax bands, allowances, credits, deductions, local taxes, or filing-status rules."
+      "The calculator uses one effective percentage rate and does not apply official brackets, National Insurance, payroll deductions, pension deductions, allowances, regional differences, credits, deductions, local taxes, or filing-status rules."
     ],
     example: {
-      scenario: "Annual income of £60,000 with an estimated effective tax rate of 25%.",
+      scenario: "Annual income of £60,000 with a manually entered effective tax rate of 25%.",
       steps: [
-        "Estimated tax = 60,000 × (25 ÷ 100) = 15,000",
-        "After-tax income = 60,000 − 15,000",
+        "Estimated tax = £60,000 × (25 ÷ 100) = £15,000",
+        "After-tax income = £60,000 − £15,000 = £45,000",
         "The UK selection displays the result in GBP"
       ],
-      result: "The estimated tax is £15,000 and the estimated after-tax income is £45,000."
+      result: "The simplified estimated tax is £15,000 and the estimated after-tax income is £45,000, before any deductions, credits, payroll items, or regional rules not included in the entered rate."
     },
     faqs: [
       {
         question: "Does this use current tax brackets?",
         answer:
-          "No. It uses the single effective rate you enter and does not automatically look up current tax bands or allowances."
+          "No. It uses the single effective rate you enter and does not automatically look up or apply current tax bands, thresholds, allowances, credits, National Insurance, payroll deductions, or regional rules."
       },
       {
         question: "Is this different from the Salary Calculator?",
@@ -1280,7 +1281,7 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
       {
         question: "Can I include deductions or credits?",
         answer:
-          "Only indirectly. Adjust the effective rate to reflect deductions, credits, or withholdings if you have reliable information."
+          "Only indirectly. Adjust the effective rate to reflect deductions, credits, or withholdings only if you have reliable information, and verify important figures with official tax authorities or a qualified adviser."
       },
       {
         question: "Why is the tax rate capped in the form?",
@@ -1289,12 +1290,12 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
       }
     ],
     mistakesOrLimitations: [
-      "Do not rely on this for filing, payroll, self-assessment, or withholding decisions.",
-      "Tax systems often use bands, allowances, credits, and local rules; this calculator does not model those details.",
+      "Do not rely on this for filing, payroll, self-assessment, withholding, immigration, benefit, or legal decisions.",
+      "Tax systems often use bands, thresholds, allowances, credits, deductions, payroll taxes, National Insurance, and local or regional rules; this calculator does not model those details.",
       "Use an effective overall rate, not a marginal rate, unless you specifically want to model a marginal-rate scenario."
     ],
     disclaimer:
-      "This is a general estimate only and is not financial, tax, accounting, payroll, employment, or legal advice."
+      "This is a simplified manual estimate only and is not official tax guidance or financial, tax, accounting, payroll, employment, immigration, or legal advice. Verify rates, thresholds, and obligations with official tax authorities or a qualified adviser."
   },
 
   "salary-to-hourly-calculator": {
