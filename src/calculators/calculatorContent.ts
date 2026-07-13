@@ -20,62 +20,62 @@ export type CalculatorContent = {
 export const calculatorContentBySlug: Record<string, CalculatorContent> = {
   "percentage-calculator": {
     slug: "percentage-calculator",
-    metaTitle: "Percentage Calculator for Everyday Maths",
+    metaTitle: "Percentage Calculator | Discounts, Rates, Marks & Maths",
     metaDescription:
-      "Calculate percentages of numbers for discounts, tax estimates, markups, comparisons, and quick everyday maths.",
+      "Calculate percentage-based values from your inputs for discounts, increases, comparisons, marks, rates, and everyday maths estimates.",
     whatItDoes: [
-      "Finds the value of a percentage of a number, such as 15% of 200 or 7.5% of an invoice.",
-      "Helps with discounts, sale prices, tax add-ons, tips, grade checks, and simple proportional comparisons.",
-      "Keeps the calculation deliberately simple so the result is easy to verify by hand."
+      "Calculates the value of a percentage of a number based on your inputs, such as 15% of 240 or 7.5% of a bill.",
+      "Helps estimate discounts, increases, comparisons, rates, marks, tips, tax-style add-ons, and other everyday maths checks.",
+      "Works as a general maths tool: it returns the percentage value only, so you decide whether to add, subtract, or compare it."
     ],
     howToUse: [
-      "Enter the base number you want to take a percentage from.",
-      "Enter the percentage value. The form is designed for 0–100% calculations.",
-      "Click Calculate and use the percentage value in your wider calculation, such as subtracting it for a discount or adding it for a tax estimate."
+      "Enter the base number you want to calculate a percentage from.",
+      "Enter the percentage as a percent value, for example enter 18 for 18%, not 0.18.",
+      "Click Calculate and review the estimate based on your inputs before using it in finance, tax, grades, or business decisions."
     ],
     methodology: [
-      "The calculator uses: percentage value = number × (percentage ÷ 100).",
-      "For example, 15% is treated as 0.15 before multiplying by the base number.",
+      "Formula: percentage value = number × (percentage ÷ 100).",
+      "The calculator converts the entered percentage to a decimal first; for example, 18% becomes 0.18.",
       "The displayed result is rounded to 2 decimal places for readability."
     ],
     example: {
-      scenario: "A £80 item has a 25% discount.",
+      scenario: "A $240 service invoice includes an estimated 18% fee.",
       steps: [
-        "Number = 80",
-        "Percentage = 25",
-        "Percentage value = 80 × (25 ÷ 100) = 20"
+        "Number = 240",
+        "Percentage = 18",
+        "Percentage value = 240 × (18 ÷ 100) = 240 × 0.18 = 43.2"
       ],
-      result: "The discount value is £20. The sale price would be £60 if you subtract the discount from the original price."
+      result: "The estimated percentage value is $43.20. If the fee is added to the invoice, the estimated total would be $283.20."
     },
     faqs: [
       {
-        question: "Can I use this as a discount calculator?",
+        question: "What does this percentage calculator calculate?",
         answer:
-          "Yes. Calculate the discount value, then subtract it from the original price. For a dedicated sale-price workflow, use the result as the discount amount."
+          "It calculates a percentage-based value from the number and percentage you enter. It does not automatically decide whether the value should be added, subtracted, or used as a comparison."
+      },
+      {
+        question: "Can I use it for discounts, marks, or rates?",
+        answer:
+          "Yes. It is useful for everyday maths such as sale discounts, grade or mark checks, rate estimates, tips, increases, and simple comparisons, as long as the inputs match your situation."
       },
       {
         question: "Can I enter decimal percentages?",
         answer:
-          "Yes. Values such as 2.5 or 7.5 are accepted, subject to the calculator input range."
+          "Yes. Values such as 2.5 or 7.5 are accepted. Enter the percentage itself, not its decimal equivalent."
       },
       {
-        question: "Is this the same as percentage change?",
+        question: "Is this financial, tax, grade, or business advice?",
         answer:
-          "No. This calculator finds a percentage of one number. Percentage change compares an old value with a new value."
-      },
-      {
-        question: "Why is the result rounded?",
-        answer:
-          "Rounding to 2 decimals makes money-style and everyday results easier to read. Keep the underlying method in mind if you need more precision."
+          "No. It is a general maths calculator based on your inputs. Check your values and confirm important decisions with the appropriate official source or professional."
       }
     ],
     mistakesOrLimitations: [
-      "Do not type 0.15 when you mean 15%; enter 15 because the calculator divides by 100 internally.",
-      "This tool calculates the percentage value only; it does not automatically add or subtract that value from the original number.",
-      "Check whether your real-world task needs percentage change, markup, margin, or compounding instead of a simple percentage of a number."
+      "Enter 15 when you mean 15%; do not enter 0.15 unless you intentionally mean 0.15%.",
+      "The calculator estimates a simple percentage of a number and does not model compounding, percentage change, margin, markup, tax rules, grading policies, or business-specific rules.",
+      "Rounding to 2 decimal places can create small differences compared with unrounded manual calculations."
     ],
     disclaimer:
-      "This is a general maths helper. It does not provide financial, tax, retail, or legal advice."
+      "This percentage calculator is a general maths tool. Results are mathematical estimates based on your inputs and are not financial, tax, grading, business, retail, or legal advice."
   },
 
   "mortgage-calculator": {
@@ -524,35 +524,58 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "unit-converter": {
     slug: "unit-converter",
-    metaTitle: "Unit Converter (Length, Weight, Temperature)",
+    metaTitle: "Unit Converter | Everyday Length, Weight & Temperature",
     metaDescription:
-      "Convert common units across length, weight, and temperature with clean, fast results.",
+      "Convert between supported length, weight, and temperature units using fixed conversion factors for everyday general conversions.",
     whatItDoes: [
-      "Converts between common units in length, weight, and temperature categories.",
-      "Automatically updates unit options based on the selected category."
+      "Converts between the supported units in the selected length, weight, or temperature category.",
+      "Uses fixed conversion factors and direct temperature formulas for everyday/general conversions.",
+      "Helps with quick checks for travel, labels, recipes, packages, fitness notes, school work, and other non-specialist uses."
     ],
     howToUse: [
-      "Enter a value to convert.",
-      "Pick a category (length/weight/temperature).",
-      "Choose From and To units.",
-      "Click Calculate."
+      "Enter the value you want to convert.",
+      "Pick the supported category, then choose the From and To units shown for that category.",
+      "Click Calculate and treat the result as a rounded conversion based on the selected units."
     ],
     methodology: [
-      "Length and weight conversions convert via a base unit (meters or kilograms).",
-      "Temperature uses direct formulas (°C ↔ °F)."
+      "Length conversions use meters as the base unit; weight conversions use kilograms as the base unit.",
+      "Temperature conversions use the standard formulas °F = °C × 9/5 + 32 and °C = (°F − 32) × 5/9.",
+      "Results are formatted to 4 decimal places, so small rounding differences may appear."
     ],
     example: {
       scenario: "Convert 5 miles to kilometers.",
-      steps: ["Category = length", "From = miles", "To = kilometers", "Convert using 1 mi = 1.609344 km"],
-      result: "Converted value ≈ 8.0467 km"
+      steps: [
+        "Category = length",
+        "From = miles; To = kilometers",
+        "1 mile = 1.609344 kilometers",
+        "5 × 1.609344 = 8.04672"
+      ],
+      result: "The converted value is approximately 8.0467 km after display rounding."
     },
     faqs: [
       {
-        question: "Why are some results rounded?",
+        question: "Does this unit converter include every possible unit?",
         answer:
-          "Results are formatted for readability. If you need more precision, increase decimal places in a future version."
+          "No. It only converts the supported units shown in the form. It is intended for everyday/general conversions, not every specialist scientific, engineering, trade, medical, or legal measurement standard."
+      },
+      {
+        question: "Why can my result differ slightly from another source?",
+        answer:
+          "The calculator uses fixed conversion factors and rounds displayed results to 4 decimal places. Other tools may show more decimals or use context-specific standards."
+      },
+      {
+        question: "Can I use negative values?",
+        answer:
+          "Negative values can be meaningful for temperature conversions. For physical lengths or weights, check whether a negative input makes sense for your use case."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "Only the units listed in the selected category are supported.",
+      "Rounding can create small differences compared with more precise or unrounded calculations.",
+      "The tool does not replace specialist scientific, engineering, trade, medical, legal, or standards-body measurement guidance."
+    ],
+    disclaimer:
+      "This converter provides general conversions based on fixed factors and your inputs. It is not professional measurement, engineering, medical, trade, or legal advice."
   },
 
   "bmr-calculator": {
@@ -946,66 +969,114 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "date-calculator": {
     slug: "date-calculator",
-    metaTitle: "Date Calculator (Add or Subtract)",
+    metaTitle: "Date Calculator | Add or Subtract Days, Weeks, Months & Years",
     metaDescription:
-      "Add or subtract days, weeks, months, or years from a start date and see the resulting day of week.",
+      "Calculate a resulting date by adding or subtracting days, weeks, months, or years from a selected start date.",
     whatItDoes: [
-      "Finds the date after adding or subtracting a specified amount of time.",
-      "Shows the resulting date and day of week."
+      "Calculates a resulting date by adding or subtracting the amount and unit you select.",
+      "Shows the resulting date and day of week based on the selected start date and calendar operation.",
+      "Helps with general planning, reminders, study schedules, project timelines, and personal date checks."
     ],
     howToUse: [
-      "Choose a start date.",
-      "Enter an amount and select unit (days/weeks/months/years).",
-      "Choose add or subtract, then click Calculate."
+      "Choose the start date.",
+      "Enter a whole-number amount and choose days, weeks, months, or years.",
+      "Choose Add or Subtract, then click Calculate and verify the result before using it for official deadlines."
     ],
     methodology: [
-      "Uses calendar-aware date math (months/years roll correctly).",
-      "Outputs ISO date format (YYYY-MM-DD) for international clarity."
+      "Days are added or subtracted as calendar days; weeks are converted to 7 calendar days.",
+      "Months and years use the browser's built-in calendar date handling, so end-of-month results can adjust when the target month has fewer days.",
+      "The result is displayed in ISO format (YYYY-MM-DD) with a weekday for clarity."
     ],
     example: {
-      scenario: "Add 6 weeks to 2026-03-17.",
-      steps: ["Start = 2026-03-17", "Unit = weeks, amount = 6", "Add 42 days"],
-      result: "Outputs the resulting date and weekday."
+      scenario: "Add 6 weeks to March 17, 2026.",
+      steps: [
+        "Start date = 2026-03-17",
+        "Amount = 6; Unit = weeks; Operation = add",
+        "6 weeks = 42 calendar days",
+        "2026-03-17 + 42 days = 2026-04-28"
+      ],
+      result: "The resulting date is 2026-04-28, a Tuesday."
     },
     faqs: [
       {
+        question: "Does this calculate business days or public holidays?",
+        answer:
+          "No. It uses calendar days/weeks/months/years and does not exclude weekends or public holidays unless that behavior is explicitly added in the future."
+      },
+      {
         question: "Why does adding months sometimes change the day number?",
         answer:
-          "Some months have fewer days. The browser’s date handling adjusts accordingly."
+          "Some months have fewer days. Browser calendar handling adjusts dates such as month-end values according to its date rules."
+      },
+      {
+        question: "Can I use this for legal, immigration, tax, or employment deadlines?",
+        answer:
+          "Use caution. Official deadlines may depend on jurisdiction, timezone, filing rules, holidays, business days, and inclusive/exclusive counting rules that this calculator does not model."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "The calculator adds or subtracts from one start date; it does not currently measure the difference between two dates.",
+      "It does not model every timezone, daylight-saving, business-day, public-holiday, legal-deadline, or non-Gregorian calendar-system rule.",
+      "End-of-month month/year calculations may differ from rules used by contracts, courts, employers, schools, or agencies."
+    ],
+    disclaimer:
+      "This date calculator is a general calendar maths tool based on your inputs. Confirm legal, immigration, tax, employment, medical, travel, or official deadlines with the relevant authority."
   },
 
   "time-duration-calculator": {
     slug: "time-duration-calculator",
-    metaTitle: "Time Duration Calculator",
+    metaTitle: "Time Duration Calculator | Difference Between Date-Times",
     metaDescription:
-      "Calculate the duration between two date-times in total days, hours, and minutes.",
+      "Calculate a general time duration between entered start and end date-times in total days, hours, and minutes.",
     whatItDoes: [
-      "Computes total minutes, hours, and days between two date-times.",
-      "Validates that the end time is after the start time."
+      "Calculates the duration between an entered start date-time and end date-time.",
+      "Returns total whole days, total whole hours, and total whole minutes based on the entered values.",
+      "Works as a general time maths tool for simple planning, elapsed-time checks, and schedule estimates."
     ],
     howToUse: [
-      "Enter a start date & time.",
-      "Enter an end date & time.",
-      "Click Calculate to see the total duration."
+      "Enter the start date and time.",
+      "Enter the end date and time. The end must be the same as or after the start for a non-negative duration.",
+      "Click Calculate and review the totals before using them for payroll, employment, transport, or legal purposes."
     ],
     methodology: [
-      "Computes the millisecond difference and converts to minutes/hours/days.",
-      "Uses floor values for total units to keep outputs clear."
+      "The calculator converts both entered date-times to browser-interpreted timestamps and subtracts start from end.",
+      "The millisecond difference is converted to total minutes, total hours, and total days.",
+      "Displayed totals are floored to whole units, so leftover minutes or seconds are not shown in the larger-unit totals."
     ],
     example: {
-      scenario: "From 2026-03-17 09:00 to 2026-03-18 12:30.",
-      steps: ["Set start and end", "Calculate difference", "Convert to totals"],
-      result: "Outputs totals in days, hours, and minutes."
+      scenario: "From March 17, 2026 at 09:00 to March 18, 2026 at 12:30.",
+      steps: [
+        "Start = 2026-03-17 09:00",
+        "End = 2026-03-18 12:30",
+        "Elapsed time = 27 hours 30 minutes",
+        "Total minutes = 1,650; total whole hours = 27; total whole days = 1"
+      ],
+      result: "The calculator shows 1 total day, 27 total hours, and 1,650 total minutes."
     },
     faqs: [
       {
-        question: "Does this account for time zones?",
+        question: "Does this handle time zones or daylight saving rules?",
         answer:
-          "It uses your browser’s local date-time interpretation. For most personal use, this is sufficient."
+          "It uses your browser's interpretation of the entered date-times. It is not a specialist timezone, daylight-saving, aviation, or transport scheduling calculator."
+      },
+      {
+        question: "What happens if the start and end time are the same?",
+        answer:
+          "The duration is 0 minutes, 0 hours, and 0 days because no time has elapsed."
+      },
+      {
+        question: "Can I use it for payroll or legal deadlines?",
+        answer:
+          "Use caution. Payroll, employment, transport, and legal rules may require rounding, breaks, overnight-shift handling, timezones, or statutory rules that this calculator does not model."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "The calculator does not accept an end date-time before the start date-time.",
+      "It may not handle every timezone, daylight-saving, overnight shift, payroll, legal, employment, aviation, or transport timing rule.",
+      "Whole-day and whole-hour outputs are floored totals, not a days-hours-minutes breakdown."
+    ],
+    disclaimer:
+      "This time duration calculator is a general time maths tool based on your inputs. It is not payroll, employment, legal, aviation, transport, or official scheduling advice."
   },
 
   "body-fat-calculator": {
@@ -1595,66 +1666,112 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "pounds-kilograms-converter": {
     slug: "pounds-kilograms-converter",
-    metaTitle: "Pounds to Kilograms Converter",
+    metaTitle: "Pounds and Kilograms Converter | lb ↔ kg",
     metaDescription:
-      "Convert between pounds (lb) and kilograms (kg) with accurate conversion factors.",
+      "Convert pounds to kilograms or kilograms to pounds using the standard conversion factor for everyday weight estimates.",
     whatItDoes: [
-      "Converts lb → kg or kg → lb.",
-      "Useful for UK/EU/USA weight references and labels."
+      "Converts pounds (lb) to kilograms (kg) and kilograms to pounds using a standard conversion factor.",
+      "Useful for body weight references, luggage, parcels, fitness tracking, product labels, and everyday measurement conversion.",
+      "Returns a rounded result based on the value and direction you select."
     ],
     howToUse: [
-      "Enter a value.",
-      "Choose conversion direction.",
-      "Click Calculate to get the converted value."
+      "Enter the weight value you want to convert.",
+      "Choose Pounds → Kilograms or Kilograms → Pounds.",
+      "Click Calculate and allow for small rounding differences when comparing with other sources."
     ],
     methodology: [
-      "Uses 1 lb = 0.45359237 kg.",
-      "Applies multiplication or division depending on direction."
+      "Conversion factor: 1 pound = 0.45359237 kilograms.",
+      "For pounds to kilograms, multiply pounds by 0.45359237.",
+      "For kilograms to pounds, divide kilograms by 0.45359237. Results are formatted to 4 decimal places."
     ],
     example: {
-      scenario: "Convert 150 lb to kg.",
-      steps: ["150 × 0.45359237"],
-      result: "≈ 68.0389 kg"
+      scenario: "Convert 150 lb to kilograms.",
+      steps: [
+        "Value = 150",
+        "Direction = Pounds → Kilograms",
+        "150 × 0.45359237 = 68.0388555"
+      ],
+      result: "The converted value is approximately 68.0389 kg after display rounding."
     },
     faqs: [
       {
-        question: "Why do I see many decimals?",
+        question: "What conversion factor does this use?",
         answer:
-          "The converter uses a precise factor and formats up to 4 decimals for clarity."
+          "It uses 1 lb = 0.45359237 kg, then multiplies or divides depending on the selected direction."
+      },
+      {
+        question: "Why does the result have decimals?",
+        answer:
+          "Pounds and kilograms do not convert as whole numbers in most cases. The displayed result is rounded to 4 decimal places for readability."
+      },
+      {
+        question: "Is this medical, shipping, trade, or legal advice?",
+        answer:
+          "No. It is an everyday conversion tool. Confirm critical medical, shipping, trade, legal, or regulated measurements with the relevant professional or official standard."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "Rounding may cause small differences compared with tools that show more decimal places.",
+      "The calculator does not apply airline baggage policies, shipping dimensional-weight rules, trade tolerances, medical interpretation, or legal measurement requirements.",
+      "Check that you selected the correct direction before using the result."
+    ],
+    disclaimer:
+      "This pounds and kilograms converter provides general measurement conversions based on your inputs. It is not medical, shipping, trade, fitness, or legal advice."
   },
 
   "miles-kilometers-converter": {
     slug: "miles-kilometers-converter",
-    metaTitle: "Miles to Kilometers Converter",
+    metaTitle: "Miles and Kilometers Converter | mi ↔ km",
     metaDescription:
-      "Convert between miles (mi) and kilometers (km) using the standard conversion factor.",
+      "Convert miles to kilometres or kilometres to miles using the standard conversion factor for travel, running, driving, and distance planning.",
     whatItDoes: [
-      "Converts mi → km or km → mi.",
-      "Helpful for travel, running, and navigation across regions."
+      "Converts miles (mi) to kilometres/kilometers (km) and kilometers to miles using a standard conversion factor.",
+      "Useful for travel, running, driving, maps, route notes, and everyday distance planning.",
+      "Returns a rounded result based on the value and direction you select."
     ],
     howToUse: [
-      "Enter a value.",
-      "Choose conversion direction.",
-      "Click Calculate to get the converted value."
+      "Enter the distance value you want to convert.",
+      "Choose Miles → Kilometers or Kilometers → Miles.",
+      "Click Calculate and allow for small rounding differences when comparing with maps or other tools."
     ],
     methodology: [
-      "Uses 1 mile = 1.609344 kilometers.",
-      "Applies multiplication or division depending on direction."
+      "Conversion factor: 1 mile = 1.609344 kilometers.",
+      "For miles to kilometers, multiply miles by 1.609344.",
+      "For kilometers to miles, divide kilometers by 1.609344. Results are formatted to 4 decimal places."
     ],
     example: {
-      scenario: "Convert 10 km to miles.",
-      steps: ["10 ÷ 1.609344"],
-      result: "≈ 6.2137 miles"
+      scenario: "Convert 10 kilometers to miles.",
+      steps: [
+        "Value = 10",
+        "Direction = Kilometers → Miles",
+        "10 ÷ 1.609344 = 6.2137119"
+      ],
+      result: "The converted value is approximately 6.2137 miles after display rounding."
     },
     faqs: [
       {
         question: "Is this the same as nautical miles?",
         answer:
-          "No. This converter uses statute miles. Nautical miles use a different factor."
+          "No. This converter uses statute miles. Nautical miles use a different conversion factor."
+      },
+      {
+        question: "Why can a map or race app show a slightly different distance?",
+        answer:
+          "This tool only converts the number you enter. Apps may calculate routes, GPS traces, elevation, map matching, or extra decimals differently."
+      },
+      {
+        question: "Can I use this for official navigation or engineering work?",
+        answer:
+          "Use caution. It should not replace official navigation, transport, legal, aviation, surveying, or engineering measurements."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "Rounding may cause small differences compared with tools that show more decimal places.",
+      "The calculator does not validate routes, map distances, speed limits, legal distances, aviation distances, or engineering tolerances.",
+      "Check that you selected the correct direction before using the result."
+    ],
+    disclaimer:
+      "This miles and kilometers converter provides general distance conversions based on your inputs. It is not official navigation, transport, legal, aviation, surveying, or engineering advice."
   }
 };
 
