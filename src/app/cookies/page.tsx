@@ -43,10 +43,10 @@ Cookie Policy </h1>
       <p className="mt-4">
         For questions about cookies or privacy, contact{" "}
         <a
-          href="mailto:info@acropolisdiary.com"
+          href="mailto:info@nexoracalculator.com"
           className="font-medium text-indigo-600 underline hover:text-indigo-800"
         >
-          info@acropolisdiary.com
+          info@nexoracalculator.com
         </a>
         .
       </p>
@@ -329,10 +329,10 @@ Cookie Policy </h1>
         <p className="mt-2">
           Email:{" "}
           <a
-            href="mailto:info@acropolisdiary.com"
+            href="mailto:info@nexoracalculator.com"
             className="font-medium text-indigo-600 underline hover:text-indigo-800"
           >
-            info@acropolisdiary.com
+            info@nexoracalculator.com
           </a>
         </p>
 

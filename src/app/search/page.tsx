@@ -4,12 +4,18 @@ import { createPageMetadata } from "@/lib/seo";
 import { SearchResultsClient } from "@/components/search/SearchResultsClient";
 import { Suspense } from "react";
 
-export const metadata: Metadata = createPageMetadata({
-  title: "Search",
-  path: "/search",
-  description:
-    "Search across financial, health, math, date, conversion, and daily life calculators on NexoraCalculator."
-});
+export const metadata: Metadata = {
+  ...createPageMetadata({
+    title: "Search",
+    path: "/search",
+    description:
+      "Search across financial, health, math, date, conversion, and daily life calculators on NexoraCalculator."
+  }),
+  robots: {
+    index: false,
+    follow: true
+  }
+};
 
 export default function SearchPage() {
   return (

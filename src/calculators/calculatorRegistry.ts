@@ -689,21 +689,6 @@ export const calculatorRegistry: CalculatorConfig[] = [
         helperText: "US sales tax is typically calculated in USD."
       },
       {
-        name: "state",
-        label: "State (optional)",
-        type: "select",
-        required: false,
-        defaultValue: "",
-        options: [
-          { value: "", label: "Not selected" },
-          { value: "CA", label: "California (placeholder)" },
-          { value: "NY", label: "New York (placeholder)" },
-          { value: "TX", label: "Texas (placeholder)" }
-        ],
-        helperText:
-          "This is a placeholder for future state-based rates. Enter your tax rate manually below."
-      },
-      {
         name: "amount",
         label: "Amount",
         type: "number",
@@ -719,7 +704,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
         max: 20,
         step: 0.01,
         helperText:
-          "Enter your combined sales tax rate (state + local), e.g. 8.25."
+          "Enter your combined state/local sales tax rate manually, e.g. 8.25."
       }
     ],
     calculate: (values) => {
@@ -919,7 +904,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     resultLabels: {
       convertedValue: "Converted value"
     },
-    relatedSlugs: ["currency-converter"]
+    relatedSlugs: []
   },
   {
     name: "BMR Calculator",
@@ -1156,7 +1141,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
       totalBill: "Total bill",
       amountPerPerson: "Amount per person"
     },
-    relatedSlugs: ["vat-calculator", "currency-converter"]
+    relatedSlugs: ["vat-calculator", "sales-tax-calculator"]
   },
   {
     name: "Savings Calculator",
@@ -2238,8 +2223,7 @@ const relatedGroups: string[][] = [
     "vat-calculator",
     "sales-tax-calculator",
     "tip-calculator",
-    "percentage-calculator",
-    "currency-converter"
+    "percentage-calculator"
   ],
   // Body composition and weight-related health estimates.
   [
@@ -2279,8 +2263,7 @@ const relatedGroups: string[][] = [
   [
     "unit-converter",
     "pounds-kilograms-converter",
-    "miles-kilometers-converter",
-    "currency-converter"
+    "miles-kilometers-converter"
   ]
 ];
 

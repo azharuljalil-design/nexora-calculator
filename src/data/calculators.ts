@@ -9,7 +9,7 @@ export type CalculatorSummary = {
   createdAt: string;
 };
 
-// Placeholder data for popular and latest calculators.
+// Public calculator summary data used for discovery.
 // Individual calculator implementations live under app/calculators/[slug].
 export const calculatorSummaries: CalculatorSummary[] = [
   {
@@ -100,14 +100,7 @@ export const calculatorSummaries: CalculatorSummary[] = [
     popularityScore: 89,
     createdAt: "2026-03-16"
   },
-  {
-    slug: "currency-converter",
-    name: "Currency Converter",
-    categoryId: "conversion",
-    shortDescription: "Convert between GBP, EUR, and USD using mock rates.",
-    popularityScore: 91,
-    createdAt: "2026-03-16"
-  },
+
   {
     slug: "unit-converter",
     name: "Unit Converter",
@@ -196,14 +189,7 @@ export const calculatorSummaries: CalculatorSummary[] = [
     popularityScore: 87,
     createdAt: "2026-03-17"
   },
-  {
-    slug: "tip-split",
-    name: "Tip & Bill Splitter",
-    categoryId: "daily-life",
-    shortDescription: "Split bills fairly with tip and multiple people.",
-    popularityScore: 92,
-    createdAt: "2024-05-01"
-  },
+
   {
     slug: "tip-calculator",
     name: "Tip Calculator",

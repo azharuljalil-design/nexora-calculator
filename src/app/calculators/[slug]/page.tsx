@@ -21,11 +21,23 @@ export function generateMetadata({
     return createPageMetadata({ title: "Calculator not found" });
   }
 
-  return createPageMetadata({
+  const metadata = createPageMetadata({
     title: content?.metaTitle ?? calculator.name,
     path: `/calculators/${calculator.slug}`,
     description: content?.metaDescription ?? calculator.description
   });
+
+  if (calculator.slug === "currency-converter") {
+    return {
+      ...metadata,
+      robots: {
+        index: false,
+        follow: true
+      }
+    };
+  }
+
+  return metadata;
 }
 
 export default function CalculatorEnginePage({
