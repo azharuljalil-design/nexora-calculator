@@ -905,66 +905,114 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "gpa-calculator": {
     slug: "gpa-calculator",
-    metaTitle: "GPA Calculator (Credits & Grades)",
+    metaTitle: "GPA Calculator Estimate | Credits & 4.0 Letter Grades",
     metaDescription:
-      "Calculate GPA using course credits and letter grades on a simple 4.0 scale.",
+      "Estimate GPA from course credits and letter grades on the calculator's simple 4.0 scale. General academic planning tool, not an official transcript calculation.",
     whatItDoes: [
-      "Computes a weighted GPA using course credits.",
-      "Also totals your entered credits."
+      "Estimates a credit-weighted GPA based on the course credits and letter grades you enter.",
+      "Uses the calculator's built-in simple 4.0 letter-grade point scale and totals the credits included in your inputs.",
+      "Works as a general academic planning tool for rough checks, not as an official transcript, registrar, school, college, or university GPA calculation."
     ],
     howToUse: [
-      "Choose the number of courses.",
-      "Enter credits and select a grade for each course.",
-      "Click Calculate to see GPA and total credits."
+      "Choose the number of courses you want to include, up to the fields shown by the calculator.",
+      "Enter the credit value or weight for each course and select the matching letter grade from the available 4.0-scale options.",
+      "Click Calculate and treat the result as an estimate based on your inputs; verify official GPA rules with your school or institution."
     ],
     methodology: [
-      "Maps letter grades to points (e.g., A=4.0, B=3.0).",
-      "GPA = sum(credits × points) ÷ total credits."
+      "The implemented grade-point scale is A=4.0, A-=3.7, B+=3.3, B=3.0, B-=2.7, C+=2.3, C=2.0, C-=1.7, D=1.0, and F=0.0.",
+      "For each course, quality points = course credits × selected grade points.",
+      "Estimated GPA = total quality points ÷ total entered credits, rounded to 2 decimal places; total credits are rounded to 1 decimal place.",
+      "If no credits are entered, the calculator returns 0 rather than an official academic status."
     ],
     example: {
-      scenario: "Two courses: 3 credits (A) and 4 credits (B+).",
-      steps: ["Quality points = 3×4.0 + 4×3.3", "Divide by total credits (7)"],
-      result: "Outputs GPA and total credits."
+      scenario: "Three courses: 3 credits with A, 4 credits with B+, and 2 credits with C.",
+      steps: [
+        "Course quality points = 3×4.0 = 12.0, 4×3.3 = 13.2, and 2×2.0 = 4.0",
+        "Total quality points = 12.0 + 13.2 + 4.0 = 29.2",
+        "Total credits = 3 + 4 + 2 = 9",
+        "Estimated GPA = 29.2 ÷ 9 = 3.244..., rounded to 3.24"
+      ],
+      result: "The calculator would show an estimated GPA of 3.24 and total credits of 9.0."
     },
     faqs: [
       {
-        question: "Is this the same as my school’s GPA?",
+        question: "Is this the same as my official GPA?",
         answer:
-          "It’s a simple 4.0 scale. Some institutions use different scales or weighting rules."
+          "No. It is an estimate based on your inputs and the calculator's simple 4.0 scale. Official GPA calculations can depend on your institution's grading scale, transcript rules, repeated-course policy, pass/fail treatment, honours/AP weighting, and other rules."
+      },
+      {
+        question: "Can I use weighted, honours, or AP grades?",
+        answer:
+          "Only if you can represent your institution's weighting using the available letter-grade options and credit values. The calculator does not add separate honours, AP, plus/minus policies beyond the listed point scale, or school-specific weighting rules."
+      },
+      {
+        question: "Why does my school show a different GPA?",
+        answer:
+          "Schools, colleges, universities, and countries may use different grade points, rounding, credit weighting, repeated-course handling, exclusions, pass/fail rules, and transcript policies. Check your official academic record for the final value."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "The result depends entirely on the credits and letter grades you enter.",
+      "It uses the built-in simple 4.0 scale only and does not model every school, college, university, country, grading scale, weighting method, pass/fail rule, repeated-course policy, honours/AP weighting, or institutional policy.",
+      "Rounding to 2 decimal places can differ from official transcript rounding."
+    ],
+    disclaimer:
+      "This GPA calculator is a general academic planning tool that estimates GPA based on your inputs. It is not an official transcript calculation. Verify official GPA, academic standing, progression, scholarships, or admissions requirements with your school or institution."
   },
 
   "grade-calculator": {
     slug: "grade-calculator",
-    metaTitle: "Grade Calculator (Required Final Exam Score)",
+    metaTitle: "Grade Calculator Estimate | Required Final Exam Score",
     metaDescription:
-      "Calculate the final exam grade needed to reach a desired overall grade based on weights.",
+      "Estimate the final exam score needed to reach a target course grade based on current grade and weights. General planning tool, not an official grade record.",
     whatItDoes: [
-      "Estimates the required final exam score to reach a target overall grade.",
-      "Helps planning when a final exam has a known weight."
+      "Estimates the final exam percentage needed to reach your desired overall course grade based on the values you enter.",
+      "Uses a weighted-average equation with your current grade, completed weight, desired final grade, and final exam weight.",
+      "Helps with academic planning, but it is not an official gradebook, transcript, or institution record."
     ],
     howToUse: [
-      "Enter current grade and completed weight.",
-      "Enter desired final grade and final exam weight.",
-      "Click Calculate to see the required final exam grade."
+      "Enter your current grade as a percentage for the completed work represented by the completed weight.",
+      "Enter the completed weight and final exam weight as percentages, such as 70 and 30, not 0.70 and 0.30.",
+      "Enter your desired final grade, click Calculate, and check the estimate against your course or institution's grading policy."
     ],
     methodology: [
-      "Solves for the final exam score using a weighted-average equation.",
-      "Required = (desired − current×completedWeight) ÷ finalExamWeight (weights as fractions)."
+      "The calculator solves: desired overall grade = current grade × completed weight + required final exam grade × final exam weight, with weights converted from percentages to decimals.",
+      "Required final exam grade = (desired − current × (completed weight ÷ 100)) ÷ (final exam weight ÷ 100).",
+      "The result is rounded to 2 decimal places and may be below 0 or above 100 if the target is already secured or may be unreachable under the entered weights."
     ],
     example: {
-      scenario: "Current 82%, completed weight 70%, desired 85%, final weight 30%.",
-      steps: ["Compute completed contribution", "Solve for required final score"],
-      result: "Outputs the required final exam grade (%)."
+      scenario: "Current grade 82%, completed weight 70%, desired final grade 85%, final exam weight 30%.",
+      steps: [
+        "Completed contribution = 82 × (70 ÷ 100) = 82 × 0.70 = 57.4",
+        "Points still needed toward the overall grade = 85 − 57.4 = 27.6",
+        "Required final exam grade = 27.6 ÷ 0.30 = 92.0"
+      ],
+      result: "The calculator would estimate that you need 92.00% on the final exam to reach an 85% overall grade, before any course-specific rounding, curve, or extra-credit rules."
     },
     faqs: [
       {
         question: "What if the required score is over 100%?",
         answer:
-          "That means the target may be unreachable given the current grade and weights."
+          "That usually means the target may be unreachable under the entered current grade and weights unless your course allows extra credit, curves, resits, dropped assignments, or other adjustments."
+      },
+      {
+        question: "What if the required score is negative?",
+        answer:
+          "A negative result can mean your target is already mathematically met under the entered assumptions. Your official grade can still depend on attendance, minimum exam scores, pass/fail rules, or other policies."
+      },
+      {
+        question: "Will this match my teacher's gradebook?",
+        answer:
+          "Not necessarily. Grading policies vary by institution, course, teacher, category weighting, rounding rules, missing assignments, curves, extra credit, resits, and pass/fail requirements. Check with your course or institution."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "The estimate assumes the entered current grade and completed weight accurately represent all completed work.",
+      "It does not model every grading category, curve, extra-credit policy, missing-assignment rule, resit option, attendance requirement, minimum exam threshold, or institution-specific rounding rule.",
+      "If completed weight and final exam weight do not describe the grading scheme you intend, the result will be misleading."
+    ],
+    disclaimer:
+      "This grade calculator is a general academic planning tool based on your inputs. It is not an official grade record, transcript, or guarantee. Check important grade decisions with your course, teacher, school, college, or institution."
   },
 
   "date-calculator": {
@@ -1331,99 +1379,176 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "scientific-calculator": {
     slug: "scientific-calculator",
-    metaTitle: "Scientific Calculator (Online)",
+    metaTitle: "Scientific Calculator Online | General Maths Tool",
     metaDescription:
-      "Evaluate math expressions with trig, logs, square root, powers, parentheses, and π—right in your browser.",
+      "Evaluate general maths expressions with arithmetic, powers, parentheses, trig, logs, square root, and pi. Not for safety-critical professional use.",
     whatItDoes: [
-      "Evaluates a typed expression and returns the numerical result.",
-      "Supports common scientific functions and operator precedence."
+      "Evaluates a typed mathematical expression and returns a numerical result based on the calculator's supported syntax.",
+      "Supports arithmetic operators, parentheses, powers, square root, sine, cosine, tangent, base-10 logarithm, natural logarithm, and pi.",
+      "Works as a general-purpose maths calculator, not a specialist engineering, laboratory, legal, medical, financial, or safety-critical tool."
     ],
     howToUse: [
-      "Type an expression (or use the keypad buttons).",
-      "Use parentheses to control order of operations.",
-      "Click Calculate to see the result."
+      "Type an expression such as (2+3)*4, sqrt(81), sin(pi/2), log(100), ln(2), or 2^3.",
+      "Use parentheses to make the intended order of operations clear, especially in longer expressions.",
+      "Click Calculate and independently verify results before using them for professional, safety-critical, financial, medical, engineering, lab, or legal work."
     ],
     methodology: [
-      "Parses the expression into tokens and evaluates it safely (no JavaScript eval).",
-      "Supports sin/cos/tan, sqrt, log10, natural log, powers, and π."
+      "The expression is tokenized and evaluated with the app's parser rather than JavaScript eval.",
+      "Operator precedence is applied as powers first, then multiplication/division, then addition/subtraction; parentheses override that order.",
+      "Functions supported by the current implementation are sin, cos, tan, sqrt, log for base-10 logarithm, ln for natural logarithm, and pi as a constant.",
+      "Trigonometric functions use radians, results are rounded to 10 decimal places for display, and browser number precision can affect very large, tiny, or sensitive calculations."
     ],
     example: {
-      scenario: "Evaluate (2+3)*4 + pi^2",
-      steps: ["Enter expression", "Calculate"],
-      result: "Outputs a numeric result."
+      scenario: "Evaluate sqrt(81) + sin(pi/2) + 2^3.",
+      steps: [
+        "sqrt(81) = 9",
+        "sin(pi/2) = 1 because trig functions use radians",
+        "2^3 = 8",
+        "Total = 9 + 1 + 8 = 18"
+      ],
+      result: "The calculator would return 18, subject to display rounding and supported syntax."
     },
     faqs: [
       {
         question: "Are trig functions in degrees or radians?",
         answer:
-          "They use radians (standard for most programming math libraries)."
+          "They use radians. For example, sin(pi/2) returns about 1. Degree conversion is not a separate mode in the current implementation."
+      },
+      {
+        question: "What syntax is supported?",
+        answer:
+          "Use +, -, *, /, ^, parentheses, sqrt(), sin(), cos(), tan(), log(), ln(), and pi. Unsupported symbols, unknown functions, mismatched parentheses, or non-finite results return an invalid-expression style message."
+      },
+      {
+        question: "Can I use this for professional or safety-critical calculations?",
+        answer:
+          "Use caution. It is intended for general maths and education. Rounding, input syntax, operator precedence, and browser floating-point precision can affect results, so specialist work should be checked with appropriate professional tools."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "It does not provide specialist engineering units, uncertainty analysis, significant-figure controls, symbolic algebra, matrices, complex numbers, financial functions, medical dosing logic, or legal/regulatory validation.",
+      "Division by zero, invalid square roots/logarithms, malformed input, and non-finite results are rejected as invalid expressions.",
+      "Rounding to 10 decimal places and JavaScript/browser number precision can create small differences from exact or high-precision calculations."
+    ],
+    disclaimer:
+      "This scientific calculator is a general-purpose educational maths tool based on your input expression. Do not rely on it as the only check for engineering, laboratory, legal, medical, financial, construction, or other safety-critical decisions."
   },
 
   "fraction-calculator": {
     slug: "fraction-calculator",
-    metaTitle: "Fraction Calculator",
+    metaTitle: "Fraction Calculator | Add, Subtract, Multiply & Divide",
     metaDescription:
-      "Calculate with fractions (add/subtract/multiply/divide) and get simplified and decimal results.",
+      "Calculate fraction operations and see raw, simplified, and decimal results. Useful for homework, recipes, proportions, and everyday fraction checks.",
     whatItDoes: [
-      "Performs arithmetic on two fractions.",
-      "Outputs the raw result, simplified fraction, and decimal equivalent."
+      "Performs addition, subtraction, multiplication, or division on two fractions entered in a/b form.",
+      "Shows the raw calculated fraction, a simplified fraction, and a rounded decimal equivalent based on the current implementation.",
+      "Can help with maths homework checks, recipes, proportions, scaling, and everyday fraction work when inputs are entered carefully."
     ],
     howToUse: [
-      "Enter Fraction 1 in the form a/b.",
-      "Choose an operator (+, −, ×, ÷).",
-      "Enter Fraction 2 and click Calculate."
+      "Enter each fraction in numerator/denominator form, such as 3/4 or -5/8. Whole numbers can be entered as 5/1.",
+      "Choose add, subtract, multiply, or divide, then click Calculate.",
+      "Check signs, denominators, operation choice, simplification, and any rounded decimal result before relying on the answer."
     ],
     methodology: [
-      "Uses common fraction arithmetic (common denominators or multiply/divide).",
-      "Simplifies the result by dividing numerator and denominator by their GCD."
+      "For addition and subtraction, the calculator cross-multiplies to form a common denominator: a/b ± c/d = (a×d ± c×b)/(b×d).",
+      "For multiplication, it multiplies numerators and denominators: a/b × c/d = (a×c)/(b×d).",
+      "For division, it multiplies by the reciprocal: a/b ÷ c/d = (a×d)/(b×c), and rejects division by a zero numerator in the second fraction because that creates a zero denominator.",
+      "It simplifies the result by dividing the numerator and denominator by their greatest common divisor, normalizes a negative denominator to the numerator, and rounds the decimal equivalent to 6 decimal places."
     ],
     example: {
-      scenario: "3/4 + 1/6",
-      steps: ["Compute common denominator 24", "Convert: 18/24 + 4/24", "Simplify"],
-      result: "Simplified result = 11/12 (≈ 0.916667)"
+      scenario: "Add 3/4 and 1/6.",
+      steps: [
+        "Use common denominator 4×6 = 24",
+        "Cross-multiply the numerator: 3×6 + 1×4 = 18 + 4 = 22",
+        "Raw result = 22/24",
+        "Simplify by gcd(22, 24) = 2, so 22/24 = 11/12",
+        "Decimal equivalent = 11 ÷ 12 = 0.916666..., rounded to 0.916667"
+      ],
+      result: "The calculator would show raw result 22/24, simplified fraction 11/12, and decimal 0.916667."
     },
     faqs: [
       {
         question: "What input format is supported?",
         answer:
-          "Use a/b (e.g. 5/8). Whole numbers can be written as 5/1."
+          "Use a/b with a non-zero denominator, such as 5/8 or -3/10. Mixed numbers are not parsed directly; convert them first, such as 1 1/2 to 3/2."
+      },
+      {
+        question: "What happens if I divide by zero?",
+        answer:
+          "A fraction with denominator 0 is invalid. Dividing by 0/anything is also invalid because the reciprocal would create a zero denominator."
+      },
+      {
+        question: "Can I use this as my only check for exams or professional calculations?",
+        answer:
+          "No. It is a helpful arithmetic aid, but you should independently check exam work and use appropriate professional methods for engineering, medical dosing, construction, legal, or financial calculations."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "The calculator expects two fractions in a/b format and does not directly parse mixed-number notation such as 1 1/2.",
+      "Decimals are rounded to 6 decimal places, so repeating decimals are approximate.",
+      "Incorrect signs, swapped numerators and denominators, or a zero denominator will produce incorrect or invalid results."
+    ],
+    disclaimer:
+      "This fraction calculator is a general maths helper based on your inputs. Do not use it as the only check for exams, engineering, medical dosing, construction, legal, financial, or other high-stakes calculations."
   },
 
   "standard-deviation-calculator": {
     slug: "standard-deviation-calculator",
-    metaTitle: "Standard Deviation Calculator (Sample or Population)",
+    metaTitle: "Standard Deviation Calculator | Sample or Population",
     metaDescription:
-      "Calculate mean, variance, and standard deviation from a list of numbers in sample or population mode.",
+      "Calculate mean, variance, and standard deviation from entered numbers in sample or population mode, with plain-language methodology and limitations.",
     whatItDoes: [
-      "Computes mean, variance, and standard deviation for your dataset.",
-      "Supports sample vs population calculations."
+      "Calculates the mean, variance, and standard deviation for the numbers you enter.",
+      "Supports both sample standard deviation and population standard deviation; the current default mode is Sample.",
+      "Helps with educational and statistical checks, but it is not professional statistical, scientific, medical, financial, or legal advice."
     ],
     howToUse: [
-      "Paste numbers separated by commas or spaces.",
-      "Choose Sample or Population mode.",
-      "Click Calculate."
+      "Enter numeric values separated by commas or spaces, such as 2, 4, 4, 4, 5, 5, 7, 9.",
+      "Choose Sample when your data is a subset used to estimate a larger population, or Population when the list is the entire group you want to describe.",
+      "Click Calculate and review the data for entry errors, outliers, and whether standard deviation is appropriate for your context."
     ],
     methodology: [
-      "Mean = average of values.",
-      "Variance = average squared deviation (divide by n for population, n−1 for sample).",
-      "Standard deviation = sqrt(variance)."
+      "Standard deviation describes typical spread: a smaller value means numbers are closer to the mean, while a larger value means they are more spread out.",
+      "Mean = sum of values ÷ number of values.",
+      "Population variance = sum of squared deviations from the mean ÷ n; population standard deviation = square root of that variance.",
+      "Sample variance = sum of squared deviations from the mean ÷ (n−1); sample standard deviation = square root of that variance. In this implementation, a one-value sample uses a denominator of 1 to avoid division by zero, so the displayed spread is 0.",
+      "Displayed mean, variance, and standard deviation are rounded to 6 decimal places."
     ],
     example: {
-      scenario: "Numbers: 2, 4, 4, 4, 5, 5, 7, 9 (population).",
-      steps: ["Compute mean", "Compute squared deviations", "Divide by n", "Square root"],
-      result: "Outputs mean, variance, and standard deviation."
+      scenario: "Numbers: 2, 4, 4, 4, 5, 5, 7, 9 in population mode.",
+      steps: [
+        "Mean = (2+4+4+4+5+5+7+9) ÷ 8 = 40 ÷ 8 = 5",
+        "Squared deviations from 5 are 9, 1, 1, 1, 0, 0, 4, and 16",
+        "Sum of squared deviations = 32",
+        "Population variance = 32 ÷ 8 = 4",
+        "Population standard deviation = sqrt(4) = 2"
+      ],
+      result: "In population mode, the calculator would show mean 5, variance 4, and standard deviation 2. In sample mode for the same data, variance would be 32 ÷ 7 = 4.571429 and standard deviation about 2.13809."
     },
     faqs: [
       {
-        question: "Which mode should I use?",
+        question: "Does this use sample or population standard deviation?",
         answer:
-          "Use population if you have the entire dataset. Use sample if your data is a sample of a larger population."
+          "It supports both. Select Sample to divide squared deviations by n−1, or Population to divide by n. The default selection is Sample."
+      },
+      {
+        question: "What does standard deviation mean in plain language?",
+        answer:
+          "It is a measure of how spread out the numbers are around the mean. It does not by itself prove that data is normal, fair, accurate, or meaningful."
+      },
+      {
+        question: "Can outliers or small samples affect the result?",
+        answer:
+          "Yes. Small datasets, outliers, skewed or non-normal distributions, and data-entry errors can strongly affect standard deviation and how it should be interpreted."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "The result depends on the numbers entered; invalid non-numeric entries are ignored after splitting by spaces or commas.",
+      "Small samples, one-value samples, outliers, skewed data, non-normal distributions, and measurement errors can make interpretation difficult.",
+      "Standard deviation is only one summary statistic and may be inappropriate without context, charts, domain knowledge, or formal statistical analysis."
+    ],
+    disclaimer:
+      "This standard deviation calculator is an educational/statistical helper based on your entered numbers. It is not professional statistical, scientific, medical, financial, legal, or research advice."
   },
 
   "amortization-calculator": {
