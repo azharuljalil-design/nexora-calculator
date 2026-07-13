@@ -43,10 +43,10 @@ export default function PrivacyPolicyPage() {
             For questions about this policy or the use of your personal
             information, contact us at{" "}
             <a
-              href="mailto:info@acropolisdiary.com"
+              href="mailto:info@nexoracalculator.com"
               className="font-medium text-indigo-600 underline hover:text-indigo-800"
             >
-              info@acropolisdiary.com
+              info@nexoracalculator.com
             </a>
             .
           </p>
@@ -411,10 +411,10 @@ export default function PrivacyPolicyPage() {
           <p className="mt-4">
             To exercise a right, email{" "}
             <a
-              href="mailto:info@acropolisdiary.com"
+              href="mailto:info@nexoracalculator.com"
               className="font-medium text-indigo-600 underline hover:text-indigo-800"
             >
-              info@acropolisdiary.com
+              info@nexoracalculator.com
             </a>
             . We may need to confirm your identity before completing a
             request.
@@ -482,10 +482,10 @@ export default function PrivacyPolicyPage() {
             <p className="mt-2">
               Email:{" "}
               <a
-                href="mailto:info@acropolisdiary.com"
+                href="mailto:info@nexoracalculator.com"
                 className="font-medium text-indigo-600 underline hover:text-indigo-800"
               >
-                info@acropolisdiary.com
+                info@nexoracalculator.com
               </a>
             </p>
 

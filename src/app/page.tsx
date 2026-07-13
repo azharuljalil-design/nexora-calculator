@@ -101,7 +101,6 @@ export default function HomePage() {
             { label: "VAT Calculator", slug: "vat-calculator" },
             { label: "Sales Tax Calculator", slug: "sales-tax-calculator" },
             { label: "Salary Calculator", slug: "salary-calculator" },
-            { label: "Currency Converter", slug: "currency-converter" },
             { label: "Unit Converter", slug: "unit-converter" },
             { label: "BMI Calculator", slug: "bmi-calculator" },
             { label: "Age Calculator", slug: "age-calculator" },

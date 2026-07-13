@@ -35,10 +35,10 @@ export default function ContactPage() {
 
           <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-6">
             <a
-              href="mailto:info@acropolisdiary.com"
+              href="mailto:info@nexoracalculator.com"
               className="text-lg font-semibold text-indigo-600 underline hover:text-indigo-800"
             >
-              info@acropolisdiary.com
+              info@nexoracalculator.com
             </a>
           </div>
         </section>

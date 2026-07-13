@@ -396,8 +396,7 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
     ],
     howToUse: [
       "Enter the purchase amount.",
-      "Enter your combined sales tax rate (state + local).",
-      "Optionally choose a state (placeholder for future auto-rates).",
+      "Enter your combined state/local sales tax rate manually.",
       "Click Calculate."
     ],
     methodology: [
@@ -411,9 +410,9 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
     },
     faqs: [
       {
-        question: "Why doesn’t the state auto-fill the rate?",
+        question: "What tax rate should I enter?",
         answer:
-          "Rates vary by city/county. This version uses manual entry, but the structure supports state-based rates later."
+          "Enter the combined state and local sales tax rate that applies to your purchase location."
       }
     ]
   },

@@ -1,6 +1,8 @@
 import { calculatorRegistry } from "@/calculators/calculatorRegistry";
 import { calculatorCategories, type CalculatorCategoryId } from "@/data/categories";
 
+export const discoveryExcludedCalculatorSlugs = new Set(["currency-converter"]);
+
 export type CalculatorCard = {
   slug: string;
   name: string;
@@ -17,6 +19,8 @@ export function getAllCalculatorCards(): CalculatorCard[] {
   const cards: CalculatorCard[] = [];
 
   for (const calc of calculatorRegistry) {
+    if (discoveryExcludedCalculatorSlugs.has(calc.slug)) continue;
+
     const category = getCategoryByName(calc.category);
     if (!category) continue;
     cards.push({
