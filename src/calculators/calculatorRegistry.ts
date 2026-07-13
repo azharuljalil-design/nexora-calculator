@@ -1272,7 +1272,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "retirement-calculator",
     category: "Financial Calculators",
     description:
-      "Estimate how your retirement savings could grow based on contributions and expected returns.",
+      "Estimate a simplified retirement savings projection based on your inputs for contributions and expected returns.",
     inputs: [
       {
         name: "currency",
@@ -1288,9 +1288,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
       },
       { name: "currentAge", label: "Current age", type: "number", required: true, min: 16, max: 80 },
       { name: "retirementAge", label: "Retirement age", type: "number", required: true, min: 40, max: 90 },
-      { name: "currentSavings", label: "Current savings", type: "number", required: true, min: 0 },
-      { name: "monthlyContribution", label: "Monthly contribution", type: "number", required: true, min: 0 },
-      { name: "expectedAnnualReturn", label: "Expected annual return (%)", type: "number", required: true, min: 0, max: 50, step: 0.01 }
+      { name: "currentSavings", label: "Current savings", type: "number", required: true, min: 0, helperText: "Starting balance for this simplified projection; include only savings you want modeled." },
+      { name: "monthlyContribution", label: "Monthly contribution", type: "number", required: true, min: 0, helperText: "Amount assumed to be added every month until retirement." },
+      { name: "expectedAnnualReturn", label: "Expected annual return (%)", type: "number", required: true, min: 0, max: 50, step: 0.01, helperText: "Assumption only; future returns are not guaranteed and fees, taxes, inflation, and withdrawals are not modeled." }
     ],
     calculate: (values) => {
       const currency = (values.currency as CurrencyCode) || "GBP";
@@ -1556,7 +1556,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "body-fat-calculator",
     category: "Health Calculators",
     description:
-      "Estimate body fat percentage using the US Navy method (measurements in cm).",
+      "Estimate body fat percentage from tape measurements using the US Navy method; not a medical diagnosis.",
     inputs: [
       {
         name: "sex",
@@ -1569,10 +1569,10 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "female", label: "Female" }
         ]
       },
-      { name: "age", label: "Age", type: "number", required: true, min: 10, max: 120 },
+      { name: "age", label: "Age", type: "number", required: true, min: 10, max: 120, helperText: "Used for context only; the US Navy formula here is circumference based." },
       { name: "heightCm", label: "Height (cm)", type: "number", required: true, min: 50, max: 250 },
       { name: "weightKg", label: "Weight (kg)", type: "number", required: true, min: 20, max: 350, helperText: "Weight is optional for the US Navy formula but included for context." },
-      { name: "waistCm", label: "Waist (cm)", type: "number", required: true, min: 30, max: 200 },
+      { name: "waistCm", label: "Waist (cm)", type: "number", required: true, min: 30, max: 200, helperText: "Measure consistently with a flexible tape; small errors can change the estimate." },
       { name: "neckCm", label: "Neck (cm)", type: "number", required: true, min: 20, max: 80 },
       {
         name: "hipCm",
@@ -1645,7 +1645,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "ideal-weight-calculator",
     category: "Health Calculators",
     description:
-      "Estimate an ideal weight range using the Devine formula (height in cm).",
+      "Estimate a formula-based ideal weight reference range; not a personal medical target.",
     inputs: [
       {
         name: "sex",
@@ -1658,7 +1658,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "female", label: "Female" }
         ]
       },
-      { name: "heightCm", label: "Height (cm)", type: "number", required: true, min: 100, max: 230 }
+      { name: "heightCm", label: "Height (cm)", type: "number", required: true, min: 100, max: 230, helperText: "Used for a general reference estimate only; health targets depend on individual context." }
     ],
     calculate: (values) => {
       const sex = String(values.sex || "male");
