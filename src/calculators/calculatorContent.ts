@@ -1094,65 +1094,126 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "ovulation-calculator": {
     slug: "ovulation-calculator",
-    metaTitle: "Ovulation Calculator",
+    metaTitle: "Ovulation Calculator Estimate | General Guide",
     metaDescription:
-      "Estimate ovulation date and fertile window from last period start date and average cycle length.",
+      "Estimate a likely ovulation date and fertile window based on your inputs. General guide only and not medical advice.",
     whatItDoes: [
-      "Estimates ovulation date using an average cycle length approach.",
-      "Provides a fertile window around the estimated ovulation date."
+      "Estimates a likely ovulation date and fertile window from the last period start date and average cycle length you enter.",
+      "Shows a general planning guide based on your inputs, not a diagnosis or confirmation of ovulation.",
+      "Uses cautious date ranges because menstrual cycles vary between individuals and can change from month to month."
     ],
     howToUse: [
-      "Enter the start date of your last period.",
-      "Enter your average cycle length in days.",
-      "Click Calculate to see estimated dates."
+      "Enter the first day of your last period, not the last day of bleeding.",
+      "Enter your average cycle length in days. If your cycles are irregular, treat the result as a rough estimate only.",
+      "Click Calculate to see the estimated ovulation date and likely fertile window based on your inputs."
     ],
     methodology: [
-      "Assumes ovulation occurs roughly 14 days before the next period.",
-      "Fertile window is estimated as 5 days before ovulation through 1 day after."
+      "The calculator estimates the next period by adding the average cycle length to the last period start date.",
+      "It then estimates ovulation as roughly 14 days before that next period.",
+      "The likely fertile window is estimated as 5 days before the estimated ovulation date through 1 day after it."
     ],
     example: {
-      scenario: "Last period: 2026-03-01, cycle length: 28 days.",
-      steps: ["Ovulation ≈ start + (28 − 14) days", "Compute fertile window around ovulation"],
-      result: "Outputs ovulation date and fertile window start/end."
+      scenario: "Last period start date: 2026-03-01. Average cycle length: 28 days.",
+      steps: [
+        "Estimated next period start = 2026-03-01 + 28 days = 2026-03-29",
+        "Estimated ovulation date = 2026-03-29 − 14 days = 2026-03-15",
+        "Likely fertile window = 2026-03-10 through 2026-03-16"
+      ],
+      result:
+        "Based on those inputs, the calculator would show an estimated ovulation date of 2026-03-15 and a likely fertile window from 2026-03-10 to 2026-03-16."
     },
     faqs: [
       {
-        question: "How accurate is this estimate?",
+        question: "How accurate is this ovulation estimate?",
         answer:
-          "It’s a planning estimate. Individual cycles vary, and ovulation can shift month to month."
+          "It is a general guide based on your inputs. Individual cycles vary, and ovulation can shift from month to month even when your average cycle length looks regular."
+      },
+      {
+        question: "Can I use this as my only contraception method?",
+        answer:
+          "No. This calculator should not be used as the only method for contraception, fertility treatment, or pregnancy planning. Speak to a qualified healthcare professional for contraception, fertility, pregnancy, or cycle-health advice."
+      },
+      {
+        question: "What can affect ovulation timing?",
+        answer:
+          "Cycle irregularity, stress, illness, medication, breastfeeding, age, hormonal conditions, recent pregnancy, travel, sleep changes, and other health factors can all affect ovulation timing."
+      },
+      {
+        question: "What if my cycles are irregular?",
+        answer:
+          "The result may be less reliable if cycle length changes often. Consider tracking cycles over time and discuss irregular, painful, absent, or concerning cycles with a healthcare professional."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "The estimate assumes ovulation occurs about 14 days before the next period, which is not true for everyone.",
+      "It does not test hormone levels, confirm ovulation, diagnose cycle conditions, or account for personal medical history.",
+      "It may be less reliable with irregular cycles, recent pregnancy, breastfeeding, hormonal contraception changes, fertility medication, perimenopause, PCOS, thyroid conditions, or other health factors.",
+      "Do not rely on this result alone for contraception, fertility treatment decisions, or pregnancy planning."
+    ],
+    disclaimer:
+      "This ovulation calculator provides an estimate and general guide based on your inputs. It is not a medical diagnosis, does not confirm ovulation, and is not medical, fertility, contraception, or pregnancy advice. Speak to a doctor, midwife, GP, fertility specialist, or other qualified healthcare professional for personal guidance."
   },
 
   "pregnancy-calculator": {
     slug: "pregnancy-calculator",
-    metaTitle: "Pregnancy Calculator (Due Date & Week)",
+    metaTitle: "Pregnancy Due Date Calculator Estimate | General Guide",
     metaDescription:
-      "Estimate due date, current pregnancy week, and trimester from last menstrual period (LMP).",
+      "Estimate a due date and pregnancy timeline based on your inputs. General guide only and not medical advice.",
     whatItDoes: [
-      "Estimates due date using a standard 280-day (40-week) pregnancy length.",
-      "Calculates current pregnancy week and trimester for today’s date."
+      "Estimates a due date from the last menstrual period (LMP) date you enter.",
+      "Shows a general pregnancy week and trimester timeline based on your inputs and today’s date.",
+      "Provides a date estimate only; it does not confirm pregnancy, diagnose complications, or replace medical care."
     ],
     howToUse: [
-      "Enter the start date of your last menstrual period (LMP).",
-      "Click Calculate to see the estimated due date and pregnancy week."
+      "Enter the first day of the last menstrual period (LMP).",
+      "Click Calculate to see the estimated due date, current pregnancy week, and trimester based on your inputs.",
+      "Use the result as a general guide and confirm pregnancy dating and care plans with a midwife, GP, doctor, or qualified healthcare professional."
     ],
     methodology: [
-      "Due date uses Naegele’s rule: LMP + 280 days.",
-      "Current week is calculated from days since LMP, then grouped into trimesters."
+      "The estimated due date uses Naegele’s rule: LMP + 280 days, or 40 weeks.",
+      "Current week is calculated from days since the LMP date, then grouped into trimesters.",
+      "Clinical pregnancy dating can vary based on cycle length, ovulation timing, ultrasound dating, embryo transfer date, and healthcare professional assessment."
     ],
     example: {
-      scenario: "LMP start date: 2026-01-01.",
-      steps: ["Due date = 2026-01-01 + 280 days", "Compute weeks since LMP for today"],
-      result: "Outputs estimated due date, week number, and trimester."
+      scenario: "Last menstrual period start date: 2026-01-01.",
+      steps: [
+        "Estimated due date = 2026-01-01 + 280 days = 2026-10-08",
+        "Pregnancy week is estimated from the number of days between 2026-01-01 and today",
+        "Trimester is assigned from the estimated week: weeks 1–13 first, 14–27 second, and 28+ third"
+      ],
+      result:
+        "Based on an LMP of 2026-01-01, the calculator would show an estimated due date of 2026-10-08. The displayed week and trimester depend on today’s date."
     },
     faqs: [
       {
-        question: "Is the due date exact?",
+        question: "Is the estimated due date exact?",
         answer:
-          "No. It’s an estimate. Many births occur before or after the calculated date."
+          "No. A due date is an estimate, and many births happen before or after the estimated due date."
+      },
+      {
+        question: "Does this calculator confirm pregnancy?",
+        answer:
+          "No. It does not confirm pregnancy, diagnose pregnancy complications, or assess your health. Contact a healthcare professional for pregnancy testing, antenatal care, symptoms, bleeding, pain, or urgent concerns."
+      },
+      {
+        question: "Why might my healthcare provider give a different due date?",
+        answer:
+          "Dating can vary because of cycle length, ovulation timing, ultrasound measurements, embryo transfer date, and clinical assessment. Your healthcare provider’s dating may be more appropriate for your care."
+      },
+      {
+        question: "Who should I contact for pregnancy care?",
+        answer:
+          "Contact a midwife, GP, doctor, obstetric clinician, fertility clinic, or qualified healthcare professional for pregnancy care, medication questions, symptoms, or medical concerns."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "The calculator assumes a standard 280-day pregnancy measured from LMP, which may not match every pregnancy.",
+      "It does not adjust for cycle length, irregular periods, known ovulation date, ultrasound dating, embryo transfer date, or clinical risk factors.",
+      "It does not confirm pregnancy, detect miscarriage or ectopic pregnancy, diagnose complications, or provide emergency guidance.",
+      "Always use professional medical advice for pregnancy care, symptoms, medication decisions, fertility treatment, or concerns about your health or your baby."
+    ],
+    disclaimer:
+      "This pregnancy calculator provides an estimated due date and general timeline based on your inputs. It is not medical advice, does not confirm pregnancy, and does not diagnose pregnancy complications. Speak to a midwife, GP, doctor, obstetric clinician, fertility clinic, or other qualified healthcare professional for personal pregnancy care."
   },
 
   "scientific-calculator": {
