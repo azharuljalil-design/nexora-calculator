@@ -1683,7 +1683,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "ovulation-calculator",
     category: "Health Calculators",
     description:
-      "Estimate ovulation date and fertile window from the last period start date and average cycle length.",
+      "Estimate a likely ovulation date and fertile window from the last period start date and average cycle length; general guide only.",
     inputs: [
       { name: "lastPeriodStartDate", label: "Last period start date", type: "date", required: true },
       { name: "averageCycleLength", label: "Average cycle length (days)", type: "number", required: true, min: 20, max: 45, step: 1, defaultValue: "28" }
@@ -1719,8 +1719,8 @@ export const calculatorRegistry: CalculatorConfig[] = [
     },
     resultLabels: {
       estimatedOvulationDate: "Estimated ovulation date",
-      fertileWindowStart: "Fertile window start",
-      fertileWindowEnd: "Fertile window end"
+      fertileWindowStart: "Likely fertile window start",
+      fertileWindowEnd: "Likely fertile window end"
     },
     relatedSlugs: ["date-calculator", "age-calculator"]
   },
@@ -1729,7 +1729,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "pregnancy-calculator",
     category: "Health Calculators",
     description:
-      "Estimate due date, current pregnancy week, and trimester based on the last menstrual period (LMP).",
+      "Estimate a due date, current pregnancy week, and trimester based on the last menstrual period (LMP); general guide only.",
     inputs: [
       {
         name: "lastMenstrualPeriodDate",
