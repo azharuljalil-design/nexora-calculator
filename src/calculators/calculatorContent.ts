@@ -302,53 +302,52 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "compound-interest-calculator": {
     slug: "compound-interest-calculator",
-    metaTitle: "Compound Interest Calculator with Monthly Contributions",
+    metaTitle: "Compound Interest Calculator | Projection, Not Advice",
     metaDescription:
-      "Project future savings or investment growth with compound returns, starting balance, monthly contributions, and compounding frequency.",
+      "Estimate compound growth from principal, monthly contributions, an assumed rate, time, and compounding frequency. Projection only, not financial advice.",
     whatItDoes: [
-      "Estimates how a starting balance may grow when interest or investment returns are reinvested.",
-      "Includes regular monthly contributions so you can see the effect of saving consistently.",
-      "Breaks the result into total contributions and estimated growth."
+      "Estimates how a starting principal may grow when interest or an assumed return compounds over time.",
+      "Includes user-entered monthly contributions and separates total contributions from estimated interest or growth.",
+      "Uses the rate and compounding assumptions you enter; it does not predict or guarantee account rates or investment returns."
     ],
     howToUse: [
-      "Select the currency for the displayed results.",
-      "Enter your initial balance and the amount you plan to add each month.",
-      "Add an annual return assumption, time period, and compounding frequency.",
-      "Review the projected future value, then test different contribution levels or return assumptions."
+      "Select the currency used only for displaying the result.",
+      "Enter the principal or starting amount, plus any monthly contribution you want included.",
+      "Enter an annual interest or return rate assumption, the time period, and the compounding frequency.",
+      "Review the estimated final balance as a mathematical projection based on your inputs, then compare alternative assumptions."
     ],
     methodology: [
-      "The starting principal is compounded using A = P × (1 + r ÷ m)^(m × t), where r is the annual rate, m is the compounding frequency, and t is years.",
-      "Monthly contributions are added using a monthly-growth approximation so regular deposits can build up over the projection period.",
-      "Total contributions equal the initial balance plus all monthly deposits made during the term.",
-      "Estimated interest or growth is final balance minus total contributions."
+      "The starting principal is compounded using A = P × (1 + r ÷ m)^(m × t), where r is the user-entered annual rate, m is compounds per year, and t is years.",
+      "Monthly contributions are modeled as end-of-month additions using a monthly rate derived from the same annual rate.",
+      "Total contributions equal initial principal plus all monthly contributions over the projection period.",
+      "Estimated interest/growth equals estimated final balance minus total contributions, with currency values rounded for display."
     ],
     example: {
       scenario: "Start with £5,000, add £250 per month, assume 5% annual growth for 12 years, compounded monthly.",
       steps: [
         "Initial principal = £5,000",
-        "Monthly deposits = £250 × 12 × 12 = £36,000",
+        "Monthly contributions = £250 × 144 months = £36,000",
         "Total contributions = £41,000",
-        "Compound the starting balance and each regular contribution across the period"
+        "Apply 5% ÷ 12 monthly compounding to the starting principal and monthly contribution stream"
       ],
       result:
-        "The projection is about £56,900, meaning around £15,900 of estimated growth above contributions."
+        "The estimated final balance is about £58,290, including about £17,290 of estimated interest/growth above the £41,000 contributed."
     },
     mistakesOrLimitations: [
-      "A steady annual return is a simplification; real savings rates and market returns change.",
-      "Taxes, platform fees, inflation, and withdrawal penalties are not deducted.",
-      "Investment losses are possible, so do not treat the projection as a guarantee.",
-      "Contribution timing can affect real results; this tool uses a practical monthly approximation."
+      "This is a mathematical projection, not a guaranteed savings account rate or investment return.",
+      "Actual outcomes may differ because rates can change and investments can rise or fall.",
+      "Fees, tax, inflation, withdrawals, provider rules, bonus-rate conditions, and exact compounding schedules are not fully modeled.",
+      "Contribution timing can affect real results; this tool assumes end-of-month contributions."
     ],
     disclaimer:
-      "This is a planning illustration, not investment advice. Consider charges, tax treatment, inflation, and your risk tolerance before investing.",
+      "This calculator provides an estimate based on your inputs and is not financial, investment, tax, pension, or savings advice.",
     faqs: [
-      { question: "What does compounding frequency mean?", answer: "It is how often interest is added to the balance. More frequent compounding can slightly increase growth when all else is equal." },
-      { question: "Can I use it for savings accounts?", answer: "Yes, if you enter the savings interest rate and contribution plan. Check whether your provider compounds daily, monthly, or annually." },
-      { question: "Can I use it for investments?", answer: "You can model an assumed annual return, but investments fluctuate and can fall as well as rise." },
-      { question: "How does this relate to the Percentage Calculator?", answer: "The Percentage Calculator is useful for checking rate changes or contribution increases before entering assumptions here." }
+      { question: "Is the compound interest result guaranteed?", answer: "No. It is a projection using the rate and compounding settings you enter. Real savings rates, provider terms, fees, taxes, inflation, withdrawals, and investment performance can change the outcome." },
+      { question: "What does compounding frequency mean?", answer: "It is how often interest is applied to the starting principal in the model. More frequent compounding can slightly increase the estimate when all other inputs are unchanged." },
+      { question: "Why are monthly contributions handled separately?", answer: "The calculator compounds the initial principal using the selected frequency and models regular contributions with a monthly growth assumption, which is suitable for a recurring monthly contribution estimate." },
+      { question: "Can I use this for investments?", answer: "You can enter an assumed return, but investments can fall as well as rise. Treat the result as a scenario estimate, not advice or a forecast." }
     ]
   },
-
   "vat-calculator": {
     slug: "vat-calculator",
     metaTitle: "VAT Calculator Estimate to Add or Remove VAT",
@@ -724,69 +723,100 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "savings-calculator": {
     slug: "savings-calculator",
-    metaTitle: "Savings Calculator",
+    metaTitle: "Savings Calculator | Estimate Savings Growth",
     metaDescription:
-      "Estimate your future savings balance with monthly deposits and interest (GBP/EUR/USD).",
+      "Estimate future savings from a starting balance, monthly deposits, interest-rate assumption, and time period. Projection only, not financial advice.",
     whatItDoes: [
-      "Projects savings growth from a starting balance and monthly deposits.",
-      "Shows total deposits and total interest earned."
+      "Estimates savings growth based on your entered starting amount, monthly deposits, annual interest rate, and time period.",
+      "Shows total deposits separately from estimated interest so you can see how much of the projection comes from contributions.",
+      "Helps compare savings scenarios, but it does not guarantee a provider rate or final account balance."
     ],
     howToUse: [
-      "Select currency and enter starting savings.",
-      "Enter monthly deposit, annual interest rate, and number of years.",
-      "Click Calculate to see final balance and breakdown."
+      "Select the display currency and enter your current savings balance.",
+      "Enter the monthly deposit you plan to add and the annual interest rate assumption you want to test.",
+      "Enter the number of years for the projection.",
+      "Read the result as an estimate based on your inputs, then adjust the rate, deposit, or time period to compare scenarios."
     ],
     methodology: [
-      "Applies monthly compounding using \(annual rate ÷ 12).",
-      "Each month: balance grows by interest, then monthly deposit is added."
+      "The calculator converts the user-entered annual interest rate into a monthly rate by dividing by 12.",
+      "For each month, it applies interest to the current balance and then adds the monthly deposit.",
+      "Total deposits equal starting savings plus all monthly deposits over the projection period.",
+      "Estimated interest equals estimated final balance minus total deposits, rounded for display."
     ],
     example: {
-      scenario: "Start €1,000, add €100/month, 3% for 5 years.",
-      steps: ["Set inputs", "Apply monthly interest + deposits over 60 months"],
-      result: "Outputs final balance, total deposits, and total interest."
+      scenario: "Start with €1,000, deposit €100 per month, assume 3% annual interest for 5 years.",
+      steps: [
+        "Time period = 5 years × 12 = 60 months",
+        "Total deposits = €1,000 + (€100 × 60) = €7,000",
+        "Monthly interest rate = 3% ÷ 12 = 0.25%",
+        "Apply monthly interest, then add each €100 deposit"
+      ],
+      result:
+        "The estimated final balance is about €7,626.29, including about €626.29 of estimated interest above deposits."
     },
+    mistakesOrLimitations: [
+      "Savings rates may change and bonus rates or promotional terms may expire.",
+      "The estimate may not include account fees, tax, inflation, withdrawals, provider eligibility rules, or exact bank compounding practices.",
+      "Monthly deposit timing matters; this model adds deposits after monthly interest is applied.",
+      "A 0% rate case simply adds deposits without interest growth."
+    ],
+    disclaimer:
+      "This savings calculator is a projection based on your inputs and is not financial advice. Check provider terms and consider tax, inflation, fees, and your own circumstances.",
     faqs: [
-      {
-        question: "Does deposit timing matter?",
-        answer:
-          "Yes. This model adds the deposit after applying interest each month; some banks may apply interest differently."
-      }
+      { question: "Is this a guaranteed savings forecast?", answer: "No. It is an estimate based on your inputs. Actual savings outcomes can vary because interest rates, fees, tax, inflation, withdrawals, provider rules, and compounding practices can differ." },
+      { question: "Does the calculator include tax or inflation?", answer: "No. It shows nominal savings growth before any tax, inflation adjustment, account fees, or other deductions unless those effects are reflected in the rate you enter." },
+      { question: "When are deposits added?", answer: "The calculation applies monthly interest first and then adds the monthly deposit. Some providers may credit interest or accept deposits on a different schedule." },
+      { question: "Can I enter 0% interest?", answer: "Yes. The result will show starting savings plus deposits, with estimated interest of zero." }
     ]
   },
-
   "investment-calculator": {
     slug: "investment-calculator",
-    metaTitle: "Investment Calculator (Recurring Contributions)",
+    metaTitle: "Investment Calculator | Estimate Growth Scenarios",
     metaDescription:
-      "Project investment growth with weekly/monthly/yearly contributions and an expected annual return.",
+      "Estimate possible investment growth using an initial amount, recurring contributions, assumed annual return, and time period. Not investment advice.",
     whatItDoes: [
-      "Projects a future investment balance from an initial amount plus recurring contributions.",
-      "Shows total contributed and total growth."
+      "Estimates a possible investment balance from an initial amount, recurring contributions, contribution frequency, assumed annual return, and time period.",
+      "Shows total contributed separately from estimated growth so the projection is easier to interpret.",
+      "Uses a constant assumed return for comparison; it does not guarantee future returns or model market volatility."
     ],
     howToUse: [
-      "Select currency and enter the initial amount.",
-      "Enter a recurring contribution and choose how often you contribute.",
-      "Enter an expected annual return rate and number of years.",
-      "Click Calculate."
+      "Select the display currency and enter the amount already invested or planned as the starting amount.",
+      "Enter the recurring contribution and choose whether it is weekly, monthly, or yearly.",
+      "Enter an assumed annual return and the number of years to project.",
+      "Treat the ending balance as a scenario estimate based on your inputs, not a forecast or recommendation."
     ],
     methodology: [
-      "Converts annual return into a per-period return based on contribution frequency.",
-      "Iterates across periods, applying growth then adding the contribution."
+      "The calculator converts the assumed annual return into a per-period return based on the selected contribution frequency.",
+      "For each period, it applies the period return to the current balance and then adds the recurring contribution.",
+      "Total contributed equals the initial amount plus all recurring contributions during the projection.",
+      "Estimated growth equals estimated ending balance minus total contributed, rounded for display."
     ],
     example: {
-      scenario: "$2,000 initial, $50 weekly, 7% for 8 years.",
-      steps: ["Frequency = weekly", "Apply per-week return for 8 years", "Add contributions each period"],
-      result: "Outputs ending balance, total contributed, and total growth."
+      scenario: "$2,000 initial investment, $50 weekly contribution, 7% assumed annual return for 8 years.",
+      steps: [
+        "Periods = 8 years × 52 weeks = 416 weekly periods",
+        "Total contributed = $2,000 + ($50 × 416) = $22,800",
+        "Per-period assumed return = 7% ÷ 52",
+        "Apply growth each week, then add the $50 contribution"
+      ],
+      result:
+        "The estimated ending balance is about $31,357.67, including about $8,557.67 of estimated growth above contributions."
     },
+    mistakesOrLimitations: [
+      "Future investment returns are not guaranteed, and investment values can rise or fall.",
+      "The projection may not include platform fees, fund charges, bid/ask spreads, tax, inflation, withdrawals, contribution limits, risk level, currency risk, or personal circumstances.",
+      "A constant assumed return does not represent real market volatility or sequence-of-returns risk.",
+      "The model assumes contributions are made at the end of each selected period."
+    ],
+    disclaimer:
+      "This calculator is for educational estimates only and is not investment, financial, tax, pension, or retirement advice. Consider regulated advice for decisions involving risk.",
     faqs: [
-      {
-        question: "Are returns guaranteed?",
-        answer:
-          "No. This uses a constant return assumption for planning and comparison."
-      }
+      { question: "Does this guarantee future investment returns?", answer: "No. It uses the assumed return you enter to create a projection. Real investment performance can be higher or lower, and losses are possible." },
+      { question: "Does it include investment fees or taxes?", answer: "No. Platform fees, fund charges, taxes, inflation, currency effects, withdrawals, and contribution limits are not modeled unless you adjust your return assumption to reflect them." },
+      { question: "What return should I enter?", answer: "Use a cautious assumption that reflects the scenario you want to test. The calculator cannot choose a suitable return or risk level for your personal circumstances." },
+      { question: "How are contributions timed?", answer: "The calculator applies growth for each period and then adds that period's contribution, so different real contribution timing could produce different results." }
     ]
   },
-
   "retirement-calculator": {
     slug: "retirement-calculator",
     metaTitle: "Retirement Calculator Estimate | Savings Projection",
