@@ -50,7 +50,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "mortgage-calculator",
     category: "Financial Calculators",
     description:
-      "Estimate monthly mortgage payments with taxes, insurance, and HOA for UK, European, and US scenarios.",
+      "Estimate mortgage payments based on your inputs, with optional recurring tax, insurance, and HOA/service-charge assumptions.",
     inputs: [
       {
         name: "region",
@@ -80,7 +80,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
         type: "number",
         required: true,
         min: 0,
-        helperText: "Total property price in the selected currency."
+        helperText: "Total property price in the selected currency; the loan amount is estimated after subtracting the down payment."
       },
       {
         name: "downPayment",
@@ -89,7 +89,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
         required: true,
         min: 0,
         helperText:
-          "Amount you pay upfront. For many UK/EU/US mortgages this is 5–30% of the home price."
+          "Currency amount paid upfront, not a percentage. This is subtracted from the home price to estimate the mortgage balance."
       },
       {
         name: "annualInterestRate",
@@ -97,7 +97,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
         type: "number",
         required: true,
         min: 0,
-        helperText: "Nominal annual rate (e.g. 4.5)."
+        helperText: "Nominal annual rate as a percentage (e.g. 4.75). Variable-rate changes are not modelled."
       },
       {
         name: "loanTermYears",
@@ -105,7 +105,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
         type: "number",
         required: true,
         min: 1,
-        helperText: "Typical terms: 20–30 years in many regions."
+        helperText: "Repayment term in years; the calculator converts this to monthly payments."
       },
       {
         name: "annualPropertyTax",
@@ -203,7 +203,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "loan-calculator",
     category: "Financial Calculators",
     description:
-      "Calculate monthly repayments, total paid, and interest for personal or business loans.",
+      "Estimate fixed-rate loan repayments, total repaid, and interest based on principal, annual rate, and term.",
     inputs: [
       {
         name: "currency",
@@ -221,21 +221,24 @@ export const calculatorRegistry: CalculatorConfig[] = [
         label: "Loan amount",
         type: "number",
         required: true,
-        min: 0
+        min: 0,
+        helperText: "Principal borrowed or financed, before any lender fees unless you add them manually."
       },
       {
         name: "annualInterestRate",
         label: "Annual interest rate (%)",
         type: "number",
         required: true,
-        min: 0
+        min: 0,
+        helperText: "Annual percentage rate-style input. The calculator converts it to a monthly rate."
       },
       {
         name: "loanTermYears",
         label: "Loan term (years)",
         type: "number",
         required: true,
-        min: 1
+        min: 1,
+        helperText: "Repayment term in years; payments are assumed to be monthly and on time."
       }
     ],
     calculate: (values) => {
@@ -1973,7 +1976,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "amortization-calculator",
     category: "Financial Calculators",
     description:
-      "Calculate payments and view an amortization schedule for a fixed-rate loan.",
+      "Estimate fixed-rate loan payments and view a monthly amortization schedule.",
     renderer: "amortization",
     inputs: [
       {
@@ -1988,9 +1991,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "USD", label: "USD ($)" }
         ]
       },
-      { name: "loanAmount", label: "Loan amount", type: "number", required: true, min: 0 },
-      { name: "annualInterestRate", label: "Annual interest rate (%)", type: "number", required: true, min: 0, max: 50, step: 0.01 },
-      { name: "loanTermYears", label: "Loan term (years)", type: "number", required: true, min: 1, max: 50 }
+      { name: "loanAmount", label: "Loan amount", type: "number", required: true, min: 0, helperText: "Starting principal balance for the schedule." },
+      { name: "annualInterestRate", label: "Annual interest rate (%)", type: "number", required: true, min: 0, max: 50, step: 0.01, helperText: "Annual percentage rate converted to a monthly rate for each schedule row." },
+      { name: "loanTermYears", label: "Loan term (years)", type: "number", required: true, min: 1, max: 50, helperText: "Term in years; the schedule assumes monthly payments." }
     ],
     calculate: (values) => {
       const currency = (values.currency as CurrencyCode) || "USD";
@@ -1998,13 +2001,18 @@ export const calculatorRegistry: CalculatorConfig[] = [
       const annualRate = Number(values.annualInterestRate) || 0;
       const years = Number(values.loanTermYears) || 0;
       const months = years * 12;
-      const r = annualRate / 12 / 100;
+      const monthlyPayment = calculateMonthlyPayment({
+        principal: loanAmount,
+        annualInterestRate: annualRate,
+        years
+      });
 
-      let monthlyPayment = 0;
-      if (r === 0) monthlyPayment = months > 0 ? loanAmount / months : 0;
-      else {
-        const factor = Math.pow(1 + r, months);
-        monthlyPayment = (loanAmount * r * factor) / (factor - 1);
+      if (monthlyPayment === null) {
+        return {
+          monthlyPayment: LOAN_PAYMENT_INVALID_MESSAGE,
+          totalInterest: LOAN_PAYMENT_INVALID_MESSAGE,
+          totalPayment: LOAN_PAYMENT_INVALID_MESSAGE
+        };
       }
 
       const totalPayment = monthlyPayment * months;
