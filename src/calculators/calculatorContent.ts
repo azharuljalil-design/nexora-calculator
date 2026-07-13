@@ -80,118 +80,130 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "mortgage-calculator": {
     slug: "mortgage-calculator",
-    metaTitle: "Mortgage Calculator for Monthly Repayments",
+    metaTitle: "Mortgage Calculator for Estimated Monthly Payments",
     metaDescription:
-      "Estimate mortgage repayments, total interest, and optional monthly ownership costs with a clear fixed-rate calculation method.",
+      "Estimate mortgage repayments based on your inputs, including loan amount, rate, term, deposit, and optional recurring ownership costs.",
     whatItDoes: [
-      "Estimates the monthly principal-and-interest repayment for a repayment mortgage using the property price, deposit, interest rate, and term.",
-      "Adds optional recurring ownership costs such as property tax, home insurance, and HOA or service charges when those items are relevant to your scenario.",
-      "Helps compare affordability before looking more closely at the Loan Calculator or Amortization Calculator."
+      "Estimates the monthly principal-and-interest payment for a repayment mortgage based on the property price, deposit, annual interest rate, and term you enter.",
+      "Shows the estimated mortgage balance, monthly principal and interest, optional monthly property tax, optional insurance, optional HOA/service charge, total monthly payment, total loan payments, and total interest.",
+      "Helps you compare broad affordability scenarios before requesting lender quotes or reviewing a detailed Amortization Calculator schedule."
     ],
     howToUse: [
       "Select the region and currency that best match the figures you want to enter.",
-      "Enter the full property price and the deposit or down payment you expect to put in.",
-      "Add the annual interest rate and mortgage term in years, then leave optional tax, insurance, and HOA fields at 0 if they do not apply.",
-      "Run the calculation and review the monthly principal-and-interest amount, total monthly cost, total paid, and estimated interest."
+      "Enter the full property price and the deposit or down payment amount. The calculator estimates the loan amount as property price minus deposit.",
+      "Enter the annual interest rate as a percentage and the repayment term in years. The term is converted into monthly payments.",
+      "Enter optional annual property tax, annual home insurance, and monthly HOA/service charges only if you want those recurring costs included in the total monthly estimate; otherwise leave them at 0.",
+      "Click Calculate and review the result as an estimate based on your inputs, not as a mortgage offer or affordability decision."
     ],
     methodology: [
-      "First, the loan amount is calculated as property price minus down payment.",
-      "The annual interest rate is converted to a monthly rate: r = annual rate ÷ 12 ÷ 100, and the number of payments is n = term in years × 12.",
-      "For interest-bearing loans the payment method is M = P × r × (1 + r)^n ÷ ((1 + r)^n − 1), where P is the mortgage balance.",
-      "If the interest rate is 0%, the repayment is simply the loan amount divided by the number of monthly payments.",
-      "Optional annual tax and insurance are divided by 12 and then added alongside any monthly HOA/service charge."
+      "Loan amount = property price − down payment, floored at 0 if the down payment is greater than the property price.",
+      "The annual interest rate is converted to a monthly rate: r = annual rate ÷ 12 ÷ 100, and the number of payments is n = loan term in years × 12.",
+      "For interest-bearing repayment mortgages the calculator uses M = P × r × (1 + r)^n ÷ ((1 + r)^n − 1), where P is the mortgage balance.",
+      "If the interest rate is 0%, the principal-and-interest payment is P ÷ n.",
+      "Total loan payment = monthly principal-and-interest payment × n. Total interest paid = total loan payment − loan amount. Optional annual tax and insurance are divided by 12 and added with any monthly HOA/service charge to estimate total monthly cost."
     ],
     example: {
       scenario:
-        "A buyer is considering a £350,000 home with a £70,000 deposit, a 4.75% rate, and a 25-year term.",
+        "A buyer estimates a £350,000 home purchase with a £70,000 deposit, a 4.75% annual rate, and a 25-year repayment term.",
       steps: [
-        "Mortgage balance = £350,000 − £70,000 = £280,000",
-        "Number of repayments = 25 × 12 = 300",
+        "Loan amount = £350,000 − £70,000 = £280,000",
+        "Number of monthly payments = 25 × 12 = 300",
         "Monthly rate = 4.75 ÷ 12 ÷ 100 = 0.0039583",
-        "Apply the fixed-rate repayment formula to estimate the monthly principal-and-interest payment"
+        "Using the repayment formula, monthly principal and interest ≈ £1,596.33",
+        "Total loan payments ≈ £1,596.33 × 300 = £478,898.58, so total interest ≈ £198,898.58 before optional costs"
       ],
       result:
-        "The principal-and-interest repayment is about £1,596 per month before any insurance, taxes, service charges, or lender fees."
+        "The calculator would estimate about £1,596.33 per month for principal and interest. If you entered £0 for tax, insurance, and HOA/service charge, the total monthly payment estimate would also be about £1,596.33."
     },
     mistakesOrLimitations: [
-      "Do not enter the deposit as a percentage unless the input specifically asks for a currency amount.",
-      "A fixed-rate estimate does not predict future remortgage rates, tracker changes, or early repayment charges.",
-      "Stamp duty, legal fees, arrangement fees, valuation fees, moving costs, and overpayments are not included unless you adjust the inputs manually.",
-      "Property tax and HOA fields are useful for some markets, but many UK and EU buyers should leave them blank if they are not part of the mortgage payment."
+      "This is an estimate based on your inputs and is not a mortgage offer, approval, affordability assessment, or financial advice.",
+      "It does not model arrangement fees, broker fees, insurance products, taxes not entered, legal fees, valuation fees, moving costs, early repayment charges, overpayments, product transfers, offset balances, or changes after an initial fixed/tracker period unless you explicitly include those costs in the inputs.",
+      "Variable-rate changes, remortgaging, missed payments, daily interest, lender-specific rounding, and different payment dates can make real mortgage statements differ from this estimate.",
+      "Do not enter the deposit as a percentage; the input expects a currency amount.",
+      "The result depends heavily on the rate, term, deposit/loan amount, and repayment assumptions entered. Small rate changes can materially affect the payment and interest total."
     ],
     disclaimer:
-      "This mortgage estimate is for general planning only and is not financial advice or a mortgage offer. Check figures with a regulated adviser or lender before making decisions.",
+      "This mortgage calculator provides a general estimate based on your inputs. It is not a mortgage offer, lender quote, affordability check, or financial advice. Confirm costs, fees, taxes, insurance, and eligibility with a regulated mortgage adviser or lender before making decisions.",
     faqs: [
       {
-        question: "Is this suitable for UK mortgages?",
+        question: "Is this a mortgage offer or approval?",
         answer:
-          "Yes, you can select GBP and enter UK-style property and deposit figures. The calculation is a repayment mortgage estimate, not a full lender affordability assessment."
+          "No. It is only an estimate based on your inputs. A lender may use credit checks, income checks, affordability rules, property valuation, fees, and product terms before offering a mortgage."
       },
       {
-        question: "Does it include stamp duty or conveyancing fees?",
+        question: "What affects the estimated monthly payment most?",
         answer:
-          "No. It focuses on monthly repayment maths and optional recurring costs, so one-off purchase costs should be budgeted separately."
+          "The loan amount, annual interest rate, repayment term, and whether you add recurring costs such as property tax, insurance, or HOA/service charges."
       },
       {
-        question: "Why is the total interest only an estimate?",
+        question: "Does it include arrangement fees, legal fees, valuation fees, or early repayment charges?",
         answer:
-          "It assumes the rate and payment schedule stay unchanged for the whole term. Real mortgages may be remortgaged, overpaid, or moved to a different rate."
+          "No. Those are not modelled unless you manually adjust your inputs. Budget separately for one-off fees and product-specific charges."
+      },
+      {
+        question: "Does it handle variable rates or remortgaging?",
+        answer:
+          "No. The estimate assumes the entered rate and repayment pattern stay the same for the whole term. Recalculate with new assumptions if the rate or product changes."
       },
       {
         question: "When should I use the Amortization Calculator instead?",
         answer:
-          "Use the Amortization Calculator when you want to see how each payment is split between interest and principal over time."
+          "Use the Amortization Calculator when you want to see how each monthly payment is split between interest and principal over time."
       }
     ]
   },
 
   "loan-calculator": {
     slug: "loan-calculator",
-    metaTitle: "Loan Calculator for Fixed Monthly Payments",
+    metaTitle: "Loan Calculator for Estimated Repayments",
     metaDescription:
-      "Calculate monthly loan repayments, total amount repaid, and interest cost for a fixed-rate personal, car, or business loan.",
+      "Estimate loan repayments based on principal, annual interest rate, and term, with total repayment and interest figures.",
     whatItDoes: [
-      "Works out the regular monthly repayment for a fixed-rate instalment loan.",
-      "Shows the full amount repaid and the interest charged across the chosen term.",
-      "Gives a quick comparison point before exploring a full Amortization Calculator schedule."
+      "Estimates the regular monthly repayment for a fixed-rate instalment loan based on the principal, annual interest rate, and term you enter.",
+      "Shows the estimated total amount repaid and total interest over the repayment term.",
+      "Provides a simple comparison point before reviewing a month-by-month Amortization Calculator schedule."
     ],
     howToUse: [
-      "Choose the currency for the loan figures.",
-      "Enter the amount borrowed, the annual interest rate, and the repayment term in years.",
-      "Calculate the result, then compare the monthly payment with your available budget.",
-      "Try a shorter or longer term to see how the monthly payment and total interest move in opposite directions."
+      "Choose the currency used for the loan figures.",
+      "Enter the principal, meaning the amount borrowed or financed.",
+      "Enter the annual interest rate as a percentage and the loan term in years. The calculator converts the term into monthly repayments.",
+      "Click Calculate to estimate the monthly payment, total repayment, and total interest based on your inputs.",
+      "Compare terms carefully: a longer term can reduce the monthly payment but increase total interest."
     ],
     methodology: [
       "The annual percentage rate entered is converted into a monthly rate by dividing by 12 and by 100.",
       "The number of repayments is the loan term in years multiplied by 12.",
-      "For a standard amortised loan the calculator uses M = P × r × (1 + r)^n ÷ ((1 + r)^n − 1).",
-      "For a zero-interest loan it divides the principal evenly across the monthly payments.",
-      "Total interest is calculated as total repayments minus the original loan amount."
+      "For a standard amortised loan the calculator uses M = P × r × (1 + r)^n ÷ ((1 + r)^n − 1), where P is principal, r is monthly rate, and n is monthly payments.",
+      "For a zero-interest loan it divides the principal evenly across the monthly payments: M = P ÷ n.",
+      "Total repayment = monthly payment × n. Total interest = total repayment − principal. Displayed currency values are rounded to 2 decimal places."
     ],
     example: {
-      scenario: "A £12,000 car loan at 7.2% APR over 5 years.",
+      scenario: "A £12,000 car loan at 7.2% annual interest over 5 years.",
       steps: [
         "Principal = £12,000",
         "Monthly rate = 7.2 ÷ 12 ÷ 100 = 0.006",
         "Number of payments = 5 × 12 = 60",
-        "Apply the amortised loan payment formula"
+        "Using the amortised loan formula, monthly payment ≈ £238.75",
+        "Total repayment ≈ £238.75 × 60 = £14,324.90, so total interest ≈ £2,324.90"
       ],
       result:
-        "The estimated monthly payment is about £239, with roughly £14,331 repaid in total and about £2,331 in interest."
+        "The calculator would estimate a monthly payment of about £238.75, total repayments of about £14,324.90, and total interest of about £2,324.90."
     },
     mistakesOrLimitations: [
-      "Do not mix monthly and annual rates; the input expects an annual percentage rate.",
-      "Arrangement fees, missed-payment charges, early settlement adjustments, and variable-rate changes are not modelled.",
-      "A lower monthly payment from a longer term can still mean paying more interest overall.",
-      "The result assumes payments are made monthly and on time."
+      "This is an estimate based on your inputs and is not a loan quote, approval, affordability assessment, or financial advice.",
+      "It does not include lender fees, broker fees, insurance, late fees, early repayment charges, variable-rate changes, credit checks, affordability checks, taxes, or product-specific terms unless you explicitly add them to the principal or adjust the assumptions.",
+      "The calculator assumes monthly payments are made on time and the rate remains unchanged for the whole term.",
+      "Do not mix monthly and annual rates; the interest input expects an annual percentage rate-style figure.",
+      "Real lenders may round payments differently or calculate interest daily, so statements can differ slightly."
     ],
     disclaimer:
-      "This loan calculation is an educational estimate only. Confirm repayment terms, fees, and affordability with the lender before borrowing.",
+      "This loan calculator provides an educational estimate based on your inputs. It is not a loan quote, lending decision, or financial advice. Confirm rates, fees, insurance, eligibility, affordability, and contract terms with the lender before borrowing.",
     faqs: [
-      { question: "Can I use it for a car loan?", answer: "Yes. Enter the amount financed, APR, and term to estimate the monthly repayment for a car loan." },
-      { question: "Does the calculator use APR or flat rate?", answer: "Use an annual percentage rate-style input. It is treated as an annual rate converted into monthly amortised interest." },
-      { question: "Are lender fees included?", answer: "No. If a fee is added to the balance, you can include it by increasing the loan amount; otherwise budget for it separately." },
-      { question: "How is this different from the Mortgage Calculator?", answer: "The Loan Calculator is a simpler fixed-loan tool, while the Mortgage Calculator includes property-specific inputs such as deposit and optional ownership costs." }
+      { question: "Is this a loan quote?", answer: "No. It is only an estimate based on the principal, rate, and term entered. A lender quote may depend on credit checks, fees, affordability, and product terms." },
+      { question: "Can I use it for a car loan or personal loan?", answer: "Yes, for a simple fixed-rate monthly repayment estimate. Enter the amount financed, annual rate, and term." },
+      { question: "Are lender fees or insurance included?", answer: "No. If a fee is financed into the loan, you can add it to the principal; otherwise budget for it separately." },
+      { question: "What happens at 0% interest?", answer: "The calculator divides the principal evenly across the monthly payments, so total interest is £0, €0, or $0 depending on the selected currency." },
+      { question: "How is this different from the Mortgage Calculator?", answer: "The Loan Calculator is a simpler fixed-loan tool. The Mortgage Calculator includes property price, deposit, and optional recurring ownership-cost inputs." }
     ]
   },
 
@@ -1315,50 +1327,56 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "amortization-calculator": {
     slug: "amortization-calculator",
-    metaTitle: "Amortization Calculator with Payment Schedule",
+    metaTitle: "Amortization Calculator with Monthly Payment Schedule",
     metaDescription:
-      "Calculate a fixed monthly payment and view how each repayment is split between interest, principal, and remaining balance.",
+      "Estimate a fixed loan payment and view a month-by-month amortization schedule showing interest, principal, and remaining balance.",
     whatItDoes: [
-      "Calculates the monthly payment for a fixed-rate amortised loan.",
-      "Creates a repayment schedule that shows interest, principal, and outstanding balance month by month.",
-      "Makes it easier to understand why early repayments are interest-heavy and later repayments reduce the balance faster."
+      "Estimates the fixed monthly payment for a fixed-rate amortised loan based on the loan amount, annual interest rate, term, and payment schedule assumptions entered.",
+      "Creates a month-by-month schedule showing each payment, the interest portion, the principal portion, and the remaining balance.",
+      "Helps explain why early payments usually contain more interest, while later payments reduce the principal faster."
     ],
     howToUse: [
-      "Select the currency for the schedule.",
-      "Enter the loan amount, annual interest rate, and term in years.",
-      "Calculate to generate the monthly payment and repayment table.",
-      "Use the schedule alongside the Loan Calculator or Mortgage Calculator when you need both summary and detailed views."
+      "Select the currency for the displayed schedule.",
+      "Enter the loan amount, which is the starting principal balance you want to repay.",
+      "Enter the annual interest rate as a percentage. The calculator converts it to a monthly rate for the schedule.",
+      "Enter the loan term in years. The calculator converts it into a monthly payment schedule by multiplying years by 12.",
+      "Click Calculate to generate the monthly payment, total interest, total payment, and repayment table."
     ],
     methodology: [
-      "The monthly payment is calculated with the same fixed-rate amortisation formula used for instalment loans.",
-      "For each period, monthly interest equals the current balance multiplied by the monthly rate.",
-      "Principal repaid equals the fixed payment minus that month’s interest.",
-      "The remaining balance is reduced by the principal portion until the final payment clears the loan."
+      "Monthly rate r = annual interest rate ÷ 12 ÷ 100. Number of payments n = loan term in years × 12.",
+      "For interest-bearing loans, the fixed payment is M = P × r × (1 + r)^n ÷ ((1 + r)^n − 1), where P is the loan amount.",
+      "For a 0% interest loan, the payment is P ÷ n and each scheduled interest amount is 0.",
+      "For each month, interest = opening balance × monthly rate, principal repaid = payment − interest, and remaining balance = opening balance − principal repaid.",
+      "The final row caps principal repayment at the remaining balance to avoid showing a negative balance. Displayed currency values are rounded to 2 decimal places."
     ],
     example: {
-      scenario: "A £18,000 loan at 6% APR over 4 years.",
+      scenario: "A £18,000 loan at 6% annual interest over 4 years with monthly payments.",
       steps: [
+        "Loan amount = £18,000",
         "Monthly rate = 6 ÷ 12 ÷ 100 = 0.005",
-        "Payments = 4 × 12 = 48",
-        "Calculate the fixed monthly repayment, then split each month into interest and principal",
-        "In month one, interest is based on the full £18,000 balance; later months use a smaller balance"
+        "Number of payments = 4 × 12 = 48",
+        "Using the fixed-payment formula, monthly payment ≈ £422.73",
+        "First-month interest = £18,000 × 0.005 = £90.00, so first-month principal ≈ £422.73 − £90.00 = £332.73",
+        "Total repayment ≈ £422.73 × 48 = £20,291.07, so total interest ≈ £2,291.07"
       ],
       result:
-        "The monthly payment is about £423, and the first payment includes about £90 interest with the remainder reducing principal."
+        "The calculator would estimate a £422.73 monthly payment. Month 1 would show about £90.00 interest, £332.73 principal, and a remaining balance of about £17,667.27."
     },
     mistakesOrLimitations: [
-      "Do not expect every lender statement to match exactly if fees, daily interest, or different payment dates apply.",
-      "Variable-rate loans need a fresh schedule whenever the rate changes.",
-      "The table assumes regular monthly payments and no extra overpayments.",
-      "Rounding each row can make the final displayed balance differ by a few pence or cents."
+      "This is an estimate based on your inputs and is not a lender statement, loan quote, or financial advice.",
+      "It assumes a fixed annual rate, regular monthly payments, no missed payments, no extra repayments, no fees, and no variable-rate changes.",
+      "It does not model lender fees, insurance, taxes, late charges, early repayment charges, daily interest, payment holidays, overpayments, or product changes unless you manually adjust assumptions outside the calculator.",
+      "Rounding displayed row values to 2 decimals can create small differences from lender statements or from unrounded internal calculations.",
+      "If your real loan uses daily interest, irregular payment dates, or changing rates, recalculate whenever assumptions change and compare with lender documents."
     ],
     disclaimer:
-      "This schedule is an estimate for understanding repayment mechanics. It should not replace lender statements or professional financial advice.",
+      "This amortization calculator is for general education and planning. It provides an estimate based on your inputs and is not financial advice, a loan quote, or a substitute for lender statements or professional guidance.",
     faqs: [
-      { question: "Why is the first payment mostly interest?", answer: "Interest is calculated on the outstanding balance, which is highest at the start of the loan." },
-      { question: "Can I model overpayments?", answer: "Not in this version. You can still compare shorter terms in the Loan Calculator to approximate faster repayment." },
-      { question: "Is amortization the same as depreciation?", answer: "No. Here, amortization means gradually paying down a loan through scheduled payments." },
-      { question: "When should I use the Mortgage Calculator instead?", answer: "Use the Mortgage Calculator when the loan is tied to a property purchase and you want deposit and ownership-cost inputs." }
+      { question: "What is amortization?", answer: "Amortization is the process of gradually repaying a loan through scheduled payments that cover interest and reduce principal." },
+      { question: "What do loan amount, interest rate, term, and payment schedule mean?", answer: "Loan amount is the starting principal, interest rate is the annual percentage used to calculate monthly interest, term is how long repayment lasts, and the schedule shows each monthly payment split between interest and principal." },
+      { question: "Why is the first payment more interest-heavy?", answer: "Interest is calculated on the outstanding balance. The balance is highest at the start, so early payments generally include more interest." },
+      { question: "Can I model overpayments or variable rates?", answer: "Not in this version. The schedule assumes a fixed rate and regular monthly payments with no extra repayments." },
+      { question: "When should I use the Mortgage Calculator instead?", answer: "Use the Mortgage Calculator when the loan is tied to a property purchase and you want deposit and optional ownership-cost inputs." }
     ]
   },
 

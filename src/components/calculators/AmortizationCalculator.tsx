@@ -4,7 +4,8 @@ import { useMemo } from "react";
 import type { CalculatorConfig } from "@/types/calculatorTypes";
 import { useCalculatorEngine } from "@/components/calculators/useCalculatorEngine";
 import { CalculatorResult } from "@/components/calculators/CalculatorResult";
-import { formatCurrency, formatNumber } from "@/lib/format";
+import { calculateMonthlyPayment } from "@/lib/financialMath";
+import { formatCurrency } from "@/lib/format";
 import type { CurrencyCode } from "@/lib/conversions";
 import { renderInputControl } from "@/components/calculators/CalculatorInputControl";
 import {
@@ -34,13 +35,13 @@ function buildSchedule(args: {
   const months = years * 12;
   const r = annualRate / 12 / 100;
 
-  let monthlyPayment = 0;
-  if (r === 0) {
-    monthlyPayment = months > 0 ? principal / months : 0;
-  } else {
-    const factor = Math.pow(1 + r, months);
-    monthlyPayment = (principal * r * factor) / (factor - 1);
-  }
+  const monthlyPayment = calculateMonthlyPayment({
+    principal,
+    annualInterestRate: annualRate,
+    years
+  });
+
+  if (monthlyPayment === null) return null;
 
   const rows: ScheduleRow[] = [];
   let balance = principal;
