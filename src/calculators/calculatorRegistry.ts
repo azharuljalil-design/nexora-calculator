@@ -482,7 +482,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "compound-interest-calculator",
     category: "Financial Calculators",
     description:
-      "Estimate future investment value with compound growth and regular monthly contributions.",
+      "Estimate compound growth from a starting amount, monthly contributions, assumed rate, time period, and compounding frequency.",
     inputs: [
       {
         name: "currency",
@@ -500,28 +500,32 @@ export const calculatorRegistry: CalculatorConfig[] = [
         label: "Initial investment",
         type: "number",
         required: true,
-        min: 0
+        min: 0,
+        helperText: "Starting principal for this mathematical projection; enter 0 if you only want to model monthly contributions."
       },
       {
         name: "monthlyContribution",
         label: "Monthly contribution",
         type: "number",
         required: true,
-        min: 0
+        min: 0,
+        helperText: "Amount assumed to be added at the end of each month; withdrawals are not modeled."
       },
       {
         name: "annualInterestRate",
-        label: "Annual interest rate (%)",
+        label: "Annual interest/return rate (%)",
         type: "number",
         required: true,
-        min: 0
+        min: 0,
+        helperText: "User-entered assumption only; actual savings rates or investment returns are not guaranteed."
       },
       {
         name: "years",
-        label: "Years",
+        label: "Time period (years)",
         type: "number",
         required: true,
-        min: 1
+        min: 1,
+        helperText: "Length of the projection in years."
       },
       {
         name: "compoundsPerYear",
@@ -533,7 +537,8 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "4", label: "Quarterly" },
           { value: "12", label: "Monthly" },
           { value: "365", label: "Daily" }
-        ]
+        ],
+        helperText: "How often the starting principal compounds; monthly contributions are modeled with monthly growth."
       }
     ],
     calculate: (values) => {
@@ -569,9 +574,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
       };
     },
     resultLabels: {
-      finalBalance: "Final balance",
+      finalBalance: "Estimated final balance",
       totalContributions: "Total contributions",
-      totalInterestEarned: "Total interest earned"
+      totalInterestEarned: "Estimated interest/growth"
     },
     relatedSlugs: ["loan-calculator", "mortgage-calculator"]
   },
@@ -1151,7 +1156,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "savings-calculator",
     category: "Financial Calculators",
     description:
-      "Estimate savings growth with monthly deposits and annual interest.",
+      "Estimate savings growth based on your starting amount, monthly deposits, interest-rate assumption, and time period.",
     inputs: [
       {
         name: "currency",
@@ -1165,10 +1170,10 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "USD", label: "USD ($)" }
         ]
       },
-      { name: "startingSavings", label: "Starting savings", type: "number", required: true, min: 0 },
-      { name: "monthlyDeposit", label: "Monthly deposit", type: "number", required: true, min: 0 },
-      { name: "annualInterestRate", label: "Annual interest rate (%)", type: "number", required: true, min: 0, max: 50, step: 0.01 },
-      { name: "years", label: "Years", type: "number", required: true, min: 1, max: 60 }
+      { name: "startingSavings", label: "Starting savings", type: "number", required: true, min: 0, helperText: "Current balance to include in this projection before any future deposits." },
+      { name: "monthlyDeposit", label: "Monthly deposit", type: "number", required: true, min: 0, helperText: "Amount assumed to be added after interest each month; withdrawals are not modeled." },
+      { name: "annualInterestRate", label: "Annual interest rate (%)", type: "number", required: true, min: 0, max: 50, step: 0.01, helperText: "User-entered rate assumption; banks can change rates and provider terms may differ." },
+      { name: "years", label: "Time period (years)", type: "number", required: true, min: 1, max: 60, helperText: "Length of the savings projection in whole years." }
     ],
     calculate: (values) => {
       const currency = (values.currency as CurrencyCode) || "GBP";
@@ -1195,9 +1200,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
       };
     },
     resultLabels: {
-      finalBalance: "Final balance",
+      finalBalance: "Estimated final balance",
       totalDeposits: "Total deposits",
-      totalInterest: "Total interest"
+      totalInterest: "Estimated interest"
     },
     relatedSlugs: ["compound-interest-calculator", "investment-calculator"]
   },
@@ -1206,7 +1211,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "investment-calculator",
     category: "Financial Calculators",
     description:
-      "Project investment growth with recurring contributions and an expected annual return.",
+      "Estimate possible investment growth from an initial amount, recurring contributions, assumed annual return, and time period.",
     inputs: [
       {
         name: "currency",
@@ -1220,8 +1225,8 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "USD", label: "USD ($)" }
         ]
       },
-      { name: "initialAmount", label: "Initial amount", type: "number", required: true, min: 0 },
-      { name: "recurringContribution", label: "Recurring contribution", type: "number", required: true, min: 0 },
+      { name: "initialAmount", label: "Initial investment amount", type: "number", required: true, min: 0, helperText: "Starting amount included in this projection; investment values can rise or fall." },
+      { name: "recurringContribution", label: "Recurring contribution", type: "number", required: true, min: 0, helperText: "Amount assumed to be invested at the end of each selected contribution period." },
       {
         name: "contributionFrequency",
         label: "Contribution frequency",
@@ -1234,8 +1239,8 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "yearly", label: "Yearly" }
         ]
       },
-      { name: "annualReturnRate", label: "Expected annual return (%)", type: "number", required: true, min: 0, max: 50, step: 0.01 },
-      { name: "years", label: "Years", type: "number", required: true, min: 1, max: 60 }
+      { name: "annualReturnRate", label: "Assumed annual return (%)", type: "number", required: true, min: 0, max: 50, step: 0.01, helperText: "Assumption for projection only; future returns are not guaranteed and losses are possible." },
+      { name: "years", label: "Time period (years)", type: "number", required: true, min: 1, max: 60, helperText: "Length of the investment projection in whole years." }
     ],
     calculate: (values) => {
       const currency = (values.currency as CurrencyCode) || "GBP";
@@ -1264,9 +1269,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
       };
     },
     resultLabels: {
-      endingBalance: "Ending balance",
+      endingBalance: "Estimated ending balance",
       totalContributed: "Total contributed",
-      totalGrowth: "Total growth"
+      totalGrowth: "Estimated growth"
     },
     relatedSlugs: ["savings-calculator", "compound-interest-calculator", "retirement-calculator"]
   },
@@ -2325,4 +2330,3 @@ for (const calculator of calculatorRegistry) {
 export function findCalculatorBySlug(slug: string) {
   return calculatorRegistry.find((calculator) => calculator.slug === slug);
 }
-
