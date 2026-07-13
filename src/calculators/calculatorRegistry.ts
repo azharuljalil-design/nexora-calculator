@@ -10,7 +10,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "percentage-calculator",
     category: "Math Calculators",
     description:
-      "Quickly find the percentage value of a number. Ideal for discounts, tax, and simple ratio checks.",
+      "Calculate a percentage-based value from your inputs for discounts, increases, rates, marks, and everyday maths estimates.",
     inputs: [
       {
         name: "number",
@@ -18,7 +18,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
         type: "number",
         required: true,
         min: 0,
-        helperText: "Enter the base number you want a percentage of."
+        helperText: "Enter the base value the percentage should be calculated from."
       },
       {
         name: "percentage",
@@ -27,7 +27,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
         required: true,
         min: 0,
         max: 100,
-        helperText: "Enter the percentage between 0 and 100."
+        helperText: "Enter the percentage as a percent value (for example, 18 for 18%)."
       }
     ],
     calculate: (values) => {
@@ -41,9 +41,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
       };
     },
     resultLabels: {
-      percentage_value: "Percentage value"
+      percentage_value: "Calculated percentage value"
     },
-    relatedSlugs: ["loan-calculator", "compound-interest-calculator"]
+    relatedSlugs: ["unit-converter", "gpa-calculator", "grade-calculator"]
   },
   {
     name: "Mortgage Calculator",
@@ -196,7 +196,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
       totalLoanPayment: "Total loan payment",
       totalInterestPaid: "Total interest paid"
     },
-    relatedSlugs: ["loan-calculator", "compound-interest-calculator"]
+    relatedSlugs: ["unit-converter", "gpa-calculator", "grade-calculator"]
   },
   {
     name: "Loan Calculator",
@@ -849,17 +849,18 @@ export const calculatorRegistry: CalculatorConfig[] = [
     name: "Unit Converter",
     slug: "unit-converter",
     category: "Conversion Calculators",
-    description: "Convert between common units for length, weight, and temperature.",
+    description: "Convert between supported length, weight, and temperature units using fixed factors for everyday use.",
     inputs: [
       {
         name: "value",
-        label: "Value",
+        label: "Value to convert",
         type: "number",
-        required: true
+        required: true,
+        helperText: "Enter the number to convert. Negative values are mainly useful for temperature."
       },
       {
         name: "category",
-        label: "Category",
+        label: "Supported unit category",
         type: "select",
         required: true,
         defaultValue: "length",
@@ -871,7 +872,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
       },
       {
         name: "fromUnit",
-        label: "From unit",
+        label: "Convert from",
         type: "select",
         required: true,
         defaultValue: "meters",
@@ -882,7 +883,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
       },
       {
         name: "toUnit",
-        label: "To unit",
+        label: "Convert to",
         type: "select",
         required: true,
         defaultValue: "kilometers",
@@ -910,9 +911,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
       };
     },
     resultLabels: {
-      convertedValue: "Converted value"
+      convertedValue: "Converted value (rounded)"
     },
-    relatedSlugs: []
+    relatedSlugs: ["percentage-calculator", "pounds-kilograms-converter", "miles-kilometers-converter"]
   },
   {
     name: "BMR Calculator",
@@ -1462,10 +1463,10 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "date-calculator",
     category: "Date and Time Calculators",
     description:
-      "Add or subtract days, weeks, months, or years from a start date.",
+      "Calculate a resulting date by adding or subtracting days, weeks, months, or years from a selected start date.",
     inputs: [
-      { name: "startDate", label: "Start date", type: "date", required: true },
-      { name: "amount", label: "Amount", type: "number", required: true, min: 0, step: 1 },
+      { name: "startDate", label: "Start date", type: "date", required: true, helperText: "Choose the date to calculate from." },
+      { name: "amount", label: "Amount to add or subtract", type: "number", required: true, min: 0, step: 1, helperText: "Use a whole number. Weeks are treated as 7 calendar days." },
       {
         name: "unit",
         label: "Unit",
@@ -1515,7 +1516,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
       return { resultingDate, dayOfWeek };
     },
     resultLabels: {
-      resultingDate: "Resulting date",
+      resultingDate: "Resulting date (YYYY-MM-DD)",
       dayOfWeek: "Day of week"
     },
     relatedSlugs: ["age-calculator", "time-duration-calculator"]
@@ -1524,10 +1525,10 @@ export const calculatorRegistry: CalculatorConfig[] = [
     name: "Time Duration Calculator",
     slug: "time-duration-calculator",
     category: "Date and Time Calculators",
-    description: "Calculate the time difference between two date-times.",
+    description: "Calculate a general duration between entered start and end date-times.",
     inputs: [
-      { name: "startDateTime", label: "Start date & time", type: "datetime", required: true },
-      { name: "endDateTime", label: "End date & time", type: "datetime", required: true }
+      { name: "startDateTime", label: "Start date & time", type: "datetime", required: true, helperText: "Enter the local start date and time." },
+      { name: "endDateTime", label: "End date & time", type: "datetime", required: true, helperText: "Enter the local end date and time. Same time returns zero; earlier end times are not accepted." }
     ],
     calculate: (values) => {
       const start = new Date(String(values.startDateTime || ""));
@@ -2145,9 +2146,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
     name: "Pounds and Kilograms Converter",
     slug: "pounds-kilograms-converter",
     category: "Conversion Calculators",
-    description: "Convert between pounds (lb) and kilograms (kg).",
+    description: "Convert pounds to kilograms or kilograms to pounds using the standard conversion factor.",
     inputs: [
-      { name: "value", label: "Value", type: "number", required: true },
+      { name: "value", label: "Weight value", type: "number", required: true, min: 0, helperText: "Enter the weight to convert; confirm regulated or medical measurements separately." },
       {
         name: "direction",
         label: "Direction",
@@ -2170,16 +2171,16 @@ export const calculatorRegistry: CalculatorConfig[] = [
           : "—"
       };
     },
-    resultLabels: { convertedValue: "Converted value" },
-    relatedSlugs: ["unit-converter"]
+    resultLabels: { convertedValue: "Converted weight (rounded)" },
+    relatedSlugs: ["unit-converter", "miles-kilometers-converter"]
   },
   {
     name: "Miles and Kilometers Converter",
     slug: "miles-kilometers-converter",
     category: "Conversion Calculators",
-    description: "Convert between miles (mi) and kilometers (km).",
+    description: "Convert miles to kilometers or kilometers to miles using the standard conversion factor.",
     inputs: [
-      { name: "value", label: "Value", type: "number", required: true },
+      { name: "value", label: "Distance value", type: "number", required: true, min: 0, helperText: "Enter the distance to convert; use official sources for navigation or regulated measurements." },
       {
         name: "direction",
         label: "Direction",
@@ -2202,7 +2203,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
           : "—"
       };
     },
-    resultLabels: { convertedValue: "Converted value" },
+    resultLabels: { convertedValue: "Converted distance (rounded)" },
     relatedSlugs: ["unit-converter", "pounds-kilograms-converter"]
   }
 ];
