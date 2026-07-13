@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { calculatorCategories } from "@/data/categories";
-import { calculatorRegistry } from "@/calculators/calculatorRegistry";
+import { getAllCalculatorCards } from "@/lib/calculatorCatalog";
 import { routes } from "@/lib/routes";
 
 const categoryMaxLinks = 8;
 
 function getCategoryCalculators(categoryName: string) {
-  return calculatorRegistry
-    .filter((c) => c.category === categoryName)
+  return getAllCalculatorCards()
+    .filter((c) => c.categoryName === categoryName)
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 

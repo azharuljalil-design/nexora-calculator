@@ -1,20 +1,20 @@
 import Link from "next/link";
 import { calculatorCategories } from "@/data/categories";
-import { calculatorRegistry } from "@/calculators/calculatorRegistry";
+import { getAllCalculatorCards } from "@/lib/calculatorCatalog";
 import { routes } from "@/lib/routes";
 
 const minPerCategory = 5;
 const maxPerCategory = 8;
 
 function categoryCalculators(categoryName: string) {
-  return calculatorRegistry
-    .filter((c) => c.category === categoryName)
+  return getAllCalculatorCards()
+    .filter((c) => c.categoryName === categoryName)
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 function fallbackCandidates(categoryName: string, current: string[]) {
   const currentSet = new Set(current);
-  const all = calculatorRegistry
+  const all = getAllCalculatorCards()
     .filter((c) => !currentSet.has(c.slug))
     .slice()
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -99,7 +99,7 @@ export function HomeCategoryColumns() {
           let items = uniqueBySlug;
           if (items.length < minPerCategory) {
             const currentSet = new Set(items.map((c) => c.slug));
-            const additional = calculatorRegistry
+            const additional = getAllCalculatorCards()
               .filter((c) => !currentSet.has(c.slug))
               .sort((a, b) => a.name.localeCompare(b.name));
             items = [...items, ...additional];
