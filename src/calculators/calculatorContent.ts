@@ -777,34 +777,65 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "retirement-calculator": {
     slug: "retirement-calculator",
-    metaTitle: "Retirement Calculator",
+    metaTitle: "Retirement Calculator Estimate | Savings Projection",
     metaDescription:
-      "Estimate projected retirement savings based on age, current savings, monthly contributions, and expected returns.",
+      "Estimate a retirement savings projection based on your inputs for age, savings, contributions, and expected return. General guide, not financial advice.",
     whatItDoes: [
-      "Projects retirement savings at your target retirement age.",
-      "Shows total contributions and growth over time."
+      "Creates a simplified retirement savings projection based on your inputs.",
+      "Estimates projected retirement savings, total contributions, and total growth by your selected retirement age.",
+      "Helps compare assumptions for current savings, monthly contributions, expected annual return, and time until retirement."
     ],
     howToUse: [
-      "Select currency and enter current age and retirement age.",
-      "Enter current savings, monthly contribution, and expected annual return.",
-      "Click Calculate to see projected retirement savings."
+      "Select the display currency and enter your current age and planned retirement age.",
+      "Enter current savings, monthly contribution, and an expected annual return assumption.",
+      "Click Calculate to see an estimate based on your inputs, then adjust assumptions to compare scenarios.",
+      "Use cautious assumptions: the calculator does not guarantee returns or replace regulated financial advice."
     ],
     methodology: [
-      "Uses monthly compounding based on the expected annual return rate.",
-      "Projects across the number of months until retirement."
+      "Uses monthly compounding based on the expected annual return rate you enter.",
+      "Projects across the number of whole months between current age and retirement age.",
+      "Adds the monthly contribution after each month of estimated growth.",
+      "Outputs nominal values; inflation adjustment is not separately implemented."
     ],
     example: {
-      scenario: "Age 30 → retire at 67, £20,000 saved, £300/month, 5% return.",
-      steps: ["Compute months to retirement", "Apply monthly growth and contributions"],
-      result: "Outputs projected retirement savings plus contribution/growth totals."
+      scenario: "Age 30, retire at 67, £20,000 currently saved, £300/month contribution, 5% expected annual return.",
+      steps: [
+        "Years to retirement = 67 − 30 = 37 years, or 444 months",
+        "Monthly return assumption = 5% ÷ 12 = about 0.4167% per month",
+        "Total contributions = £20,000 + (£300 × 444) = £153,200",
+        "Apply monthly compounding to the starting balance and add £300 after each month"
+      ],
+      result: "The projection is about £510,858.87 at retirement, made up of £153,200.00 of contributions and about £357,658.87 of estimated growth."
     },
     faqs: [
       {
+        question: "Is this retirement calculator financial advice?",
+        answer:
+          "No. It is a simplified estimate for education and planning only. It is not personal financial, pension, tax, or investment advice."
+      },
+      {
+        question: "Are future investment returns guaranteed?",
+        answer:
+          "No. The expected annual return is only an assumption you enter. Real investment returns can be higher or lower and may be negative in some periods."
+      },
+      {
         question: "Does it include inflation?",
         answer:
-          "No. The result is nominal. To approximate inflation, reduce the expected return rate accordingly."
+          "No separate inflation field is implemented. Results are nominal unless you manually adjust the expected return to approximate inflation."
+      },
+      {
+        question: "Does it include pension rules, taxes, fees, or withdrawals?",
+        answer:
+          "No. It does not model state pension benefits, employer pension rules, contribution limits, tax relief, taxes on withdrawals, investment fees, required withdrawals, or personal circumstances."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "The projection depends entirely on user-entered assumptions such as savings, contributions, expected return, and retirement age.",
+      "It uses a constant annual return and does not model market volatility or sequence-of-returns risk.",
+      "It does not include inflation, pension rules, employer matching, state pension, tax rules, fees, withdrawals, contribution limits, or personal financial circumstances unless explicitly shown in the inputs."
+    ],
+    disclaimer:
+      "This retirement calculator is a simplified projection based on your inputs. It is not financial advice, does not guarantee future returns, and should not be the only basis for retirement decisions."
   },
 
   "gpa-calculator": {
@@ -937,95 +968,128 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "body-fat-calculator": {
     slug: "body-fat-calculator",
-    metaTitle: "Body Fat Calculator Using the US Navy Method",
+    metaTitle: "Body Fat Calculator Estimate | US Navy Method",
     metaDescription:
-      "Estimate body fat percentage from body measurements using the US Navy circumference method in centimetres.",
+      "Estimate body fat percentage from tape measurements using the US Navy method. General body-composition guide, not a medical diagnosis.",
     whatItDoes: [
       "Estimates body fat percentage from height, waist, neck, and, for female mode, hip measurements.",
-      "Returns a body fat percentage rounded to 1 decimal place plus a broad category label.",
-      "Offers a measurement-based estimate that can be compared with BMI, calorie, BMR, and TDEE results."
+      "Returns a formula-based estimate rounded to 1 decimal place plus a broad category label.",
+      "Provides a cautious body-composition reference that should not be used as the only measure of health."
     ],
     howToUse: [
-      "Select male or female mode because the formula uses different circumference inputs.",
+      "Select male or female mode because the US Navy circumference formula uses different inputs.",
       "Enter height, waist, and neck measurements in centimetres; enter hip measurement as well when female mode is selected.",
-      "Measure consistently with a flexible tape and avoid pulling it too tight.",
-      "Click Calculate to see the estimated body fat percentage and category."
+      "Measure consistently with a flexible tape, level placement, relaxed posture, and without pulling the tape too tight.",
+      "Click Calculate to see an estimate based on your inputs, not a medical diagnosis."
     ],
     methodology: [
+      "Uses the US Navy circumference method already implemented in this calculator.",
       "Male mode uses: 495 ÷ (1.0324 − 0.19077 × log10(waist − neck) + 0.15456 × log10(height)) − 450.",
       "Female mode uses: 495 ÷ (1.29579 − 0.35004 × log10(waist + hip − neck) + 0.221 × log10(height)) − 450.",
       "Measurements are entered in centimetres and the calculator uses base-10 logarithms.",
-      "The category label is a broad contextual label generated from the calculator's internal ranges."
+      "The category label is broad context only and is generated from the calculator's internal ranges."
     ],
     example: {
       scenario: "Male mode with height 180 cm, waist 90 cm, and neck 40 cm.",
       steps: [
-        "waist − neck = 90 − 40 = 50",
-        "Apply the male US Navy equation with height 180 and circumference difference 50",
+        "waist − neck = 90 − 40 = 50 cm",
+        "Formula denominator = 1.0324 − 0.19077×log10(50) + 0.15456×log10(180)",
+        "Body fat estimate = 495 ÷ denominator − 450",
         "Round the calculated percentage to 1 decimal place"
       ],
       result: "The estimate is about 22.7% body fat, with the calculator's broad category shown as Average."
     },
     faqs: [
       {
-        question: "Is the US Navy method exact?",
+        question: "Is this a medical diagnosis?",
         answer:
-          "No. It is an estimate from circumference measurements. Tape placement, posture, hydration, and body shape can affect the result."
+          "No. It is a formula-based estimate from tape measurements and is not medical, fitness, nutrition, or weight-loss advice."
+      },
+      {
+        question: "Why can results vary between measurements?",
+        answer:
+          "Tape placement, measurement tension, posture, hydration, recent exercise, body shape, sex, age, and individual differences can all change the estimate."
       },
       {
         question: "Why does female mode ask for hip measurement?",
         answer:
-          "The calculator's female-mode formula includes waist, hip, neck, and height, while male mode uses waist, neck, and height."
+          "The calculator's female-mode US Navy formula includes waist, hip, neck, and height, while male mode uses waist, neck, and height."
       },
       {
-        question: "Does weight affect the result?",
+        question: "Should I use this as my only health measure?",
         answer:
-          "Weight is collected for context in the form, but the US Navy percentage formula used here is based on circumference and height measurements."
-      },
-      {
-        question: "How often should I remeasure?",
-        answer:
-          "If tracking trends, use a consistent schedule and the same measuring method each time rather than focusing on one isolated result."
+          "No. Body composition is only one health-related metric. Consider broader health context and consult a qualified professional for personal advice."
       }
     ],
     mistakesOrLimitations: [
       "Small measurement errors can noticeably change the estimate.",
-      "The formula is not suitable for diagnosis and may be less accurate for some body types or clinical situations.",
+      "The US Navy method may be less accurate for some body shapes, ages, athletic builds, medical conditions, or clinical situations.",
+      "Hydration, recent training, posture, and how tightly the tape is held can affect measurements.",
       "Use centimetres consistently; mixing inches and centimetres will invalidate the calculation."
     ],
     disclaimer:
-      "This calculator provides a general body-composition estimate only and is not medical, fitness, nutritional, or healthcare advice."
+      "This calculator provides a general body-composition estimate only. It is not a medical diagnosis and is not medical, fitness, nutritional, weight-loss, or healthcare advice."
   },
 
   "ideal-weight-calculator": {
     slug: "ideal-weight-calculator",
-    metaTitle: "Ideal Weight Calculator (Range)",
+    metaTitle: "Ideal Weight Calculator Reference Estimate",
     metaDescription:
-      "Estimate an ideal weight range from height and sex using the Devine formula (kg output).",
+      "Get a formula-based ideal weight reference estimate from height and sex. General guide only, not a personal medical target.",
     whatItDoes: [
-      "Estimates an ideal-weight reference point and provides a range for context.",
-      "Useful for quick planning alongside BMI/body fat tools."
+      "Estimates a formula-based reference weight range from height and sex.",
+      "Provides a general guide for context, not a personal medical target or diagnosis.",
+      "Can be compared cautiously with BMI and body-fat estimates when considering broader health context."
     ],
     howToUse: [
-      "Select sex and enter height in cm.",
-      "Click Calculate to see an estimated ideal weight range."
+      "Select sex and enter height in centimetres.",
+      "Click Calculate to see a reference estimate range in kilograms.",
+      "Interpret the result cautiously because ideal weight depends on more than height and sex."
     ],
     methodology: [
       "Uses the Devine formula based on height over 5 ft.",
-      "Outputs a +/-10% range to avoid false precision."
+      "Outputs a +/-10% range to avoid false precision.",
+      "Does not adjust for age, muscle mass, body composition, medical history, ethnicity, pregnancy status, disability, or individual health context."
     ],
     example: {
-      scenario: "Female, 165 cm.",
-      steps: ["Convert height to inches", "Apply Devine formula", "Compute range"],
-      result: "Outputs an ideal weight range in kg."
+      scenario: "Female, 165 cm tall.",
+      steps: [
+        "Convert height to inches: 165 ÷ 2.54 = about 64.96 inches",
+        "Inches over 5 ft = 64.96 − 60 = about 4.96 inches",
+        "Devine reference = 45.5 + (2.3 × 4.96) = about 56.9 kg",
+        "Range = 56.9 kg ± 10%"
+      ],
+      result: "The displayed reference estimate is about 51.2 – 62.6 kg. This is a general guide, not a personal medical target."
     },
     faqs: [
       {
-        question: "Is ideal weight the same for everyone?",
+        question: "Is this my ideal personal weight?",
         answer:
-          "No. It’s a reference estimate; body composition and health goals vary."
+          "No. It is a reference estimate from a formula. Personal health targets depend on your body composition, medical history, goals, and professional guidance."
+      },
+      {
+        question: "Does ideal weight depend on muscle or body composition?",
+        answer:
+          "Yes. Muscle mass, fat distribution, frame size, disability, pregnancy status, ethnicity, age, and medical context can all affect what weight is appropriate for an individual."
+      },
+      {
+        question: "Can I use this to set aggressive weight-loss goals?",
+        answer:
+          "No. Do not use this calculator to diagnose health, judge body size, or set aggressive weight-loss goals. Speak with a qualified clinician or dietitian for personal advice."
+      },
+      {
+        question: "Why show a range instead of one number?",
+        answer:
+          "A range better reflects uncertainty and avoids implying that one exact number is correct for everyone with the same height and sex."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "The result is based only on height and sex, so it cannot capture individual health context.",
+      "It does not account for age, muscle mass, body composition, ethnicity, pregnancy status, disability, medical history, or medication effects.",
+      "It should not be used to diagnose health status or to create aggressive diet, fitness, or weight-loss plans."
+    ],
+    disclaimer:
+      "This ideal weight calculator gives a formula-based reference estimate and general guide only. It is not a personal medical target and is not medical, nutrition, fitness, or weight-loss advice."
   },
 
   "ovulation-calculator": {
