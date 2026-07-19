@@ -270,9 +270,9 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "age-calculator": {
     slug: "age-calculator",
-    metaTitle: "Age Calculator",
+    metaTitle: "Age Calculator | Calendar Date Difference",
     metaDescription:
-      "Calculate age in years, months, and days from a birth date to today or a chosen target date.",
+      "Calculate age or date difference in years, months, days, and totals from entered dates. General date maths only, not official advice.",
     whatItDoes: [
       "Computes your age breakdown (years, months, days) for a target date.",
       "Also provides total days, weeks, and months elapsed."
@@ -284,12 +284,13 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
     ],
     methodology: [
       "Uses calendar-aware year/month/day differences (not a simple days ÷ 365 approximation).",
-      "Validates that the target date is not before the birth date."
+      "Validates that the target date is not before the birth date.",
+      "Official, legal, immigration, employment, or insurance deadlines may use specific rules that differ from this general calendar calculation."
     ],
     example: {
       scenario: "Born 2000-01-15, target 2026-03-17.",
-      steps: ["Set birth date", "Set target date", "Compute Y/M/D difference"],
-      result: "Outputs include years, remaining months/days, and total days/weeks."
+      steps: ["From 2000-01-15 to 2026-01-15 = 26 full years", "From 2026-01-15 to 2026-03-15 = 2 full months", "From 2026-03-15 to 2026-03-17 = 2 days"],
+      result: "The age breakdown is 26 years, 2 months, and 2 days, plus total elapsed days, weeks, and months."
     },
     faqs: [
       {
@@ -297,7 +298,13 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
         answer:
           "Months have different lengths, so a calendar-based calculation is more accurate than using averages."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "Different organisations may define deadline age, anniversary dates, inclusive days, or cut-off times differently.",
+      "Do not rely on this page for legal, immigration, insurance, benefit, pension, school, or employment eligibility decisions."
+    ],
+    disclaimer:
+      "This calculator is a general date maths tool and is not official legal, administrative, immigration, employment, or insurance advice."
   },
 
   "compound-interest-calculator": {
@@ -580,25 +587,28 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "bmr-calculator": {
     slug: "bmr-calculator",
-    metaTitle: "BMR Calculator (Mifflin–St Jeor)",
+    metaTitle: "BMR Calculator | Mifflin–St Jeor Estimate",
     metaDescription:
-      "Estimate your Basal Metabolic Rate (BMR) in kcal/day using age, sex, height, and weight.",
+      "Estimate basal metabolic rate from age, sex, height, and weight using the Mifflin–St Jeor equation. General guide only, not medical advice.",
     whatItDoes: [
-      "Estimates BMR—your body’s baseline daily energy use at rest.",
-      "Provides a starting point for planning nutrition and activity goals."
+      "Estimates basal metabolic rate (BMR)—the calories your body may use at rest—based on your entered body details.",
+      "Shows a kcal/day estimate that can be used as a general guide, not as a medical measurement or diet prescription.",
+      "BMR can vary with body composition, hormones, medical conditions, medications, pregnancy, breastfeeding, and activity history."
     ],
     howToUse: [
-      "Enter your age, sex, height (cm), and weight (kg).",
-      "Click Calculate to get your estimated BMR in kcal/day."
+      "Enter your age, sex, height in centimetres, and weight in kilograms.",
+      "Click Calculate to get an estimated BMR in kcal/day based on your inputs.",
+      "Use the result cautiously and speak to a qualified professional for personal health, nutrition, fitness, or weight-loss guidance."
     ],
     methodology: [
-      "Uses the Mifflin–St Jeor equation, a commonly used BMR estimate.",
-      "BMR is an estimate; it varies by body composition and measurement accuracy."
+      "Uses the Mifflin–St Jeor equation: BMR = 10 × weight(kg) + 6.25 × height(cm) − 5 × age + s.",
+      "The calculator uses s = 5 for male and s = −161 for female, matching the formula currently implemented.",
+      "The output is rounded to the nearest whole kcal/day for display."
     ],
     example: {
-      scenario: "Female, 30 years, 165 cm, 65 kg.",
-      steps: ["Enter age/sex/height/weight", "Calculate BMR"],
-      result: "Outputs BMR in kcal/day."
+      scenario: "Female, 30 years old, 165 cm tall, 65 kg.",
+      steps: ["BMR = 10 × 65 + 6.25 × 165 − 5 × 30 − 161", "BMR = 650 + 1,031.25 − 150 − 161 = 1,370.25", "Rounded result = 1,370 kcal/day"],
+      result: "The calculator estimates a BMR of about 1,370 kcal/day based on those inputs."
     },
     faqs: [
       {
@@ -611,7 +621,14 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
         answer:
           "Equations include sex-based constants because average body composition differs across populations."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "BMR formulas are estimates, not indirect calorimetry or another clinical metabolic measurement.",
+      "Results may vary with age, sex, height, weight, body composition, hormones, medical conditions, medications, pregnancy, breastfeeding, and activity patterns.",
+      "The calculator does not diagnose metabolic health or create nutrition, fitness, or weight-loss targets."
+    ],
+    disclaimer:
+      "This calculator is a general guide based on your inputs and is not medical, nutrition, fitness, or weight-loss advice."
   },
 
   "tdee-calculator": {
@@ -629,13 +646,14 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
       "Click Calculate to see TDEE and suggested targets."
     ],
     methodology: [
-      "Computes BMR (Mifflin–St Jeor) then multiplies by an activity factor.",
-      "Cut/gain targets apply a simple +/- 500 kcal adjustment."
+      "Computes BMR with Mifflin–St Jeor, then multiplies by the selected activity factor: 1.2, 1.375, 1.55, 1.725, or 1.9.",
+      "Activity multipliers are rough assumptions and may not match measured energy use, wearable estimates, or every training schedule.",
+      "Cut/gain targets apply a simple −500 or +500 kcal/day adjustment and are not personalised recommendations."
     ],
     example: {
-      scenario: "Male, 28 years, 180 cm, 80 kg, moderate activity.",
-      steps: ["Enter details", "Select moderate activity", "Calculate"],
-      result: "Outputs TDEE and cut/maintain/gain calories per day."
+      scenario: "Male, 28 years old, 180 cm, 80 kg, moderate activity.",
+      steps: ["BMR = 10 × 80 + 6.25 × 180 − 5 × 28 + 5 = 1,790 kcal/day", "Moderate activity multiplier = 1.55", "TDEE = 1,790 × 1.55 = 2,774.5, rounded to 2,775 kcal/day"],
+      result: "The calculator estimates about 2,775 kcal/day to maintain, about 2,275 for a simple cut target, and about 3,275 for a simple gain target."
     },
     faqs: [
       {
@@ -646,9 +664,16 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
       {
         question: "Does TDEE change over time?",
         answer:
-          "Yes. Weight changes, training volume, and lifestyle can all affect TDEE."
+          "Yes. Weight changes, training volume, lifestyle, health status, and body composition can all affect TDEE."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "TDEE is estimated from BMR and an activity multiplier, not measured in a lab.",
+      "Activity multipliers are rough population-level assumptions and may overstate or understate real daily energy use.",
+      "Do not use this as the only basis for medical, nutrition, fitness, or weight-loss decisions."
+    ],
+    disclaimer:
+      "This calculator is a general guide based on your inputs and is not medical, nutrition, fitness, or weight-loss advice."
   },
 
   "calorie-calculator": {
@@ -707,10 +732,10 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
     mistakesOrLimitations: [
       "The calculator uses binary sex options because the underlying formula uses those constants; this may not represent everyone accurately.",
       "Activity multipliers are broad estimates and can be the largest source of error.",
-      "Pregnancy, illness, eating disorders, athletic training, medications, and clinical nutrition needs are not modelled."
+      "Body composition, health status, age, pregnancy or breastfeeding, medications, hormones, athletic training, eating-disorder history, and changing goals are not modelled."
     ],
     disclaimer:
-      "This calculator is for general educational planning only and is not medical, nutritional, dietetic, fitness, or healthcare advice."
+      "This calculator is for general educational planning only and is not medical, nutritional, dietetic, fitness, weight-loss, or healthcare advice. Speak to a qualified professional for personal diet, health, eating disorder, pregnancy, medical-condition, or weight-loss advice."
   },
 
   "tip-calculator": {
@@ -719,8 +744,9 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
     metaDescription:
       "Calculate tip amount, total bill, and per-person cost in GBP, EUR, or USD.",
     whatItDoes: [
-      "Calculates the tip from a bill amount and tip percentage.",
-      "Splits the total across multiple people."
+      "Calculates the tip amount, total bill, and split amount based on the values you enter.",
+      "Splits the total across multiple people and formats the result in the selected display currency.",
+      "Helps with everyday bill maths while recognising that tipping customs vary by country, culture, service type, and personal choice."
     ],
     howToUse: [
       "Select currency and enter bill amount.",
@@ -733,15 +759,25 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
     ],
     example: {
       scenario: "£120 bill, 12.5% tip, 4 people.",
-      steps: ["Tip = 120 × 0.125", "Total = 120 + tip", "Split by 4"],
-      result: "Outputs tip amount, total bill, and amount per person."
+      steps: ["Tip = £120 × (12.5 ÷ 100) = £15.00", "Total bill = £120 + £15 = £135.00", "Amount per person = £135 ÷ 4 = £33.75"],
+      result: "The calculator shows a £15.00 tip, £135.00 total bill, and £33.75 per person."
     },
     faqs: [
       {
         question: "Can I use decimal tips like 12.5%?",
         answer: "Yes—decimal percentages are supported."
+      },
+      {
+        question: "Does this tell me what I must tip?",
+        answer: "No. Tipping customs vary by country, service type, culture, and personal choice."
       }
-    ]
+    ],
+    mistakesOrLimitations: [
+      "The calculator only applies the percentage and split count you enter; it does not judge service charges or local customs.",
+      "It does not calculate payroll treatment, taxes, mandatory service fees, or legal obligations."
+    ],
+    disclaimer:
+      "This is a general maths tool for tips and bill splitting, not legal, payroll, tax, employment, or hospitality-industry advice."
   },
 
   "savings-calculator": {
@@ -1721,11 +1757,11 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
     ],
     mistakesOrLimitations: [
       "Using contracted hours may produce a different result from using actual hours worked.",
-      "The result does not account for taxes, benefits, pension contributions, holiday pay rules, or employment rights.",
+      "The result does not account for overtime, unpaid breaks, holidays, pension, tax, payroll deductions, bonuses, commissions, shift premiums, employer rules, or legal minimum wage compliance.",
       "Currency symbols are not applied in the result because the calculation is a generic rate conversion."
     ],
     disclaimer:
-      "This calculator is for general pay comparison only and is not financial, tax, payroll, employment, or legal advice."
+      "This calculator is for general pay comparison only and is not payroll, tax, employment, immigration, financial, or legal advice."
   },
 
   "hourly-to-salary-calculator": {
@@ -1782,11 +1818,11 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
     ],
     mistakesOrLimitations: [
       "Do not mix paid weeks and worked weeks unless that is the comparison you intend.",
-      "Overtime premiums, shift allowances, commission, tips, benefits, and statutory rules are not modelled.",
+      "Overtime, unpaid breaks, holiday pay, sick pay, pension, tax, payroll deductions, bonuses, commissions, shift premiums, employer rules, and legal minimum wage compliance are not modelled.",
       "The result is currency-neutral; interpret it in the currency of the hourly rate you entered."
     ],
     disclaimer:
-      "This calculator is a general wage-conversion tool and is not financial, tax, payroll, employment, or legal advice."
+      "This calculator is a general wage-conversion tool and is not payroll, tax, employment, immigration, financial, or legal advice."
   },
 
   "pounds-kilograms-converter": {

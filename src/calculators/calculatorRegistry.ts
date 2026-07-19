@@ -923,7 +923,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     description:
       "Estimate Basal Metabolic Rate (BMR) using the Mifflin–St Jeor equation.",
     inputs: [
-      { name: "age", label: "Age", type: "number", required: true, min: 10, max: 120 },
+      { name: "age", label: "Age", type: "number", required: true, min: 10, max: 120, helperText: "Used by the estimate formula; not a medical measurement." },
       {
         name: "sex",
         label: "Sex",
@@ -935,8 +935,8 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "female", label: "Female" }
         ]
       },
-      { name: "heightCm", label: "Height (cm)", type: "number", required: true, min: 50, max: 250 },
-      { name: "weightKg", label: "Weight (kg)", type: "number", required: true, min: 20, max: 350 }
+      { name: "heightCm", label: "Height (cm)", type: "number", required: true, min: 50, max: 250, helperText: "Enter centimetres; formula accuracy depends on your inputs." },
+      { name: "weightKg", label: "Weight (kg)", type: "number", required: true, min: 20, max: 350, helperText: "Enter kilograms; body composition is not directly measured." }
     ],
     calculate: (values) => {
       const age = Number(values.age) || 0;
@@ -949,7 +949,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
 
       return { bmr: `${formatInteger(bmr)} kcal/day` };
     },
-    resultLabels: { bmr: "BMR" },
+    resultLabels: { bmr: "Estimated BMR" },
     relatedSlugs: ["tdee-calculator", "calorie-calculator", "bmi-calculator"]
   },
   {
@@ -957,9 +957,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "tdee-calculator",
     category: "Health Calculators",
     description:
-      "Estimate Total Daily Energy Expenditure (TDEE) based on BMR and activity level.",
+      "Estimate Total Daily Energy Expenditure (TDEE) from BMR and a rough activity multiplier.",
     inputs: [
-      { name: "age", label: "Age", type: "number", required: true, min: 10, max: 120 },
+      { name: "age", label: "Age", type: "number", required: true, min: 10, max: 120, helperText: "Used in the BMR estimate before the activity multiplier is applied." },
       {
         name: "sex",
         label: "Sex",
@@ -971,8 +971,8 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "female", label: "Female" }
         ]
       },
-      { name: "heightCm", label: "Height (cm)", type: "number", required: true, min: 50, max: 250 },
-      { name: "weightKg", label: "Weight (kg)", type: "number", required: true, min: 20, max: 350 },
+      { name: "heightCm", label: "Height (cm)", type: "number", required: true, min: 50, max: 250, helperText: "Enter centimetres for the BMR formula." },
+      { name: "weightKg", label: "Weight (kg)", type: "number", required: true, min: 20, max: 350, helperText: "Enter kilograms; the result remains an estimate." },
       {
         name: "activityLevel",
         label: "Activity level",
@@ -1021,9 +1021,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
       };
     },
     resultLabels: {
-      tdee: "TDEE",
+      tdee: "Estimated TDEE",
       cutCalories: "Cut (approx. -500 kcal)",
-      maintainCalories: "Maintain",
+      maintainCalories: "Estimated maintenance",
       gainCalories: "Gain (approx. +500 kcal)"
     },
     relatedSlugs: ["bmr-calculator", "calorie-calculator", "bmi-calculator"]
@@ -1033,7 +1033,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "calorie-calculator",
     category: "Health Calculators",
     description:
-      "Estimate daily calories for maintenance and simple weight change targets based on activity level.",
+      "Estimate daily calorie needs and simple targets from BMR, activity, and your entered details.",
     inputs: [
       { name: "age", label: "Age", type: "number", required: true, min: 10, max: 120 },
       {
@@ -1063,7 +1063,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "veryActive", label: "Very active (physical job/training)" }
         ],
         helperText:
-          "These estimates are general guidance and not medical advice."
+          "Choose the closest typical week; multipliers are rough estimates, not measured energy use."
       }
     ],
     calculate: (values) => {
@@ -1126,9 +1126,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "USD", label: "USD ($)" }
         ]
       },
-      { name: "billAmount", label: "Bill amount", type: "number", required: true, min: 0 },
-      { name: "tipPercentage", label: "Tip percentage (%)", type: "number", required: true, min: 0, max: 100, defaultValue: "15" },
-      { name: "numberOfPeople", label: "Number of people", type: "number", required: true, min: 1, defaultValue: "1" }
+      { name: "billAmount", label: "Bill amount", type: "number", required: true, min: 0, helperText: "Enter the pre-tip bill amount. Include service charges only if you want to tip on them." },
+      { name: "tipPercentage", label: "Tip percentage (%)", type: "number", required: true, min: 0, max: 100, defaultValue: "15", helperText: "Use any percentage that fits local custom, service type, and personal choice." },
+      { name: "numberOfPeople", label: "Number of people", type: "number", required: true, min: 1, defaultValue: "1", helperText: "Must be at least 1 to avoid dividing by zero." }
     ],
     calculate: (values) => {
       const currency = (values.currency as CurrencyCode) || "GBP";
@@ -2099,9 +2099,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
     description:
       "Convert annual salary to an hourly rate using hours per week and weeks per year.",
     inputs: [
-      { name: "annualSalary", label: "Annual salary", type: "number", required: true, min: 0 },
-      { name: "hoursPerWeek", label: "Hours per week", type: "number", required: true, min: 1, max: 168, step: 0.1, defaultValue: "40" },
-      { name: "weeksPerYear", label: "Weeks per year", type: "number", required: true, min: 1, max: 52, step: 0.1, defaultValue: "52" }
+      { name: "annualSalary", label: "Annual salary", type: "number", required: true, min: 0, helperText: "Enter gross annual salary before tax, deductions, bonuses, or commissions unless you intend otherwise." },
+      { name: "hoursPerWeek", label: "Hours per week", type: "number", required: true, min: 1, max: 168, step: 0.1, defaultValue: "40", helperText: "Use paid or worked hours consistently; overtime and unpaid breaks are not modelled separately." },
+      { name: "weeksPerYear", label: "Weeks per year", type: "number", required: true, min: 1, max: 52, step: 0.1, defaultValue: "52", helperText: "Use 52 for full-year paid work or fewer weeks for unpaid gaps." }
     ],
     calculate: (values) => {
       const annual = Number(values.annualSalary) || 0;
@@ -2122,9 +2122,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
     description:
       "Convert hourly rate to weekly, monthly, and annual salary estimates.",
     inputs: [
-      { name: "hourlyRate", label: "Hourly rate", type: "number", required: true, min: 0 },
-      { name: "hoursPerWeek", label: "Hours per week", type: "number", required: true, min: 1, max: 168, step: 0.1, defaultValue: "40" },
-      { name: "weeksPerYear", label: "Weeks per year", type: "number", required: true, min: 1, max: 52, step: 0.1, defaultValue: "52" }
+      { name: "hourlyRate", label: "Hourly rate", type: "number", required: true, min: 0, helperText: "Enter gross hourly pay before tax, deductions, premiums, tips, bonuses, or commissions." },
+      { name: "hoursPerWeek", label: "Hours per week", type: "number", required: true, min: 1, max: 168, step: 0.1, defaultValue: "40", helperText: "Use the regular hours assumption you want converted; overtime is not separately modelled." },
+      { name: "weeksPerYear", label: "Weeks per year", type: "number", required: true, min: 1, max: 52, step: 0.1, defaultValue: "52", helperText: "Use paid or worked weeks consistently; holiday and sick pay rules are not modelled." }
     ],
     calculate: (values) => {
       const rate = Number(values.hourlyRate) || 0;
