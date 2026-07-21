@@ -46,12 +46,14 @@ export default function TermsPage() {
 
           <p className="mt-4">
             NexoraCalculator provides free calculators, converters, estimates,
-            educational explanations and related informational content.
+            educational explanations, comparison tools, and related
+            informational content.
           </p>
 
           <p className="mt-4">
-            Our tools may cover mathematics, finance, taxation, health, dates,
-            time, measurements, conversions and everyday calculations.
+            Our tools may cover mathematics, finance, taxation, payroll, health,
+            dates, time, measurements, conversions, academic calculations,
+            and everyday planning calculations.
           </p>
         </section>
 
@@ -63,8 +65,8 @@ export default function TermsPage() {
           <p className="mt-4">
             We aim to provide useful and reasonably accurate calculations.
             However, results may be estimates and may depend on your input,
-            assumptions, rounding rules, technical limitations and changing
-            external information.
+            assumptions, simplified formulas, rounding rules, technical
+            limitations, and changing external information.
           </p>
 
           <p className="mt-4">
@@ -74,8 +76,9 @@ export default function TermsPage() {
           </p>
 
           <p className="mt-4">
-            You are responsible for checking your inputs and independently
-            verifying important results before relying on them.
+            You are responsible for checking your inputs, reviewing the
+            assumptions shown on each page, and independently verifying
+            important results before relying on them.
           </p>
         </section>
 
@@ -85,9 +88,9 @@ export default function TermsPage() {
           </h2>
 
           <p className="mt-4">
-            NexoraCalculator does not provide personalised financial, tax,
-            investment, legal, medical, nutritional, accounting or other
-            professional advice.
+            NexoraCalculator does not provide personal financial, tax,
+            investment, legal, medical, nutritional, accounting, payroll,
+            academic, immigration, official, or other professional advice.
           </p>
 
           <p className="mt-4">
@@ -96,8 +99,10 @@ export default function TermsPage() {
           </p>
 
           <p className="mt-4">
-            Seek appropriate professional advice before making an important
-            financial, legal, medical, tax, investment or business decision.
+            Seek appropriate professional or official guidance before making an
+            important financial, legal, medical, tax, payroll, academic,
+            immigration, investment, business, filing, payment, or deadline
+            decision.
           </p>
         </section>
 
@@ -165,7 +170,7 @@ export default function TermsPage() {
             <li>Interfere with the security or operation of the website.</li>
             <li>Generate unreasonable or harmful automated traffic.</li>
             <li>Copy substantial website content without permission.</li>
-            <li>Present calculator results as certified professional advice.</li>
+            <li>Present calculator results as certified professional, academic, legal, medical, tax, payroll, or official advice.</li>
           </ul>
         </section>
 
@@ -227,8 +232,9 @@ export default function TermsPage() {
           </h2>
 
           <p className="mt-4">
-            We may update, restrict, suspend or remove calculators, pages or
-            website features at any time.
+            We may correct, update, restrict, suspend, or remove calculators,
+            pages, formulas, assumptions, examples, or website features at any
+            time.
           </p>
 
           <p className="mt-4">
@@ -253,12 +259,12 @@ export default function TermsPage() {
           </p>
 
           <ul className="mt-4 list-disc space-y-2 pl-6">
-            <li>Reliance on a calculator result or explanation.</li>
+            <li>Reliance on a calculator result, estimate, assumption, formula, or explanation.</li>
             <li>Incorrect, incomplete, delayed or outdated information.</li>
             <li>Incorrect information entered by a user.</li>
             <li>Temporary website interruption or unavailability.</li>
             <li>Third-party websites, advertisements, services or data.</li>
-            <li>Decisions made without suitable professional advice.</li>
+            <li>Decisions made without suitable professional, official, or independent verification.</li>
           </ul>
 
           <p className="mt-4">

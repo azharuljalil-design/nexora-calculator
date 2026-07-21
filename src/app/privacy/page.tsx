@@ -89,9 +89,10 @@ export default function PrivacyPolicyPage() {
 
           <p className="mt-3">
             Values entered into our calculators are used to generate the
-            requested calculation or estimate. Our calculator fields are not
-            intended for names, account numbers, medical records, passwords,
-            or other identifying or sensitive information.
+            requested calculation or estimate in your browser or through the
+            website interface. Our calculator fields are not intended for
+            names, account numbers, medical records, passwords, or other
+            identifying or sensitive information.
           </p>
 
           <p className="mt-3">
@@ -124,7 +125,7 @@ export default function PrivacyPolicyPage() {
             <li>Improve our calculators, content, navigation, and performance.</li>
             <li>Diagnose technical faults and prevent misuse or fraud.</li>
             <li>Respond to questions, complaints, and privacy requests.</li>
-            <li>Display and measure advertising, subject to applicable consent.</li>
+            <li>Display, limit, personalise where permitted, and measure advertising, subject to applicable consent.</li>
             <li>Meet legal, regulatory, and contractual obligations.</li>
           </ul>
         </section>

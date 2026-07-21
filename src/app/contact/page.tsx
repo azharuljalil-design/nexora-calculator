@@ -19,7 +19,8 @@ export default function ContactPage() {
 
         <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-600">
           Contact NexoraCalculator with questions, feedback, correction
-          requests, privacy enquiries, or technical issues.
+          requests, calculator suggestions, privacy or cookie questions, and
+          technical issues.
         </p>
       </header>
 
@@ -51,9 +52,10 @@ export default function ContactPage() {
           <ul className="mt-4 list-disc space-y-2 pl-6">
             <li>Questions about NexoraCalculator.</li>
             <li>Feedback about a calculator or website page.</li>
-            <li>Reporting an incorrect calculation or broken feature.</li>
-            <li>Suggestions for new calculators.</li>
-            <li>Privacy, cookie, or data-protection enquiries.</li>
+            <li>Bug reports, broken links, or accessibility issues.</li>
+            <li>Correction requests for calculator wording, examples, or results.</li>
+            <li>Suggestions for new calculators or clearer explanations.</li>
+            <li>Privacy, cookie, consent, or data-protection questions.</li>
             <li>Advertising or business enquiries.</li>
             <li>Reporting technical, accessibility, or security problems.</li>
           </ul>
@@ -95,8 +97,9 @@ export default function ContactPage() {
 
           <p className="mt-4">
             NexoraCalculator provides general informational calculation tools.
-            We cannot provide personalised financial, tax, legal, medical, or
-            professional advice by email.
+            We cannot provide personal financial, tax, medical, legal,
+            payroll, academic, immigration, official, or other professional
+            advice by email.
           </p>
         </section>
       </div>

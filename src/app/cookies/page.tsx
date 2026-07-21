@@ -61,7 +61,7 @@ Cookie Policy </h1>
         Cookies are small text files that websites may place on your
         browser or device. They can help websites operate correctly,
         remember preferences, understand usage, measure performance, and
-        support advertising.
+        support advertising where permitted.
       </p>
 
       <p className="mt-4">
@@ -88,7 +88,7 @@ Cookie Policy </h1>
         <li>Understand how visitors use our pages and calculators.</li>
         <li>Measure website traffic, performance, and technical errors.</li>
         <li>Improve content, navigation, and calculator functionality.</li>
-        <li>Display, deliver, limit, and measure advertising.</li>
+        <li>Display, deliver, limit, personalise where permitted, and measure advertising.</li>
         <li>Detect invalid traffic, fraud, misuse, or security problems.</li>
       </ul>
     </section>
@@ -250,8 +250,8 @@ Cookie Policy </h1>
 
       <p className="mt-4">
         Your choices may determine whether optional analytics,
-        personalised advertising, or other non-essential technologies are
-        used.
+        personalised advertising, measurement, or other non-essential
+        technologies are used.
       </p>
     </section>
 
