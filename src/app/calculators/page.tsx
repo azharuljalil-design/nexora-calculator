@@ -10,7 +10,7 @@ export const metadata: Metadata = createPageMetadata({
   title: "All Calculators",
   path: "/calculators",
   description:
-    "Browse all NexoraCalculator tools alphabetically and grouped by category."
+    "Browse NexoraCalculator's public tools grouped by finance, tax, health, math, conversion, date and time, and everyday categories.",
 });
 
 export default function AllCalculatorsPage() {
@@ -18,8 +18,22 @@ export default function AllCalculatorsPage() {
     <div className="space-y-10">
       <SectionHeading
         title="All calculators"
-        subtitle="Browse every calculator, grouped by category and sorted alphabetically."
+        subtitle="Browse public calculators grouped by category and sorted alphabetically."
       />
+
+      <section className="rounded-3xl border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm sm:p-8">
+        <p>
+          NexoraCalculator organizes free online calculators into practical
+          categories so you can quickly find the right tool for finance, tax,
+          health, math, conversions, date and time, and everyday planning.
+        </p>
+        <p className="mt-3">
+          Calculator results are estimates based on the inputs and assumptions
+          you provide. For high-impact financial, tax, medical, legal, payroll,
+          academic, or official-rule decisions, verify results with a qualified
+          professional or relevant official source.
+        </p>
+      </section>
 
       <div className="space-y-10">
         {calculatorCategories.map((category) => {
@@ -45,7 +59,7 @@ export default function AllCalculatorsPage() {
 
               {cards.length === 0 ? (
                 <p className="text-sm text-slate-600">
-                  No calculators are available in this category yet.
+                  No public calculators are available in this category yet.
                 </p>
               ) : (
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -72,4 +86,3 @@ export default function AllCalculatorsPage() {
     </div>
   );
 }
-
