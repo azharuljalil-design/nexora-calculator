@@ -34,8 +34,8 @@ function fallbackCandidates(categoryName: string, current: string[]) {
         "year",
         "pregnancy",
         "ovulation",
-        "age"
-      ])
+        "age",
+      ]),
     );
   }
 
@@ -44,13 +44,12 @@ function fallbackCandidates(categoryName: string, current: string[]) {
       includesAny(keyword(`${c.name} ${c.description}`), [
         "convert",
         "converter",
-        "currency",
         "unit",
         "pounds",
         "kilograms",
         "miles",
-        "kilometers"
-      ])
+        "kilometers",
+      ]),
     );
   }
 
@@ -62,8 +61,8 @@ function fallbackCandidates(categoryName: string, current: string[]) {
         "take-home",
         "age",
         "split",
-        "budget"
-      ])
+        "budget",
+      ]),
     );
   }
 
@@ -79,8 +78,8 @@ export function HomeCategoryColumns() {
             Calculator categories
           </h2>
           <p className="mt-1 text-sm text-slate-600">
-            Jump to a tool by category—quick links for finance, health,
-            math, tax, and everyday planning.
+            Jump to a tool by category—quick links for finance, health, math,
+            tax, and everyday planning.
           </p>
         </div>
       </div>
@@ -91,10 +90,10 @@ export function HomeCategoryColumns() {
           const primarySlugs = primary.map((c) => c.slug);
           const filled = [
             ...primary,
-            ...fallbackCandidates(category.name, primarySlugs)
+            ...fallbackCandidates(category.name, primarySlugs),
           ];
           const uniqueBySlug = Array.from(
-            new Map(filled.map((c) => [c.slug, c])).values()
+            new Map(filled.map((c) => [c.slug, c])).values(),
           );
           let items = uniqueBySlug;
           if (items.length < minPerCategory) {
@@ -143,4 +142,3 @@ export function HomeCategoryColumns() {
     </section>
   );
 }
-
