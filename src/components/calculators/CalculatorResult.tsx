@@ -1,7 +1,24 @@
+import type { ReactNode } from "react";
 import type {
   CalculatorConfig,
   CalculatorResultShape
 } from "@/types/calculatorTypes";
+
+function formatResultValue(value: unknown): ReactNode {
+  if (typeof value === "string" || typeof value === "number") {
+    return value;
+  }
+
+  if (value == null) {
+    return "—";
+  }
+
+  if (Array.isArray(value)) {
+    return value.join(", ");
+  }
+
+  return JSON.stringify(value);
+}
 
 type CalculatorResultProps = {
   config: CalculatorConfig;
@@ -55,7 +72,7 @@ export function CalculatorResult({
                   {label}
                 </p>
                 <p className="text-sm font-semibold text-text">
-                  {value}
+                  {formatResultValue(value)}
                 </p>
               </div>
             );
