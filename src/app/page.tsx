@@ -6,6 +6,7 @@ import { createPageMetadata } from "@/lib/seo";
 import { routes } from "@/lib/routes";
 import { HomeCategoryColumns } from "@/components/home/HomeCategoryColumns";
 import { HomepageScientificCalculator } from "@/components/home/HomepageScientificCalculator";
+import { ClientWidgetErrorBoundary } from "@/components/ui/ClientWidgetErrorBoundary";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Free Online Calculators",
@@ -81,7 +82,15 @@ export default function HomePage() {
             <h2 className="mb-3 text-sm font-medium text-slate-700">
               Search public calculators
             </h2>
-            <SearchInput placeholder="Search mortgage, BMI, VAT, salary..." />
+            <ClientWidgetErrorBoundary
+              fallback={
+                <p className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                  Search is temporarily unavailable. Use the calculator links below.
+                </p>
+              }
+            >
+              <SearchInput placeholder="Search mortgage, BMI, VAT, salary..." />
+            </ClientWidgetErrorBoundary>
             <p className="mt-3 text-xs text-slate-500">
               Type a name, category, or topic to find public calculators and
               open the matching /calculators page.
@@ -89,7 +98,15 @@ export default function HomePage() {
           </div>
         </div>
 
-        <HomepageScientificCalculator />
+        <ClientWidgetErrorBoundary
+          fallback={
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm">
+              Quick calculator is temporarily unavailable. Browse calculators below.
+            </div>
+          }
+        >
+          <HomepageScientificCalculator />
+        </ClientWidgetErrorBoundary>
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
