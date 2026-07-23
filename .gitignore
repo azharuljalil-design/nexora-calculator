@@ -20,7 +20,3 @@ Thumbs.db
 
 # Testing / coverage
 coverage/
-
-# Generated deploy/test artifacts
-.hostinger-deploy/
-.tmp-test/

@@ -66,30 +66,3 @@ If `npm` is not recognized or you see **scripts cannot be loaded** because runni
 
 If the app shows missing chunks or broken styles after a crash, stop the dev server, delete the **`.next`** folder, then run `npm.cmd run dev` again.
 
-
-## Hostinger production deployment
-
-Use the Hostinger-specific build when deploying the Node.js app:
-
-```bash
-npm ci
-npm run build:hostinger
-```
-
-The `build:hostinger` script performs a normal Next.js production build, verifies
-that every `static/...` asset referenced by the Next.js build manifests exists in
-`.next/static`, and prepares `.hostinger-deploy/` for upload. Upload the contents
-of `.hostinger-deploy/` to Hostinger and restart the Node.js app from `server.js`.
-
-The deploy bundle must include all of these paths together from the same build:
-
-- `server.js` and the standalone server files
-- `.next/static/**`, including `_next/static/chunks/*.js`
-- `public/**`
-
-Do not upload only `.next/standalone`. The standalone output intentionally omits
-`.next/static`, so omitting that copy can leave production HTML pointing at
-missing chunk files such as `/_next/static/chunks/*.js`. To prevent stale HTML
-from requesting old chunk hashes, restart the Hostinger Node.js app immediately
-after upload and purge/disable any HTML cache for the site while keeping
-`/_next/static/**` cacheable as immutable build assets.
