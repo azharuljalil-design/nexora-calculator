@@ -7,10 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node scripts/run-tests.js",
-    "verify:next-static": "node scripts/verify-next-static-assets.js",
-    "prepare:hostinger": "node scripts/prepare-hostinger-deploy.js",
-    "build:hostinger": "next build && npm run verify:next-static && npm run prepare:hostinger"
+    "test": "node scripts/run-tests.js"
   },
   "dependencies": {
     "next": "14.2.5",
