@@ -85,22 +85,22 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
       "Estimate mortgage repayments based on your inputs, including loan amount, rate, term, deposit, and optional recurring ownership costs.",
     whatItDoes: [
       "Estimates the monthly principal-and-interest payment for a repayment mortgage based on the property price, deposit, annual interest rate, and term you enter.",
-      "Shows the estimated mortgage balance, monthly principal and interest, optional monthly property tax, optional insurance, optional HOA/service charge, total monthly payment, total loan payments, and total interest.",
+      "Shows the estimated mortgage balance, monthly mortgage repayment, optional monthly property tax, optional insurance, optional HOA/service charge, estimated total monthly housing cost, total mortgage repayments, and total interest.",
       "Helps you compare broad affordability scenarios before requesting lender quotes or reviewing a detailed Amortization Calculator schedule."
     ],
     howToUse: [
-      "Select the region and currency that best match the figures you want to enter.",
+      "Select GBP, EUR, or USD for display formatting. Currency selection does not change the repayment formula.",
       "Enter the full property price and the deposit or down payment amount. The calculator estimates the loan amount as property price minus deposit.",
       "Enter the annual interest rate as a percentage and the repayment term in years. The term is converted into monthly payments.",
       "Enter optional annual property tax, annual home insurance, and monthly HOA/service charges only if you want those recurring costs included in the total monthly estimate; otherwise leave them at 0.",
       "Click Calculate and review the result as an estimate based on your inputs, not as a mortgage offer or affordability decision."
     ],
     methodology: [
-      "Loan amount = property price − down payment, floored at 0 if the down payment is greater than the property price.",
+      "Loan amount = property price − deposit. The deposit must be less than the property price.",
       "The annual interest rate is converted to a monthly rate: r = annual rate ÷ 12 ÷ 100, and the number of payments is n = loan term in years × 12.",
       "For interest-bearing repayment mortgages the calculator uses M = P × r × (1 + r)^n ÷ ((1 + r)^n − 1), where P is the mortgage balance.",
       "If the interest rate is 0%, the principal-and-interest payment is P ÷ n.",
-      "Total loan payment = monthly principal-and-interest payment × n. Total interest paid = total loan payment − loan amount. Optional annual tax and insurance are divided by 12 and added with any monthly HOA/service charge to estimate total monthly cost."
+      "Total mortgage repayments = monthly mortgage repayment × n and exclude property tax, insurance, service charges/HOA, and other ownership costs. Optional annual tax and insurance are divided by 12 and added with any monthly HOA/service charge only for the estimated total monthly housing cost."
     ],
     example: {
       scenario:
@@ -1935,4 +1935,3 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
       "This miles and kilometers converter provides general distance conversions based on your inputs. It is not official navigation, transport, legal, aviation, surveying, or engineering advice."
   }
 };
-

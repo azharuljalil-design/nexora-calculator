@@ -46,6 +46,8 @@ export function renderInputControl({
         id={input.name}
         aria-invalid={hasError || undefined}
         aria-describedby={ariaDescribedBy}
+        aria-required={input.required || undefined}
+        required={input.required}
         className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-primary/10 focus:border-primary/60 focus:ring-2"
         value={value}
         onChange={(event) => onChange(event.target.value)}
@@ -144,7 +146,10 @@ export function renderInputControl({
       id={input.name}
       aria-invalid={hasError || undefined}
       aria-describedby={ariaDescribedBy}
+      aria-required={input.required || undefined}
+      required={input.required}
       type="number"
+      inputMode={input.inputMode}
       className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-primary/10 focus:border-primary/60 focus:ring-2"
       value={value}
       min={input.min}
@@ -154,4 +159,3 @@ export function renderInputControl({
     />
   );
 }
-

@@ -4,7 +4,7 @@ import type {
   CalculatorResultShape,
   CalculatorFormValues
 } from "@/types/calculatorTypes";
-import { isInputRequired, isInputShown } from "@/lib/calculatorUi";
+import { isInputRequired, isInputShown } from "../calculatorUi";
 
 export type CalculatorErrors = Record<string, string | undefined>;
 
@@ -41,7 +41,7 @@ export function validateInput(
     }
   }
 
-  return undefined;
+  return input.validate?.(rawValue, values);
 }
 
 export function validateAll(
