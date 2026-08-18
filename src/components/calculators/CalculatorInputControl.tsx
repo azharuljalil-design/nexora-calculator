@@ -92,6 +92,8 @@ export function renderInputControl({
         id={input.name}
         aria-invalid={hasError || undefined}
         aria-describedby={ariaDescribedBy}
+        aria-required={input.required || undefined}
+        required={input.required}
         type="date"
         className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-primary/10 focus:border-primary/60 focus:ring-2"
         value={value}

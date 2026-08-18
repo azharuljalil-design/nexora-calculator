@@ -30,6 +30,7 @@ fs.writeFileSync(
       files: [
         path.join(root, "tests/financialMath.test.ts"),
         path.join(root, "src/lib/financialMath.ts"),
+        path.join(root, "src/lib/amortization.ts"),
         path.join(root, "src/calculators/calculatorRegistry.ts"),
         path.join(root, "src/lib/format.ts"),
         path.join(root, "src/lib/conversions.ts"),

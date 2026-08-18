@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import type { CalculatorConfig } from "@/types/calculatorTypes";
 import { useCalculatorEngine } from "@/components/calculators/useCalculatorEngine";
 import { CalculatorResult } from "@/components/calculators/CalculatorResult";
-import { calculateMonthlyPayment } from "@/lib/financialMath";
+import { buildAmortizationSchedule } from "@/lib/amortization";
 import { formatCurrency } from "@/lib/format";
 import type { CurrencyCode } from "@/lib/conversions";
 import { renderInputControl } from "@/components/calculators/CalculatorInputControl";
@@ -17,54 +17,6 @@ import {
 type AmortizationCalculatorProps = {
   config: CalculatorConfig;
 };
-
-type ScheduleRow = {
-  month: number;
-  payment: number;
-  principal: number;
-  interest: number;
-  balance: number;
-};
-
-function buildSchedule(args: {
-  principal: number;
-  annualRate: number;
-  years: number;
-}) {
-  const { principal, annualRate, years } = args;
-  const months = years * 12;
-  const r = annualRate / 12 / 100;
-
-  const monthlyPayment = calculateMonthlyPayment({
-    principal,
-    annualInterestRate: annualRate,
-    years
-  });
-
-  if (monthlyPayment === null) return null;
-
-  const rows: ScheduleRow[] = [];
-  let balance = principal;
-  let totalInterest = 0;
-
-  for (let m = 1; m <= months; m++) {
-    const interest = r === 0 ? 0 : balance * r;
-    const principalPaid = Math.min(monthlyPayment - interest, balance);
-    balance = Math.max(balance - principalPaid, 0);
-    totalInterest += interest;
-    rows.push({
-      month: m,
-      payment: monthlyPayment,
-      principal: principalPaid,
-      interest,
-      balance
-    });
-    if (balance <= 0) break;
-  }
-
-  const totalPayment = monthlyPayment * months;
-  return { monthlyPayment, totalInterest, totalPayment, rows };
-}
 
 export function AmortizationCalculator({ config }: AmortizationCalculatorProps) {
   const engine = useCalculatorEngine(config);
@@ -79,7 +31,7 @@ export function AmortizationCalculator({ config }: AmortizationCalculatorProps) 
       return null;
     }
     if (principal <= 0 || years <= 0 || annualRate < 0) return null;
-    return buildSchedule({ principal, annualRate, years });
+    return buildAmortizationSchedule({ principal, annualInterestRate: annualRate, years });
   }, [principal, annualRate, years]);
 
   return (
@@ -191,10 +143,10 @@ export function AmortizationCalculator({ config }: AmortizationCalculatorProps) 
               </thead>
               <tbody className="text-slate-700">
                 {schedule.rows.map((row) => (
-                  <tr key={row.month} className="border-t border-slate-100">
-                    <td className="py-2 pr-3">{row.month}</td>
+                  <tr key={row.paymentNumber} className="border-t border-slate-100">
+                    <td className="py-2 pr-3">{row.paymentNumber}</td>
                     <td className="py-2 pr-3">
-                      {formatCurrency(row.payment, currency)}
+                      {formatCurrency(row.paymentAmount, currency)}
                     </td>
                     <td className="py-2 pr-3">
                       {formatCurrency(row.principal, currency)}
@@ -203,7 +155,7 @@ export function AmortizationCalculator({ config }: AmortizationCalculatorProps) 
                       {formatCurrency(row.interest, currency)}
                     </td>
                     <td className="py-2">
-                      {formatCurrency(row.balance, currency)}
+                      {formatCurrency(row.remainingBalance, currency)}
                     </td>
                   </tr>
                 ))}
@@ -218,4 +170,3 @@ export function AmortizationCalculator({ config }: AmortizationCalculatorProps) 
     </div>
   );
 }
-

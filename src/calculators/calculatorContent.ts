@@ -84,42 +84,45 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
     metaDescription:
       "Estimate mortgage repayments based on your inputs, including loan amount, rate, term, deposit, and optional recurring ownership costs.",
     whatItDoes: [
-      "Estimates the monthly principal-and-interest payment for a repayment mortgage based on the property price, deposit, annual interest rate, and term you enter.",
-      "Shows the estimated mortgage balance, monthly mortgage repayment, optional monthly property tax, optional insurance, optional HOA/service charge, estimated total monthly housing cost, total mortgage repayments, and total interest.",
+      "Estimates the monthly principal-and-interest payment for a fixed-rate repayment mortgage using a deposit amount or percentage, first payment date, rate, and term.",
+      "Shows the deposit in both forms, mortgage balance, loan-to-value (LTV), monthly costs, lifetime mortgage repayments and interest, and estimated final repayment date.",
       "Helps you compare broad affordability scenarios before requesting lender quotes or reviewing a detailed Amortization Calculator schedule."
     ],
     howToUse: [
       "Select GBP, EUR, or USD for display formatting. Currency selection does not change the repayment formula.",
-      "Enter the full property price and the deposit or down payment amount. The calculator estimates the loan amount as property price minus deposit.",
+      "Enter the full property price, choose Deposit amount or Deposit percentage, and enter only the selected form. The results show the equivalent amount and percentage.",
       "Enter the annual interest rate as a percentage and the repayment term in years. The term is converted into monthly payments.",
+      "Choose the required first repayment date. This is payment 1 and determines the calendar dates of the remaining scheduled payments.",
       "Enter optional annual property tax, annual home insurance, and monthly HOA/service charges only if you want those recurring costs included in the total monthly estimate; otherwise leave them at 0.",
       "Click Calculate and review the result as an estimate based on your inputs, not as a mortgage offer or affordability decision."
     ],
     methodology: [
-      "Loan amount = property price − deposit. The deposit must be less than the property price.",
+      "Mortgage amount = property price − deposit. A percentage deposit is converted to an amount first; either form must be at least zero and less than the property price or 100%.",
+      "LTV = mortgage amount ÷ property price × 100. It describes the mortgage amount as a percentage of the property price and is not an eligibility or approval assessment.",
       "The annual interest rate is converted to a monthly rate: r = annual rate ÷ 12 ÷ 100, and the number of payments is n = loan term in years × 12.",
       "For interest-bearing repayment mortgages the calculator uses M = P × r × (1 + r)^n ÷ ((1 + r)^n − 1), where P is the mortgage balance.",
       "If the interest rate is 0%, the principal-and-interest payment is P ÷ n.",
-      "Total mortgage repayments = monthly mortgage repayment × n and exclude property tax, insurance, service charges/HOA, and other ownership costs. Optional annual tax and insurance are divided by 12 and added with any monthly HOA/service charge only for the estimated total monthly housing cost."
+      "The amortization schedule contributes one row per payment. Its row totals produce lifetime mortgage repayments and interest; optional ownership costs affect only the estimated monthly housing cost.",
+      "Payment 1 uses the entered calendar date. Each later date advances from that original date by a calendar month; when the day does not exist it uses month end (for example, 31 January, 28/29 February, then 31 March). Dates are handled as calendar dates without UTC conversion."
     ],
     example: {
       scenario:
         "A buyer estimates a £350,000 home purchase with a £70,000 deposit, a 4.75% annual rate, and a 25-year repayment term.",
       steps: [
-        "Loan amount = £350,000 − £70,000 = £280,000",
+        "A £70,000 deposit is 20.00%; the mortgage is £280,000 and its LTV is 80.00%",
         "Number of monthly payments = 25 × 12 = 300",
         "Monthly rate = 4.75 ÷ 12 ÷ 100 = 0.0039583",
         "Using the repayment formula, monthly principal and interest ≈ £1,596.33",
         "Total loan payments ≈ £1,596.33 × 300 = £478,898.58, so total interest ≈ £198,898.58 before optional costs"
       ],
       result:
-        "The calculator would estimate about £1,596.33 per month for principal and interest. If you entered £0 for tax, insurance, and HOA/service charge, the total monthly payment estimate would also be about £1,596.33."
+        "The calculator estimates about £1,596.33 per month for principal and interest and shows the original final scheduled date from the selected first repayment date. With no optional ownership costs, the monthly housing estimate is the same."
     },
     mistakesOrLimitations: [
       "This is an estimate based on your inputs and is not a mortgage offer, approval, affordability assessment, or financial advice.",
       "It does not model arrangement fees, broker fees, insurance products, taxes not entered, legal fees, valuation fees, moving costs, early repayment charges, overpayments, product transfers, offset balances, or changes after an initial fixed/tracker period unless you explicitly include those costs in the inputs.",
-      "Variable-rate changes, remortgaging, missed payments, daily interest, lender-specific rounding, and different payment dates can make real mortgage statements differ from this estimate.",
-      "Do not enter the deposit as a percentage; the input expects a currency amount.",
+      "The calculation assumes the entered fixed rate and regular monthly payments continue for the whole term. Variable rates, remortgaging, missed payments, daily interest, and lender rounding can differ.",
+      "Currency selection changes formatting only and does not convert values or change the calculation.",
       "The result depends heavily on the rate, term, deposit/loan amount, and repayment assumptions entered. Small rate changes can materially affect the payment and interest total."
     ],
     disclaimer:
@@ -139,6 +142,16 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
         question: "Does it include arrangement fees, legal fees, valuation fees, or early repayment charges?",
         answer:
           "No. Those are not modelled unless you manually adjust your inputs. Budget separately for one-off fees and product-specific charges."
+      },
+      {
+        question: "What are deposit percentage and LTV?",
+        answer:
+          "Deposit percentage is the upfront deposit divided by property price. LTV is the mortgage amount divided by property price. They complement each other here, but neither result is a lending decision."
+      },
+      {
+        question: "How is the estimated payoff date calculated?",
+        answer:
+          "The first repayment date is payment 1. The calculator advances one calendar month per later payment, retaining the original day when possible and using month end otherwise. It shows the final payment under the original term only."
       },
       {
         question: "Does it handle variable rates or remortgaging?",

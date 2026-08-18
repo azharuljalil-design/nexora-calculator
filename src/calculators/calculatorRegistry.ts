@@ -3,6 +3,7 @@ import { formatCurrency, formatInteger, formatNumber } from "@/lib/format";
 import { convertCurrency, convertUnit, unitOptions, type CurrencyCode, type UnitCategory } from "@/lib/conversions";
 import { evaluateExpression } from "@/lib/mathExpression";
 import { FINANCIAL_INPUT_TOO_LARGE_MESSAGE, LOAN_PAYMENT_INVALID_MESSAGE, calculateCompoundInterestSummary, calculateMonthlyPayment } from "@/lib/financialMath";
+import { buildAmortizationSchedule, isValidCalendarDate } from "@/lib/amortization";
 
 export const calculatorRegistry: CalculatorConfig[] = [
   {
@@ -62,6 +63,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "EUR", label: "EUR (€)" },
           { value: "USD", label: "USD ($)" }
         ],
+        defaultValue: "GBP",
         helperText: "Currency changes display formatting only; it does not change the mortgage calculation."
       },
       {
@@ -75,10 +77,23 @@ export const calculatorRegistry: CalculatorConfig[] = [
         helperText: "Total property price in the selected currency; the loan amount is estimated after subtracting the down payment."
       },
       {
+        name: "depositMode",
+        label: "Deposit entry mode",
+        type: "select",
+        required: true,
+        defaultValue: "amount",
+        options: [
+          { value: "amount", label: "Deposit amount" },
+          { value: "percentage", label: "Deposit percentage" }
+        ],
+        helperText: "Choose whether to enter the deposit as money or as a percentage of the property price."
+      },
+      {
         name: "downPayment",
-        label: "Down payment",
+        label: "Deposit amount",
         type: "number",
         required: true,
+        showWhen: (values) => (values.depositMode || "amount") === "amount",
         min: 0,
         step: 0.01,
         inputMode: "decimal",
@@ -89,8 +104,31 @@ export const calculatorRegistry: CalculatorConfig[] = [
             ? "Deposit must be less than the property price."
             : undefined;
         },
-        helperText:
-          "Currency amount paid upfront, not a percentage. This is subtracted from the home price to estimate the mortgage balance."
+        helperText: "Amount paid upfront. The equivalent percentage is shown in the results."
+      },
+      {
+        name: "depositPercentage",
+        label: "Deposit percentage (%)",
+        type: "number",
+        required: true,
+        showWhen: (values) => values.depositMode === "percentage",
+        min: 0,
+        step: 0.01,
+        inputMode: "decimal",
+        validate: (value) => Number(value) >= 100
+          ? "Deposit percentage must be less than 100%."
+          : undefined,
+        helperText: "Percentage of the property price paid upfront. The equivalent amount is shown in the results."
+      },
+      {
+        name: "firstRepaymentDate",
+        label: "First repayment date",
+        type: "date",
+        required: true,
+        validate: (value) => value && !isValidCalendarDate(value)
+          ? "Enter a valid calendar date."
+          : undefined,
+        helperText: "Payment 1 uses this date. Later dates retain this day where possible, otherwise they use the month's final day."
       },
       {
         name: "annualInterestRate",
@@ -148,7 +186,13 @@ export const calculatorRegistry: CalculatorConfig[] = [
     calculate: (values) => {
       const currency = (values.currency as "GBP" | "EUR" | "USD") || "GBP";
       const homePrice = Number(values.homePrice) || 0;
-      const downPayment = Number(values.downPayment) || 0;
+      const depositMode = values.depositMode === "percentage" ? "percentage" : "amount";
+      const depositPercentageInput = Number(values.depositPercentage) || 0;
+      const downPayment = depositMode === "percentage"
+        ? homePrice * depositPercentageInput / 100
+        : Number(values.downPayment) || 0;
+      const depositPercentage = homePrice > 0 ? downPayment / homePrice * 100 : 0;
+      const firstRepaymentDate = String(values.firstRepaymentDate || "");
       const annualRate = Number(values.annualInterestRate) || 0;
       const years = Number(values.loanTermYears) || 0;
       const annualPropertyTax = Number(values.annualPropertyTax) || 0;
@@ -156,16 +200,20 @@ export const calculatorRegistry: CalculatorConfig[] = [
       const monthlyHOA = Number(values.monthlyHOA) || 0;
 
       const loanAmount = homePrice - downPayment;
-      const months = years * 12;
-      const monthlyPI = calculateMonthlyPayment({
+      const schedule = buildAmortizationSchedule({
         principal: loanAmount,
         annualInterestRate: annualRate,
-        years
+        years,
+        firstPaymentDate: firstRepaymentDate
       });
 
-      if (monthlyPI === null) {
+      if (schedule === null) {
         return {
+          propertyPrice: formatCurrency(homePrice, currency),
+          depositAmount: formatCurrency(downPayment, currency),
+          depositPercentage: `${depositPercentage.toFixed(2)}%`,
           loanAmount: formatCurrency(loanAmount, currency),
+          loanToValue: `${(100 - depositPercentage).toFixed(2)}%`,
           monthlyPrincipalAndInterest: LOAN_PAYMENT_INVALID_MESSAGE,
           monthlyPropertyTax: LOAN_PAYMENT_INVALID_MESSAGE,
           monthlyInsurance: LOAN_PAYMENT_INVALID_MESSAGE,
@@ -176,35 +224,47 @@ export const calculatorRegistry: CalculatorConfig[] = [
         };
       }
 
+      const monthlyPI = schedule.monthlyPayment;
       const monthlyPropertyTax = annualPropertyTax / 12;
       const monthlyInsurance = annualHomeInsurance / 12;
 
       const totalMonthlyPayment =
         monthlyPI + monthlyPropertyTax + monthlyInsurance + monthlyHOA;
 
-      const totalLoanPayment = monthlyPI * months;
-      const totalInterestPaid = totalLoanPayment - loanAmount;
+      const finalRepaymentDate = schedule.rows[schedule.rows.length - 1]?.paymentDate || "";
 
       return {
+        propertyPrice: formatCurrency(homePrice, currency),
+        depositAmount: formatCurrency(downPayment, currency),
+        depositPercentage: `${depositPercentage.toFixed(2)}%`,
         loanAmount: formatCurrency(loanAmount, currency),
+        loanToValue: `${(loanAmount / homePrice * 100).toFixed(2)}%`,
         monthlyPrincipalAndInterest: formatCurrency(monthlyPI, currency),
         monthlyPropertyTax: formatCurrency(monthlyPropertyTax, currency),
         monthlyInsurance: formatCurrency(monthlyInsurance, currency),
         monthlyHOA: formatCurrency(monthlyHOA, currency),
         totalMonthlyPayment: formatCurrency(totalMonthlyPayment, currency),
-        totalLoanPayment: formatCurrency(totalLoanPayment, currency),
-        totalInterestPaid: formatCurrency(totalInterestPaid, currency)
+        totalLoanPayment: formatCurrency(schedule.totalRepayments, currency),
+        totalInterestPaid: formatCurrency(schedule.totalInterest, currency),
+        firstRepaymentDate,
+        finalRepaymentDate
       };
     },
     resultLabels: {
-      loanAmount: "Loan amount",
+      propertyPrice: "Property price",
+      depositAmount: "Deposit amount",
+      depositPercentage: "Deposit percentage",
+      loanAmount: "Mortgage amount",
+      loanToValue: "LTV (mortgage amount as a percentage of the property price)",
       monthlyPrincipalAndInterest: "Monthly mortgage repayment",
       monthlyPropertyTax: "Monthly property tax",
       monthlyInsurance: "Monthly insurance",
       monthlyHOA: "Monthly HOA / service charge",
       totalMonthlyPayment: "Estimated total monthly housing cost",
       totalLoanPayment: "Total mortgage repayments (excludes property tax, insurance, service charges/HOA and other ownership costs)",
-      totalInterestPaid: "Total interest paid"
+      totalInterestPaid: "Total interest paid",
+      firstRepaymentDate: "First repayment date",
+      finalRepaymentDate: "Estimated final repayment date"
     },
     relatedSlugs: ["loan-calculator", "amortization-calculator", "compound-interest-calculator"]
   },
