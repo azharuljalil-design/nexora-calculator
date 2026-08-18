@@ -33,7 +33,8 @@ fs.writeFileSync(
         path.join(root, "src/calculators/calculatorRegistry.ts"),
         path.join(root, "src/lib/format.ts"),
         path.join(root, "src/lib/conversions.ts"),
-        path.join(root, "src/lib/mathExpression.ts")
+        path.join(root, "src/lib/mathExpression.ts"),
+        path.join(root, "src/lib/calculatorEngine/calculatorEngine.ts")
       ]
     },
     null,

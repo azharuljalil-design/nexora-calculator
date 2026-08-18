@@ -9,9 +9,13 @@ import {
   calculateCompoundInterestSummary,
   calculateMonthlyPayment
 } from "../src/lib/financialMath";
+import { validateAll } from "../src/lib/calculatorEngine/calculatorEngine";
+import type { CalculatorConfig } from "../src/types/calculatorTypes";
 
 type CalculatorConfigForTest = {
   calculate: (values: Record<string, number | string>) => Record<string, number | string>;
+  inputs: CalculatorConfig["inputs"];
+  relatedSlugs?: string[];
 };
 
 function loadCalculator(slug: string): CalculatorConfigForTest {
@@ -139,6 +143,71 @@ test("mortgage calculator displays invalid-payment message instead of misleading
   assert.equal(result.totalMonthlyPayment, LOAN_PAYMENT_INVALID_MESSAGE);
   assert.equal(result.totalLoanPayment, LOAN_PAYMENT_INVALID_MESSAGE);
   assert.equal(result.totalInterestPaid, LOAN_PAYMENT_INVALID_MESSAGE);
+});
+
+const validMortgageValues = {
+  currency: "GBP",
+  homePrice: "350000",
+  downPayment: "70000",
+  annualInterestRate: "4.75",
+  loanTermYears: "25",
+  annualPropertyTax: "0",
+  annualHomeInsurance: "0",
+  monthlyHOA: "0"
+};
+
+test("mortgage calculator returns normal, zero-interest, and optional-cost results", () => {
+  const mortgage = loadCalculator("mortgage-calculator");
+  const normal = mortgage.calculate(validMortgageValues);
+  assert.equal(normal.loanAmount, "£280,000.00");
+  assert.equal(normal.monthlyPrincipalAndInterest, "£1,596.33");
+
+  const zeroInterest = mortgage.calculate({ ...validMortgageValues, annualInterestRate: 0 });
+  assert.equal(zeroInterest.monthlyPrincipalAndInterest, "£933.33");
+  assert.equal(zeroInterest.totalInterestPaid, "£0.00");
+
+  const optionalCosts = mortgage.calculate({
+    ...validMortgageValues,
+    currency: "USD",
+    annualPropertyTax: 6000,
+    annualHomeInsurance: 1200,
+    monthlyHOA: 100
+  });
+  assert.equal(optionalCosts.monthlyPropertyTax, "$500.00");
+  assert.equal(optionalCosts.monthlyInsurance, "$100.00");
+  assert.equal(optionalCosts.monthlyHOA, "$100.00");
+  assert.equal(optionalCosts.totalMonthlyPayment, "$2,296.33");
+});
+
+test("mortgage calculator formats all supported currencies", () => {
+  const mortgage = loadCalculator("mortgage-calculator");
+  assert.equal(mortgage.calculate({ ...validMortgageValues, currency: "GBP" }).loanAmount, "£280,000.00");
+  assert.equal(mortgage.calculate({ ...validMortgageValues, currency: "EUR" }).loanAmount, "280.000,00 €");
+  assert.equal(mortgage.calculate({ ...validMortgageValues, currency: "USD" }).loanAmount, "$280,000.00");
+});
+
+test("mortgage calculator validates price, deposit, term, and interest bounds", () => {
+  const mortgage = loadCalculator("mortgage-calculator") as CalculatorConfigForTest;
+  const validate = (overrides: Record<string, string>) =>
+    validateAll(mortgage as CalculatorConfig, { ...validMortgageValues, ...overrides });
+
+  assert.equal(validate({ homePrice: "0" }).homePrice, "Value must be at least 0.01.");
+  assert.equal(validate({ downPayment: "350000" }).downPayment, "Deposit must be less than the property price.");
+  assert.equal(validate({ downPayment: "360000" }).downPayment, "Deposit must be less than the property price.");
+  assert.equal(validate({ downPayment: "-1" }).downPayment, "Value must be at least 0.");
+  assert.equal(validate({ loanTermYears: "25.5" }).loanTermYears, "Mortgage term must be a whole number of years.");
+  assert.equal(validate({ loanTermYears: "0" }).loanTermYears, "Value must be at least 1.");
+  assert.equal(validate({ loanTermYears: "41" }).loanTermYears, "Value must be at most 40.");
+  assert.equal(validate({ annualInterestRate: "-0.01" }).annualInterestRate, "Value must be at least 0.");
+  assert.equal(validate({ annualInterestRate: "30.01" }).annualInterestRate, "Value must be at most 30.");
+});
+
+test("mortgage calculator links only to the intended related calculators", () => {
+  assert.deepEqual(loadCalculator("mortgage-calculator").relatedSlugs, [
+    "loan-calculator",
+    "amortization-calculator",
+    "compound-interest-calculator"
+  ]);
 });
 
 test("loan calculator preserves normal and zero-interest results", () => {

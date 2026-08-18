@@ -21,6 +21,8 @@ export type CalculatorInputBase = {
   min?: number;
   max?: number;
   step?: number;
+  inputMode?: "decimal" | "numeric";
+  validate?: (value: string, values: CalculatorFormValues) => string | undefined;
 };
 
 export type NumberInputConfig = CalculatorInputBase & {
@@ -69,4 +71,3 @@ export type CalculatorConfig = {
   resultLabels?: Record<string, string>;
   relatedSlugs?: string[];
 };
-

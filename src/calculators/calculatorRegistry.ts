@@ -53,17 +53,6 @@ export const calculatorRegistry: CalculatorConfig[] = [
       "Estimate mortgage payments based on your inputs, with optional recurring tax, insurance, and HOA/service-charge assumptions.",
     inputs: [
       {
-        name: "region",
-        label: "Region",
-        type: "select",
-        required: true,
-        options: [
-          { value: "UK", label: "United Kingdom" },
-          { value: "EU", label: "Europe" },
-          { value: "US", label: "United States" }
-        ]
-      },
-      {
         name: "currency",
         label: "Currency",
         type: "select",
@@ -72,14 +61,17 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "GBP", label: "GBP (£)" },
           { value: "EUR", label: "EUR (€)" },
           { value: "USD", label: "USD ($)" }
-        ]
+        ],
+        helperText: "Currency changes display formatting only; it does not change the mortgage calculation."
       },
       {
         name: "homePrice",
-        label: "Home price",
+        label: "Property price",
         type: "number",
         required: true,
-        min: 0,
+        min: 0.01,
+        step: 0.01,
+        inputMode: "decimal",
         helperText: "Total property price in the selected currency; the loan amount is estimated after subtracting the down payment."
       },
       {
@@ -88,6 +80,15 @@ export const calculatorRegistry: CalculatorConfig[] = [
         type: "number",
         required: true,
         min: 0,
+        step: 0.01,
+        inputMode: "decimal",
+        validate: (value, values) => {
+          const deposit = Number(value);
+          const propertyPrice = Number(values.homePrice);
+          return Number.isFinite(deposit) && Number.isFinite(propertyPrice) && deposit >= propertyPrice
+            ? "Deposit must be less than the property price."
+            : undefined;
+        },
         helperText:
           "Currency amount paid upfront, not a percentage. This is subtracted from the home price to estimate the mortgage balance."
       },
@@ -97,6 +98,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
         type: "number",
         required: true,
         min: 0,
+        max: 30,
+        step: 0.01,
+        inputMode: "decimal",
         helperText: "Nominal annual rate as a percentage (e.g. 4.75). Variable-rate changes are not modelled."
       },
       {
@@ -105,6 +109,12 @@ export const calculatorRegistry: CalculatorConfig[] = [
         type: "number",
         required: true,
         min: 1,
+        max: 40,
+        step: 1,
+        inputMode: "numeric",
+        validate: (value) => Number.isInteger(Number(value))
+          ? undefined
+          : "Mortgage term must be a whole number of years.",
         helperText: "Repayment term in years; the calculator converts this to monthly payments."
       },
       {
@@ -145,7 +155,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
       const annualHomeInsurance = Number(values.annualHomeInsurance) || 0;
       const monthlyHOA = Number(values.monthlyHOA) || 0;
 
-      const loanAmount = Math.max(homePrice - downPayment, 0);
+      const loanAmount = homePrice - downPayment;
       const months = years * 12;
       const monthlyPI = calculateMonthlyPayment({
         principal: loanAmount,
@@ -188,15 +198,15 @@ export const calculatorRegistry: CalculatorConfig[] = [
     },
     resultLabels: {
       loanAmount: "Loan amount",
-      monthlyPrincipalAndInterest: "Monthly principal & interest",
+      monthlyPrincipalAndInterest: "Monthly mortgage repayment",
       monthlyPropertyTax: "Monthly property tax",
       monthlyInsurance: "Monthly insurance",
       monthlyHOA: "Monthly HOA / service charge",
-      totalMonthlyPayment: "Total monthly payment",
-      totalLoanPayment: "Total loan payment",
+      totalMonthlyPayment: "Estimated total monthly housing cost",
+      totalLoanPayment: "Total mortgage repayments (excludes property tax, insurance, service charges/HOA and other ownership costs)",
       totalInterestPaid: "Total interest paid"
     },
-    relatedSlugs: ["unit-converter", "gpa-calculator", "grade-calculator"]
+    relatedSlugs: ["loan-calculator", "amortization-calculator", "compound-interest-calculator"]
   },
   {
     name: "Loan Calculator",
@@ -2302,6 +2312,10 @@ function buildRelatedSlugs(calculator: CalculatorConfig): string[] {
     .filter((s) => s !== currentSlug && registryBySlug.has(s))
     // Keep original order while de-duping
     .filter((s, idx, arr) => arr.indexOf(s) === idx);
+
+  // Phase 1 deliberately limits the mortgage page to these three directly
+  // relevant, existing calculators rather than category-wide suggestions.
+  if (currentSlug === "mortgage-calculator") return existing;
 
   const groupCandidates = uniq(
     relatedGroups
