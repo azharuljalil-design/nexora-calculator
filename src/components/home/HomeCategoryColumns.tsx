@@ -1,73 +1,9 @@
 import Link from "next/link";
 import { calculatorCategories } from "@/data/categories";
-import { getAllCalculatorCards } from "@/lib/calculatorCatalog";
+import { getCalculatorCardsByCategoryId } from "@/lib/calculatorCatalog";
 import { routes } from "@/lib/routes";
 
-const minPerCategory = 5;
 const maxPerCategory = 8;
-
-function categoryCalculators(categoryName: string) {
-  return getAllCalculatorCards()
-    .filter((c) => c.categoryName === categoryName)
-    .sort((a, b) => a.name.localeCompare(b.name));
-}
-
-function fallbackCandidates(categoryName: string, current: string[]) {
-  const currentSet = new Set(current);
-  const all = getAllCalculatorCards()
-    .filter((c) => !currentSet.has(c.slug))
-    .slice()
-    .sort((a, b) => a.name.localeCompare(b.name));
-
-  const keyword = (s: string) => s.toLowerCase();
-  const includesAny = (haystack: string, patterns: string[]) =>
-    patterns.some((p) => haystack.includes(p));
-
-  if (categoryName === "Date and Time Calculators") {
-    return all.filter((c) =>
-      includesAny(keyword(`${c.name} ${c.description}`), [
-        "date",
-        "time",
-        "duration",
-        "week",
-        "month",
-        "year",
-        "pregnancy",
-        "ovulation",
-        "age",
-      ]),
-    );
-  }
-
-  if (categoryName === "Conversion Calculators") {
-    return all.filter((c) =>
-      includesAny(keyword(`${c.name} ${c.description}`), [
-        "convert",
-        "converter",
-        "unit",
-        "pounds",
-        "kilograms",
-        "miles",
-        "kilometers",
-      ]),
-    );
-  }
-
-  if (categoryName === "Daily Life Calculators") {
-    return all.filter((c) =>
-      includesAny(keyword(`${c.name} ${c.description}`), [
-        "tip",
-        "salary",
-        "take-home",
-        "age",
-        "split",
-        "budget",
-      ]),
-    );
-  }
-
-  return all;
-}
 
 export function HomeCategoryColumns() {
   return (
@@ -86,24 +22,10 @@ export function HomeCategoryColumns() {
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {calculatorCategories.map((category) => {
-          const primary = categoryCalculators(category.name);
-          const primarySlugs = primary.map((c) => c.slug);
-          const filled = [
-            ...primary,
-            ...fallbackCandidates(category.name, primarySlugs),
-          ];
-          const uniqueBySlug = Array.from(
-            new Map(filled.map((c) => [c.slug, c])).values(),
+          const items = getCalculatorCardsByCategoryId(category.id).slice(
+            0,
+            maxPerCategory,
           );
-          let items = uniqueBySlug;
-          if (items.length < minPerCategory) {
-            const currentSet = new Set(items.map((c) => c.slug));
-            const additional = getAllCalculatorCards()
-              .filter((c) => !currentSet.has(c.slug))
-              .sort((a, b) => a.name.localeCompare(b.name));
-            items = [...items, ...additional];
-          }
-          items = items.slice(0, maxPerCategory);
 
           return (
             <div key={category.id} className="space-y-2">
