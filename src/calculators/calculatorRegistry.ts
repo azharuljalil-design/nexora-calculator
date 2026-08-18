@@ -1,8 +1,58 @@
-import type { CalculatorConfig } from "@/types/calculatorTypes";
+import type { CalculatorConfig, CalculatorResultShape } from "@/types/calculatorTypes";
 import { formatCurrency, formatInteger, formatNumber } from "@/lib/format";
 import { convertCurrency, convertUnit, unitOptions, type CurrencyCode, type UnitCategory } from "@/lib/conversions";
 import { evaluateExpression } from "@/lib/mathExpression";
 import { FINANCIAL_INPUT_TOO_LARGE_MESSAGE, LOAN_PAYMENT_INVALID_MESSAGE, calculateCompoundInterestSummary, calculateMonthlyPayment } from "@/lib/financialMath";
+
+function normalizeIsoDate(value: string): string | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());
+  if (!match) return null;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(0);
+  date.setUTCFullYear(year, month - 1, day);
+  date.setUTCHours(0, 0, 0, 0);
+
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    return null;
+  }
+
+  return `${match[1]}-${match[2]}-${match[3]}`;
+}
+
+function isValidIsoDate(value: string): boolean {
+  return normalizeIsoDate(value) !== null;
+}
+
+function addMonthsToIsoDate(value: string, monthsToAdd: number): string | null {
+  const normalized = normalizeIsoDate(value);
+  if (normalized === null || !Number.isSafeInteger(monthsToAdd) || monthsToAdd < 0) return null;
+
+  const [year, month, day] = normalized.split("-").map(Number);
+  const targetMonthIndex = month - 1 + monthsToAdd;
+  const targetYear = year + Math.floor(targetMonthIndex / 12);
+  const targetMonth = ((targetMonthIndex % 12) + 12) % 12;
+  const endOfTargetMonth = new Date(0);
+  endOfTargetMonth.setUTCFullYear(targetYear, targetMonth + 1, 0);
+  endOfTargetMonth.setUTCHours(0, 0, 0, 0);
+  const targetDay = Math.min(day, endOfTargetMonth.getUTCDate());
+
+  return [
+    String(targetYear).padStart(4, "0"),
+    String(targetMonth + 1).padStart(2, "0"),
+    String(targetDay).padStart(2, "0")
+  ].join("-");
+}
+
+function mortgageDateError(message: string): CalculatorResultShape {
+  return { validationError: message };
+}
 
 export const calculatorRegistry: CalculatorConfig[] = [
   {
@@ -118,6 +168,16 @@ export const calculatorRegistry: CalculatorConfig[] = [
         helperText: "Repayment term in years; the calculator converts this to monthly payments."
       },
       {
+        name: "firstRepaymentDate",
+        label: "First repayment date",
+        type: "date",
+        required: true,
+        validate: (value) => isValidIsoDate(value)
+          ? undefined
+          : "Enter a valid first repayment date.",
+        helperText: "The date of the first monthly mortgage repayment."
+      },
+      {
         name: "annualPropertyTax",
         label: "Annual property tax",
         type: "number",
@@ -151,6 +211,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
       const downPayment = Number(values.downPayment) || 0;
       const annualRate = Number(values.annualInterestRate) || 0;
       const years = Number(values.loanTermYears) || 0;
+      const firstRepaymentDate = typeof values.firstRepaymentDate === "string"
+        ? normalizeIsoDate(values.firstRepaymentDate)
+        : null;
       const annualPropertyTax = Number(values.annualPropertyTax) || 0;
       const annualHomeInsurance = Number(values.annualHomeInsurance) || 0;
       const monthlyHOA = Number(values.monthlyHOA) || 0;
@@ -163,8 +226,20 @@ export const calculatorRegistry: CalculatorConfig[] = [
         years
       });
 
+      if (firstRepaymentDate === null) {
+        return mortgageDateError("Enter a valid first repayment date.");
+      }
+
+      const finalRepaymentDate = addMonthsToIsoDate(firstRepaymentDate, months - 1);
+
+      if (finalRepaymentDate === null) {
+        return mortgageDateError("Unable to calculate the final repayment date.");
+      }
+
       if (monthlyPI === null) {
         return {
+          firstRepaymentDate,
+          finalRepaymentDate,
           loanAmount: formatCurrency(loanAmount, currency),
           monthlyPrincipalAndInterest: LOAN_PAYMENT_INVALID_MESSAGE,
           monthlyPropertyTax: LOAN_PAYMENT_INVALID_MESSAGE,
@@ -186,6 +261,8 @@ export const calculatorRegistry: CalculatorConfig[] = [
       const totalInterestPaid = totalLoanPayment - loanAmount;
 
       return {
+        firstRepaymentDate,
+        finalRepaymentDate,
         loanAmount: formatCurrency(loanAmount, currency),
         monthlyPrincipalAndInterest: formatCurrency(monthlyPI, currency),
         monthlyPropertyTax: formatCurrency(monthlyPropertyTax, currency),
@@ -197,6 +274,9 @@ export const calculatorRegistry: CalculatorConfig[] = [
       };
     },
     resultLabels: {
+      validationError: "Validation error",
+      firstRepaymentDate: "First repayment date",
+      finalRepaymentDate: "Final repayment date",
       loanAmount: "Loan amount",
       monthlyPrincipalAndInterest: "Monthly mortgage repayment",
       monthlyPropertyTax: "Monthly property tax",

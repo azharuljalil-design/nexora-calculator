@@ -133,6 +133,7 @@ test("mortgage calculator displays invalid-payment message instead of misleading
     downPayment: 100000,
     annualInterestRate: 1e308,
     loanTermYears: 1000,
+    firstRepaymentDate: "2026-09-30",
     annualPropertyTax: 6000,
     annualHomeInsurance: 1200,
     monthlyHOA: 100
@@ -151,6 +152,7 @@ const validMortgageValues = {
   downPayment: "70000",
   annualInterestRate: "4.75",
   loanTermYears: "25",
+  firstRepaymentDate: "2026-09-30",
   annualPropertyTax: "0",
   annualHomeInsurance: "0",
   monthlyHOA: "0"
@@ -161,6 +163,8 @@ test("mortgage calculator returns normal, zero-interest, and optional-cost resul
   const normal = mortgage.calculate(validMortgageValues);
   assert.equal(normal.loanAmount, "£280,000.00");
   assert.equal(normal.monthlyPrincipalAndInterest, "£1,596.33");
+  assert.equal(normal.firstRepaymentDate, "2026-09-30");
+  assert.equal(normal.finalRepaymentDate, "2051-08-30");
 
   const zeroInterest = mortgage.calculate({ ...validMortgageValues, annualInterestRate: 0 });
   assert.equal(zeroInterest.monthlyPrincipalAndInterest, "£933.33");
@@ -177,6 +181,18 @@ test("mortgage calculator returns normal, zero-interest, and optional-cost resul
   assert.equal(optionalCosts.monthlyInsurance, "$100.00");
   assert.equal(optionalCosts.monthlyHOA, "$100.00");
   assert.equal(optionalCosts.totalMonthlyPayment, "$2,296.33");
+});
+
+test("mortgage calculator returns a structured validation result for a missing or invalid repayment date", () => {
+  const mortgage = loadCalculator("mortgage-calculator");
+  const expected = { validationError: "Enter a valid first repayment date." };
+
+  assert.deepEqual(mortgage.calculate({ ...validMortgageValues, firstRepaymentDate: "" }), expected);
+  assert.deepEqual(
+    mortgage.calculate({ ...validMortgageValues, firstRepaymentDate: "2026-02-30" }),
+    expected
+  );
+  assert.deepEqual(mortgage.calculate({ ...validMortgageValues, firstRepaymentDate: 0 }), expected);
 });
 
 test("mortgage calculator formats all supported currencies", () => {
@@ -200,6 +216,11 @@ test("mortgage calculator validates price, deposit, term, and interest bounds", 
   assert.equal(validate({ loanTermYears: "41" }).loanTermYears, "Value must be at most 40.");
   assert.equal(validate({ annualInterestRate: "-0.01" }).annualInterestRate, "Value must be at least 0.");
   assert.equal(validate({ annualInterestRate: "30.01" }).annualInterestRate, "Value must be at most 30.");
+  assert.equal(validate({ firstRepaymentDate: "" }).firstRepaymentDate, "Please choose a value.");
+  assert.equal(
+    validate({ firstRepaymentDate: "2026-02-30" }).firstRepaymentDate,
+    "Enter a valid first repayment date."
+  );
 });
 
 test("mortgage calculator links only to the intended related calculators", () => {
