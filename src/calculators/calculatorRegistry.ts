@@ -1,7 +1,8 @@
-import type { CalculatorConfig } from "@/types/calculatorTypes";
+import type { CalculatorConfig, CalculatorResultShape } from "@/types/calculatorTypes";
 import { formatCurrency, formatInteger, formatNumber } from "@/lib/format";
 import { convertCurrency, convertUnit, unitOptions, type CurrencyCode, type UnitCategory } from "@/lib/conversions";
 import { evaluateExpression } from "@/lib/mathExpression";
+import { buildAmortizationSchedule, normalizeCalendarDate } from "@/lib/amortization";
 import { FINANCIAL_INPUT_TOO_LARGE_MESSAGE, LOAN_PAYMENT_INVALID_MESSAGE, calculateCompoundInterestSummary, calculateMonthlyPayment } from "@/lib/financialMath";
 
 export const calculatorRegistry: CalculatorConfig[] = [
@@ -49,162 +50,93 @@ export const calculatorRegistry: CalculatorConfig[] = [
     name: "Mortgage Calculator",
     slug: "mortgage-calculator",
     category: "Financial Calculators",
-    description:
-      "Estimate mortgage payments based on your inputs, with optional recurring tax, insurance, and HOA/service-charge assumptions.",
+    description: "Estimate fixed-rate mortgage repayments, deposit equivalents, LTV, dates, and optional monthly ownership costs.",
     inputs: [
       {
-        name: "currency",
-        label: "Currency",
-        type: "select",
-        required: true,
-        options: [
-          { value: "GBP", label: "GBP (£)" },
-          { value: "EUR", label: "EUR (€)" },
-          { value: "USD", label: "USD ($)" }
-        ],
-        helperText: "Currency changes display formatting only; it does not change the mortgage calculation."
+        name: "currency", label: "Currency", type: "select", required: true, defaultValue: "GBP",
+        options: [{ value: "GBP", label: "GBP (£)" }, { value: "EUR", label: "EUR (€)" }, { value: "USD", label: "USD ($)" }],
+        helperText: "Currency changes display formatting only; it does not convert values."
+      },
+      { name: "homePrice", label: "Property price", type: "number", required: true, min: 0.01, step: 0.01, inputMode: "decimal", helperText: "The full property price in the selected currency." },
+      {
+        name: "depositMode", label: "Deposit mode", type: "select", required: true, defaultValue: "amount",
+        options: [{ value: "amount", label: "Deposit amount" }, { value: "percentage", label: "Deposit percentage" }],
+        helperText: "Choose whether to enter the deposit as money or as a percentage of the property price."
       },
       {
-        name: "homePrice",
-        label: "Property price",
-        type: "number",
-        required: true,
-        min: 0.01,
-        step: 0.01,
-        inputMode: "decimal",
-        helperText: "Total property price in the selected currency; the loan amount is estimated after subtracting the down payment."
+        name: "downPayment", label: "Deposit amount", type: "number", requiredWhen: (values) => values.depositMode !== "percentage",
+        showWhen: (values) => values.depositMode !== "percentage", min: 0, step: 0.01, inputMode: "decimal",
+        validate: (value, values) => Number(value) >= Number(values.homePrice) ? "Deposit must be less than the property price." : undefined,
+        helperText: "The amount paid upfront; it is converted to an equivalent percentage."
       },
       {
-        name: "downPayment",
-        label: "Down payment",
-        type: "number",
-        required: true,
-        min: 0,
-        step: 0.01,
-        inputMode: "decimal",
-        validate: (value, values) => {
-          const deposit = Number(value);
-          const propertyPrice = Number(values.homePrice);
-          return Number.isFinite(deposit) && Number.isFinite(propertyPrice) && deposit >= propertyPrice
-            ? "Deposit must be less than the property price."
-            : undefined;
-        },
-        helperText:
-          "Currency amount paid upfront, not a percentage. This is subtracted from the home price to estimate the mortgage balance."
+        name: "depositPercentage", label: "Deposit percentage (%)", type: "number", requiredWhen: (values) => values.depositMode === "percentage",
+        showWhen: (values) => values.depositMode === "percentage", min: 0, step: 0.01, inputMode: "decimal",
+        validate: (value) => Number(value) >= 100 ? "Deposit percentage must be less than 100%." : undefined,
+        helperText: "The percentage paid upfront; it is converted to an equivalent amount."
+      },
+      { name: "annualInterestRate", label: "Annual interest rate (%)", type: "number", required: true, min: 0, max: 30, step: 0.01, inputMode: "decimal", helperText: "The fixed nominal annual rate used for every scheduled payment." },
+      {
+        name: "loanTermYears", label: "Loan term (years)", type: "number", required: true, min: 1, max: 40, step: 1, inputMode: "numeric",
+        validate: (value) => Number.isInteger(Number(value)) ? undefined : "Mortgage term must be a whole number of years.",
+        helperText: "The repayment term, converted to monthly scheduled payments."
       },
       {
-        name: "annualInterestRate",
-        label: "Annual interest rate (%)",
-        type: "number",
-        required: true,
-        min: 0,
-        max: 30,
-        step: 0.01,
-        inputMode: "decimal",
-        helperText: "Nominal annual rate as a percentage (e.g. 4.75). Variable-rate changes are not modelled."
+        name: "firstRepaymentDate", label: "First repayment date", type: "date", required: true,
+        validate: (value) => normalizeCalendarDate(value) ? undefined : "Enter a valid repayment date in YYYY-MM-DD format.",
+        helperText: "A calendar date; calculations do not apply a time or UTC timezone conversion."
       },
-      {
-        name: "loanTermYears",
-        label: "Loan term (years)",
-        type: "number",
-        required: true,
-        min: 1,
-        max: 40,
-        step: 1,
-        inputMode: "numeric",
-        validate: (value) => Number.isInteger(Number(value))
-          ? undefined
-          : "Mortgage term must be a whole number of years.",
-        helperText: "Repayment term in years; the calculator converts this to monthly payments."
-      },
-      {
-        name: "annualPropertyTax",
-        label: "Annual property tax",
-        type: "number",
-        required: false,
-        min: 0,
-        helperText:
-          "Common in the US. UK/EU users can leave this as 0 if not applicable."
-      },
-      {
-        name: "annualHomeInsurance",
-        label: "Annual home insurance",
-        type: "number",
-        required: false,
-        min: 0,
-        helperText:
-          "Often required by lenders. Enter your yearly premium or leave as 0."
-      },
-      {
-        name: "monthlyHOA",
-        label: "Monthly HOA/Service charge",
-        type: "number",
-        required: false,
-        min: 0,
-        helperText:
-          "Monthly association or service fees. Common in US condos and some UK/EU developments."
-      }
+      { name: "annualPropertyTax", label: "Annual property tax", type: "number", min: 0, step: 0.01, helperText: "Optional. Divided by 12 for the monthly housing-cost estimate." },
+      { name: "annualHomeInsurance", label: "Annual home insurance", type: "number", min: 0, step: 0.01, helperText: "Optional. Divided by 12 for the monthly housing-cost estimate." },
+      { name: "monthlyHOA", label: "Monthly HOA/Service charge", type: "number", min: 0, step: 0.01, helperText: "Optional monthly association or service charge." }
     ],
-    calculate: (values) => {
-      const currency = (values.currency as "GBP" | "EUR" | "USD") || "GBP";
+    calculate: (values): CalculatorResultShape => {
+      const firstRepaymentDate = normalizeCalendarDate(values.firstRepaymentDate);
+      if (!firstRepaymentDate) return { validationError: "A valid first repayment date in YYYY-MM-DD format is required." };
+
+      const currency = (values.currency as CurrencyCode) || "GBP";
       const homePrice = Number(values.homePrice) || 0;
-      const downPayment = Number(values.downPayment) || 0;
-      const annualRate = Number(values.annualInterestRate) || 0;
+      const depositMode = String(values.depositMode || "amount");
+      const depositAmount = depositMode === "percentage"
+        ? homePrice * (Number(values.depositPercentage) || 0) / 100
+        : Number(values.downPayment) || 0;
+      const depositPercentage = homePrice > 0 ? depositAmount / homePrice * 100 : 0;
+      const mortgageAmount = homePrice - depositAmount;
       const years = Number(values.loanTermYears) || 0;
-      const annualPropertyTax = Number(values.annualPropertyTax) || 0;
-      const annualHomeInsurance = Number(values.annualHomeInsurance) || 0;
-      const monthlyHOA = Number(values.monthlyHOA) || 0;
-
-      const loanAmount = homePrice - downPayment;
-      const months = years * 12;
-      const monthlyPI = calculateMonthlyPayment({
-        principal: loanAmount,
-        annualInterestRate: annualRate,
-        years
+      const schedule = buildAmortizationSchedule({
+        principal: mortgageAmount,
+        annualInterestRate: Number(values.annualInterestRate) || 0,
+        years,
+        firstRepaymentDate
       });
+      if (!schedule) return { validationError: LOAN_PAYMENT_INVALID_MESSAGE };
 
-      if (monthlyPI === null) {
-        return {
-          loanAmount: formatCurrency(loanAmount, currency),
-          monthlyPrincipalAndInterest: LOAN_PAYMENT_INVALID_MESSAGE,
-          monthlyPropertyTax: LOAN_PAYMENT_INVALID_MESSAGE,
-          monthlyInsurance: LOAN_PAYMENT_INVALID_MESSAGE,
-          monthlyHOA: LOAN_PAYMENT_INVALID_MESSAGE,
-          totalMonthlyPayment: LOAN_PAYMENT_INVALID_MESSAGE,
-          totalLoanPayment: LOAN_PAYMENT_INVALID_MESSAGE,
-          totalInterestPaid: LOAN_PAYMENT_INVALID_MESSAGE
-        };
-      }
-
-      const monthlyPropertyTax = annualPropertyTax / 12;
-      const monthlyInsurance = annualHomeInsurance / 12;
-
-      const totalMonthlyPayment =
-        monthlyPI + monthlyPropertyTax + monthlyInsurance + monthlyHOA;
-
-      const totalLoanPayment = monthlyPI * months;
-      const totalInterestPaid = totalLoanPayment - loanAmount;
-
+      const monthlyPropertyTax = (Number(values.annualPropertyTax) || 0) / 12;
+      const monthlyInsurance = (Number(values.annualHomeInsurance) || 0) / 12;
+      const monthlyHOA = Number(values.monthlyHOA) || 0;
+      const finalRow = schedule.rows[schedule.rows.length - 1];
+      if (!finalRow) return { validationError: LOAN_PAYMENT_INVALID_MESSAGE };
+      const finalRepaymentDate = finalRow.paymentDate;
       return {
-        loanAmount: formatCurrency(loanAmount, currency),
-        monthlyPrincipalAndInterest: formatCurrency(monthlyPI, currency),
-        monthlyPropertyTax: formatCurrency(monthlyPropertyTax, currency),
-        monthlyInsurance: formatCurrency(monthlyInsurance, currency),
-        monthlyHOA: formatCurrency(monthlyHOA, currency),
-        totalMonthlyPayment: formatCurrency(totalMonthlyPayment, currency),
-        totalLoanPayment: formatCurrency(totalLoanPayment, currency),
-        totalInterestPaid: formatCurrency(totalInterestPaid, currency)
+        propertyPrice: formatCurrency(homePrice, currency),
+        depositAmount: formatCurrency(depositAmount, currency),
+        depositPercentage: `${depositPercentage.toFixed(2)}%`,
+        mortgageAmount: formatCurrency(mortgageAmount, currency),
+        loanToValue: `${(mortgageAmount / homePrice * 100).toFixed(2)}%`,
+        monthlyPrincipalAndInterest: formatCurrency(schedule.monthlyPayment, currency),
+        totalMonthlyPayment: formatCurrency(schedule.monthlyPayment + monthlyPropertyTax + monthlyInsurance + monthlyHOA, currency),
+        totalLoanPayment: formatCurrency(schedule.totalRepayments, currency),
+        totalInterestPaid: formatCurrency(schedule.totalInterest, currency),
+        firstRepaymentDate,
+        finalRepaymentDate
       };
     },
     resultLabels: {
-      loanAmount: "Loan amount",
-      monthlyPrincipalAndInterest: "Monthly mortgage repayment",
-      monthlyPropertyTax: "Monthly property tax",
-      monthlyInsurance: "Monthly insurance",
-      monthlyHOA: "Monthly HOA / service charge",
-      totalMonthlyPayment: "Estimated total monthly housing cost",
-      totalLoanPayment: "Total mortgage repayments (excludes property tax, insurance, service charges/HOA and other ownership costs)",
-      totalInterestPaid: "Total interest paid"
+      propertyPrice: "Property price", depositAmount: "Deposit amount", depositPercentage: "Deposit percentage",
+      mortgageAmount: "Mortgage amount", loanToValue: "Loan-to-value (mortgage amount as a percentage of property price)",
+      monthlyPrincipalAndInterest: "Monthly mortgage repayment", totalMonthlyPayment: "Estimated total monthly housing cost",
+      totalLoanPayment: "Total mortgage repayments (ownership costs excluded)", totalInterestPaid: "Total interest (ownership costs excluded)",
+      firstRepaymentDate: "First repayment date", finalRepaymentDate: "Estimated final repayment date", validationError: "Validation error"
     },
     relatedSlugs: ["loan-calculator", "amortization-calculator", "compound-interest-calculator"]
   },
@@ -2020,14 +1952,14 @@ export const calculatorRegistry: CalculatorConfig[] = [
       const loanAmount = Number(values.loanAmount) || 0;
       const annualRate = Number(values.annualInterestRate) || 0;
       const years = Number(values.loanTermYears) || 0;
-      const months = years * 12;
-      const monthlyPayment = calculateMonthlyPayment({
+      const schedule = buildAmortizationSchedule({
         principal: loanAmount,
         annualInterestRate: annualRate,
-        years
+        years,
+        firstRepaymentDate: "2000-01-01"
       });
 
-      if (monthlyPayment === null) {
+      if (!schedule) {
         return {
           monthlyPayment: LOAN_PAYMENT_INVALID_MESSAGE,
           totalInterest: LOAN_PAYMENT_INVALID_MESSAGE,
@@ -2035,13 +1967,10 @@ export const calculatorRegistry: CalculatorConfig[] = [
         };
       }
 
-      const totalPayment = monthlyPayment * months;
-      const totalInterest = totalPayment - loanAmount;
-
       return {
-        monthlyPayment: formatCurrency(monthlyPayment, currency),
-        totalInterest: formatCurrency(totalInterest, currency),
-        totalPayment: formatCurrency(totalPayment, currency)
+        monthlyPayment: formatCurrency(schedule.monthlyPayment, currency),
+        totalInterest: formatCurrency(schedule.totalInterest, currency),
+        totalPayment: formatCurrency(schedule.totalRepayments, currency)
       };
     },
     resultLabels: {

@@ -10,6 +10,12 @@ import {
   calculateMonthlyPayment
 } from "../src/lib/financialMath";
 import { validateAll } from "../src/lib/calculatorEngine/calculatorEngine";
+import {
+  addCalendarMonths,
+  buildAmortizationSchedule,
+  formatCalendarDate,
+  normalizeCalendarDate
+} from "../src/lib/amortization";
 import type { CalculatorConfig } from "../src/types/calculatorTypes";
 
 type CalculatorConfigForTest = {
@@ -135,31 +141,37 @@ test("mortgage calculator displays invalid-payment message instead of misleading
     loanTermYears: 1000,
     annualPropertyTax: 6000,
     annualHomeInsurance: 1200,
-    monthlyHOA: 100
+    monthlyHOA: 100,
+    depositMode: "amount",
+    firstRepaymentDate: "2026-09-30"
   });
 
-  assert.equal(result.loanAmount, "$400,000.00");
-  assert.equal(result.monthlyPrincipalAndInterest, LOAN_PAYMENT_INVALID_MESSAGE);
-  assert.equal(result.totalMonthlyPayment, LOAN_PAYMENT_INVALID_MESSAGE);
-  assert.equal(result.totalLoanPayment, LOAN_PAYMENT_INVALID_MESSAGE);
-  assert.equal(result.totalInterestPaid, LOAN_PAYMENT_INVALID_MESSAGE);
+  assert.deepEqual(result, { validationError: LOAN_PAYMENT_INVALID_MESSAGE });
 });
 
 const validMortgageValues = {
   currency: "GBP",
   homePrice: "350000",
+  depositMode: "amount",
   downPayment: "70000",
+  depositPercentage: "20",
   annualInterestRate: "4.75",
   loanTermYears: "25",
   annualPropertyTax: "0",
   annualHomeInsurance: "0",
-  monthlyHOA: "0"
+  monthlyHOA: "0",
+  firstRepaymentDate: "2026-01-31"
 };
 
 test("mortgage calculator returns normal, zero-interest, and optional-cost results", () => {
   const mortgage = loadCalculator("mortgage-calculator");
   const normal = mortgage.calculate(validMortgageValues);
-  assert.equal(normal.loanAmount, "£280,000.00");
+  assert.equal(normal.mortgageAmount, "£280,000.00");
+  assert.equal(normal.depositAmount, "£70,000.00");
+  assert.equal(normal.depositPercentage, "20.00%");
+  assert.equal(normal.loanToValue, "80.00%");
+  assert.equal(normal.firstRepaymentDate, "2026-01-31");
+  assert.equal(normal.finalRepaymentDate, "2050-12-31");
   assert.equal(normal.monthlyPrincipalAndInterest, "£1,596.33");
 
   const zeroInterest = mortgage.calculate({ ...validMortgageValues, annualInterestRate: 0 });
@@ -173,17 +185,16 @@ test("mortgage calculator returns normal, zero-interest, and optional-cost resul
     annualHomeInsurance: 1200,
     monthlyHOA: 100
   });
-  assert.equal(optionalCosts.monthlyPropertyTax, "$500.00");
-  assert.equal(optionalCosts.monthlyInsurance, "$100.00");
-  assert.equal(optionalCosts.monthlyHOA, "$100.00");
   assert.equal(optionalCosts.totalMonthlyPayment, "$2,296.33");
+  assert.equal(optionalCosts.totalLoanPayment, "$478,898.58");
+  assert.equal(optionalCosts.totalInterestPaid, "$198,898.58");
 });
 
 test("mortgage calculator formats all supported currencies", () => {
   const mortgage = loadCalculator("mortgage-calculator");
-  assert.equal(mortgage.calculate({ ...validMortgageValues, currency: "GBP" }).loanAmount, "£280,000.00");
-  assert.equal(mortgage.calculate({ ...validMortgageValues, currency: "EUR" }).loanAmount, "280.000,00 €");
-  assert.equal(mortgage.calculate({ ...validMortgageValues, currency: "USD" }).loanAmount, "$280,000.00");
+  assert.equal(mortgage.calculate({ ...validMortgageValues, currency: "GBP" }).mortgageAmount, "£280,000.00");
+  assert.equal(mortgage.calculate({ ...validMortgageValues, currency: "EUR" }).mortgageAmount, "280.000,00 €");
+  assert.equal(mortgage.calculate({ ...validMortgageValues, currency: "USD" }).mortgageAmount, "$280,000.00");
 });
 
 test("mortgage calculator validates price, deposit, term, and interest bounds", () => {
@@ -200,6 +211,67 @@ test("mortgage calculator validates price, deposit, term, and interest bounds", 
   assert.equal(validate({ loanTermYears: "41" }).loanTermYears, "Value must be at most 40.");
   assert.equal(validate({ annualInterestRate: "-0.01" }).annualInterestRate, "Value must be at least 0.");
   assert.equal(validate({ annualInterestRate: "30.01" }).annualInterestRate, "Value must be at most 30.");
+});
+
+
+test("mortgage deposit percentage mode converts the active deposit and enforces boundaries", () => {
+  const mortgage = loadCalculator("mortgage-calculator");
+  const result = mortgage.calculate({
+    ...validMortgageValues,
+    depositMode: "percentage",
+    depositPercentage: "12.5"
+  });
+  assert.equal(result.depositAmount, "£43,750.00");
+  assert.equal(result.depositPercentage, "12.50%");
+  assert.equal(result.mortgageAmount, "£306,250.00");
+  assert.equal(result.loanToValue, "87.50%");
+
+  const validate = (overrides: Record<string, string>) =>
+    validateAll(mortgage as CalculatorConfig, { ...validMortgageValues, ...overrides });
+  assert.equal(validate({ depositMode: "percentage", depositPercentage: "-0.01" }).depositPercentage, "Value must be at least 0.");
+  assert.equal(validate({ depositMode: "percentage", depositPercentage: "100" }).depositPercentage, "Deposit percentage must be less than 100%.");
+  assert.equal(validate({ depositMode: "percentage", depositPercentage: "0" }).depositPercentage, undefined);
+  assert.equal(validate({ depositMode: "percentage", depositPercentage: "20", downPayment: "350000" }).downPayment, undefined);
+});
+
+test("repayment date validation rejects missing, malformed, invalid, and non-string values", () => {
+  const mortgage = loadCalculator("mortgage-calculator");
+  const validate = (date: unknown) => validateAll(mortgage as CalculatorConfig, {
+    ...validMortgageValues,
+    firstRepaymentDate: date
+  } as Record<string, string>);
+  assert.equal(validate("").firstRepaymentDate, "Please choose a value.");
+  assert.equal(validate("01/31/2026").firstRepaymentDate, "Enter a valid repayment date in YYYY-MM-DD format.");
+  assert.equal(validate("2026-02-30").firstRepaymentDate, "Enter a valid repayment date in YYYY-MM-DD format.");
+  assert.equal(validate(42).firstRepaymentDate, "Enter a valid date.");
+  assert.deepEqual(mortgage.calculate({ ...validMortgageValues, firstRepaymentDate: "bad" }), {
+    validationError: "A valid first repayment date in YYYY-MM-DD format is required."
+  });
+});
+
+test("calendar dates preserve their anchor day and clamp month ends and leap years", () => {
+  assert.equal(normalizeCalendarDate("2024-02-29"), "2024-02-29");
+  assert.equal(normalizeCalendarDate("2023-02-29"), null);
+  assert.equal(formatCalendarDate(addCalendarMonths({ year: 2024, month: 1, day: 31 }, 1)), "2024-02-29");
+  assert.equal(formatCalendarDate(addCalendarMonths({ year: 2024, month: 1, day: 31 }, 2)), "2024-03-31");
+});
+
+test("shared amortization schedules reconcile normal and zero-rate totals to a zero final balance", () => {
+  for (const annualInterestRate of [6, 0]) {
+    const schedule = buildAmortizationSchedule({
+      principal: 12000,
+      annualInterestRate,
+      years: 2,
+      firstRepaymentDate: "2024-01-31"
+    });
+    assert.ok(schedule);
+    assert.equal(schedule.rows.length, 24);
+    assert.equal(schedule.rows[23].remainingBalance, 0);
+    assert.equal(schedule.rows[23].paymentDate, "2025-12-31");
+    assert.ok(Math.abs(schedule.totalRepayments - schedule.rows.reduce((sum, row) => sum + row.paymentAmount, 0)) < 1e-9);
+    assert.ok(Math.abs(schedule.totalInterest - schedule.rows.reduce((sum, row) => sum + row.interest, 0)) < 1e-9);
+    assert.ok(Math.abs(schedule.rows.reduce((sum, row) => sum + row.principal, 0) - 12000) < 1e-8);
+  }
 });
 
 test("mortgage calculator links only to the intended related calculators", () => {
