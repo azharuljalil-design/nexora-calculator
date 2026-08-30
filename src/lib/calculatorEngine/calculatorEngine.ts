@@ -21,6 +21,10 @@ export function validateInput(
 ): string | undefined {
   if (!isInputShown(input, values)) return undefined;
 
+  if (typeof rawValue !== "string") {
+    return input.type === "date" ? "Enter a valid date." : "Enter a valid value.";
+  }
+
   if (isInputRequired(input, values) && rawValue.trim() === "") {
     return input.type === "select" || input.type === "date" || input.type === "datetime"
       ? "Please choose a value."
