@@ -25,7 +25,35 @@ export type AmortizationSchedule = {
   totalRepayments: number;
   totalInterest: number;
   rows: AmortizationRow[];
+  annualBreakdown: AnnualAmortizationSummary[];
 };
+
+export type AnnualAmortizationSummary = {
+  yearNumber: number;
+  calendarYear: number;
+  principal: number;
+  interest: number;
+  totalPayment: number;
+};
+
+export function aggregateAmortizationByYear(rows: AmortizationRow[]): AnnualAmortizationSummary[] {
+  const summaries = new Map<number, AnnualAmortizationSummary>();
+  for (const row of rows) {
+    const calendarYear = Number(row.paymentDate.slice(0, 4));
+    const current = summaries.get(calendarYear) ?? {
+      yearNumber: summaries.size + 1,
+      calendarYear,
+      principal: 0,
+      interest: 0,
+      totalPayment: 0
+    };
+    current.principal += row.principal;
+    current.interest += row.interest;
+    current.totalPayment += row.totalPayment;
+    summaries.set(calendarYear, current);
+  }
+  return [...summaries.values()];
+}
 
 function daysInMonth(year: number, month: number): number {
   if (month === 2) {
@@ -130,5 +158,11 @@ export function buildAmortizationSchedule(args: {
 
   const totalRepayments = rows.reduce((total, row) => total + row.paymentAmount, 0);
   const totalInterest = rows.reduce((total, row) => total + row.interest, 0);
-  return { monthlyPayment, totalRepayments, totalInterest, rows };
+  return {
+    monthlyPayment,
+    totalRepayments,
+    totalInterest,
+    rows,
+    annualBreakdown: aggregateAmortizationByYear(rows)
+  };
 }

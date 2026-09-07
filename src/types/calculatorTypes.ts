@@ -60,7 +60,7 @@ export type CalculatorInputConfig =
   | DateTimeInputConfig
   | TextInputConfig;
 
-export type CalculatorResultShape = Record<string, number | string>;
+export type CalculatorResultShape = Record<string, unknown>;
 
 export type CalculatorConfig = {
   name: string;
@@ -69,7 +69,7 @@ export type CalculatorConfig = {
   description: string;
   inputs: CalculatorInputConfig[];
   calculate: (values: Record<string, number | string>) => CalculatorResultShape;
-  renderer?: "default" | "scientific" | "amortization";
+  renderer?: "default" | "scientific" | "amortization" | "mortgage";
   resultLabels?: Record<string, string>;
   relatedSlugs?: string[];
 };

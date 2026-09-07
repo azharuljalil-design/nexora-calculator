@@ -51,6 +51,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "mortgage-calculator",
     category: "Financial Calculators",
     description: "Estimate fixed-rate mortgage repayments, deposit equivalents, LTV, payoff dates, optional overpayments, and ownership costs.",
+    renderer: "mortgage",
     inputs: [
       {
         name: "currency", label: "Currency", type: "select", required: true, defaultValue: "GBP",
@@ -205,7 +206,29 @@ export const calculatorRegistry: CalculatorConfig[] = [
         revisedTotalInterest: formatCurrency(revisedSchedule.totalInterest, currency),
         interestSaved: formatCurrency(interestSaved, currency),
         monthlyPaymentsSaved: paymentsSaved,
-        repaymentTimeSaved: `${savedYears} ${savedYears === 1 ? "year" : "years"} and ${savedMonths} ${savedMonths === 1 ? "month" : "months"}`
+        repaymentTimeSaved: `${savedYears} ${savedYears === 1 ? "year" : "years"} and ${savedMonths} ${savedMonths === 1 ? "month" : "months"}`,
+        mortgageScenarios: {
+          currency,
+          hasOverpayment: monthlyOverpayment > 0 || oneTimeOverpayment > 0,
+          monthlyOverpayment,
+          oneTimeOverpayment,
+          original: originalSchedule,
+          revised: revisedSchedule,
+          comparison: {
+            regularPayment: originalSchedule.monthlyPayment,
+            originalPayments: originalSchedule.rows.length,
+            revisedPayments: revisedSchedule.rows.length,
+            originalPayoffDate: originalFinalRow.paymentDate,
+            revisedPayoffDate: revisedFinalRow.paymentDate,
+            originalTotalRepayments: originalSchedule.totalRepayments,
+            revisedTotalRepayments: revisedSchedule.totalRepayments,
+            originalTotalInterest: originalSchedule.totalInterest,
+            revisedTotalInterest: revisedSchedule.totalInterest,
+            interestSaved,
+            paymentsSaved,
+            repaymentTimeSaved: `${savedYears} ${savedYears === 1 ? "year" : "years"} and ${savedMonths} ${savedMonths === 1 ? "month" : "months"}`
+          }
+        }
       };
     },
     resultLabels: {
