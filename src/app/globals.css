@@ -15,3 +15,15 @@ a {
   @apply text-primary underline-offset-4 hover:underline;
 }
 
+.annual-interest-bar {
+  background-image: repeating-linear-gradient(135deg, rgb(120 53 15 / 35%) 0 2px, transparent 2px 5px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

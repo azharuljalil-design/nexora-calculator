@@ -12,6 +12,7 @@ import {
 import { validateAll } from "../src/lib/calculatorEngine/calculatorEngine";
 import {
   addCalendarMonths,
+  aggregateAmortizationByYear,
   buildAmortizationSchedule,
   formatCalendarDate,
   normalizeCalendarDate
@@ -19,7 +20,7 @@ import {
 import type { CalculatorConfig } from "../src/types/calculatorTypes";
 
 type CalculatorConfigForTest = {
-  calculate: (values: Record<string, number | string>) => Record<string, number | string>;
+  calculate: (values: Record<string, number | string>) => Record<string, any>;
   inputs: CalculatorConfig["inputs"];
   relatedSlugs?: string[];
 };
@@ -272,6 +273,54 @@ test("shared amortization schedules reconcile normal and zero-rate totals to a z
     assert.ok(Math.abs(schedule.totalInterest - schedule.rows.reduce((sum, row) => sum + row.interest, 0)) < 1e-9);
     assert.ok(Math.abs(schedule.rows.reduce((sum, row) => sum + row.principal, 0) - 12000) < 1e-8);
   }
+});
+
+test("annual amortization aggregates reconcile principal, interest, and total payments", () => {
+  for (const annualInterestRate of [4.75, 0]) {
+    const schedule = buildAmortizationSchedule({
+      principal: 280000,
+      annualInterestRate,
+      years: 25,
+      firstRepaymentDate: "2026-01-31"
+    });
+    assert.ok(schedule);
+    const annual = aggregateAmortizationByYear(schedule.rows);
+    assert.deepEqual(annual, schedule.annualBreakdown);
+    assert.equal(annual.length, 25);
+    assert.ok(Math.abs(annual.reduce((sum, year) => sum + year.principal, 0) - 280000) < 1e-7);
+    assert.ok(Math.abs(annual.reduce((sum, year) => sum + year.interest, 0) - schedule.totalInterest) < 1e-7);
+    assert.ok(Math.abs(annual.reduce((sum, year) => sum + year.totalPayment, 0) - schedule.totalRepayments) < 1e-7);
+    if (annualInterestRate === 0) assert.ok(annual.every((year) => year.interest === 0));
+  }
+});
+
+test("mortgage calculation exposes engine-generated original and overpayment schedules", () => {
+  const mortgage = loadCalculator("mortgage-calculator");
+  const originalResult = mortgage.calculate({ ...validMortgageValues, monthlyOverpayment: 0, oneTimeOverpayment: 0 });
+  const originalData = originalResult.mortgageScenarios;
+  assert.equal(originalData.hasOverpayment, false);
+  assert.equal(originalData.original.rows.length, 300);
+  assert.equal(originalData.original.rows.at(-1).remainingBalance, 0);
+  assert.deepEqual(originalData.revised.rows, originalData.original.rows);
+
+  const revisedResult = mortgage.calculate({ ...validMortgageValues, monthlyOverpayment: 200, oneTimeOverpayment: 5000, oneTimeOverpaymentDate: "2027-02-15" });
+  const revisedData = revisedResult.mortgageScenarios;
+  assert.equal(revisedData.hasOverpayment, true);
+  assert.equal(revisedData.revised.rows[0].monthlyOverpayment, 200);
+  assert.equal(revisedData.revised.rows[13].oneTimeOverpayment, 5000);
+  assert.ok(revisedData.revised.rows.length < revisedData.original.rows.length);
+  assert.equal(revisedData.revised.rows.at(-1).remainingBalance, 0);
+  assert.equal(revisedData.comparison.paymentsSaved, revisedData.original.rows.length - revisedData.revised.rows.length);
+  assert.ok(Math.abs(revisedData.revised.rows.reduce((sum: number, row: { totalPayment: number }) => sum + row.totalPayment, 0) - revisedData.revised.totalRepayments) < 1e-7);
+});
+
+test("a 40-year mortgage schedule is bounded at 480 engine rows", () => {
+  const schedule = buildAmortizationSchedule({ principal: 300000, annualInterestRate: 5, years: 40, firstRepaymentDate: "2024-02-29" });
+  assert.ok(schedule);
+  assert.equal(schedule.rows.length, 480);
+  assert.equal(schedule.rows[0].paymentDate, "2024-02-29");
+  assert.equal(schedule.rows[12].paymentDate, "2025-02-28");
+  assert.equal(schedule.rows.at(-1)?.remainingBalance, 0);
 });
 
 test("zero overpayments preserve every baseline amortization value", () => {

@@ -59,7 +59,7 @@ export function CalculatorResult({
 
       {hasResult ? (
         <div className="space-y-3">
-          {Object.entries(result!).map(([key, value]) => {
+          {Object.entries(result!).filter(([key]) => key !== "mortgageScenarios").map(([key, value]) => {
             const label =
               config.resultLabels?.[key] ?? key.replace(/_/g, " ");
 

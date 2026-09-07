@@ -6,6 +6,7 @@ import { CalculatorForm } from "@/components/calculators/CalculatorForm";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ScientificCalculator } from "@/components/calculators/ScientificCalculator";
 import { AmortizationCalculator } from "@/components/calculators/AmortizationCalculator";
+import { MortgageCalculator } from "@/components/calculators/MortgageCalculator";
 import { calculatorCategories } from "@/data/categories";
 import { routes } from "@/lib/routes";
 import { findCalculatorBySlug } from "@/calculators/calculatorRegistry";
@@ -62,6 +63,8 @@ export function CalculatorClient({ slug }: CalculatorClientProps) {
             <ScientificCalculator config={calculator} />
           ) : calculator.renderer === "amortization" ? (
             <AmortizationCalculator config={calculator} />
+          ) : calculator.renderer === "mortgage" ? (
+            <MortgageCalculator config={calculator} />
           ) : (
             <CalculatorForm config={calculator} />
           )}
@@ -72,4 +75,3 @@ export function CalculatorClient({ slug }: CalculatorClientProps) {
     </div>
   );
 }
-
