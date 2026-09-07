@@ -61,7 +61,7 @@ export function CalculatorForm({ config }: CalculatorFormProps) {
                 </label>
                 {renderInputControl(
                   {
-                    input: { ...input, name: `${config.slug}-${input.name}` },
+                    input: { ...input, name: `${config.slug}-${input.name}`, required: isInputRequired(input, values) },
                     value,
                     values,
                     onChange: (val) => handleChange(input.name, val),
@@ -114,4 +114,3 @@ export function CalculatorForm({ config }: CalculatorFormProps) {
     </div>
   );
 }
-

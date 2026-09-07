@@ -50,7 +50,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     name: "Mortgage Calculator",
     slug: "mortgage-calculator",
     category: "Financial Calculators",
-    description: "Estimate fixed-rate mortgage repayments, deposit equivalents, LTV, dates, and optional monthly ownership costs.",
+    description: "Estimate fixed-rate mortgage repayments, deposit equivalents, LTV, payoff dates, optional overpayments, and ownership costs.",
     inputs: [
       {
         name: "currency", label: "Currency", type: "select", required: true, defaultValue: "GBP",
@@ -86,6 +86,42 @@ export const calculatorRegistry: CalculatorConfig[] = [
         validate: (value) => normalizeCalendarDate(value) ? undefined : "Enter a valid repayment date in YYYY-MM-DD format.",
         helperText: "A calendar date; calculations do not apply a time or UTC timezone conversion."
       },
+      {
+        name: "monthlyOverpayment", label: "Monthly overpayment", type: "number", defaultValue: "0",
+        min: 0, minError: "Monthly overpayment cannot be negative.", step: 0.01, inputMode: "decimal",
+        helperText: "Optional. Added from payment 1 until the mortgage is repaid; the last payment is capped at the amount due."
+      },
+      {
+        name: "oneTimeOverpayment", label: "One-time overpayment", type: "number", defaultValue: "0",
+        min: 0, minError: "One-time overpayment cannot be negative.", step: 0.01, inputMode: "decimal",
+        helperText: "Optional. Applied once to the first scheduled repayment on or after the selected date."
+      },
+      {
+        name: "oneTimeOverpaymentDate", label: "One-time overpayment date", type: "date",
+        showWhen: (values) => Number(values.oneTimeOverpayment) > 0,
+        requiredWhen: (values) => Number(values.oneTimeOverpayment) > 0,
+        requiredError: "Enter a one-time overpayment date.",
+        validate: (value, values) => {
+          if (!normalizeCalendarDate(value)) return "Enter a valid one-time overpayment date in YYYY-MM-DD format.";
+          const firstDate = normalizeCalendarDate(values.firstRepaymentDate);
+          if (firstDate && value < firstDate) return "One-time overpayment date cannot be before the first repayment date.";
+          const homePrice = Number(values.homePrice);
+          const deposit = values.depositMode === "percentage"
+            ? homePrice * Number(values.depositPercentage) / 100
+            : Number(values.downPayment);
+          const original = buildAmortizationSchedule({
+            principal: homePrice - deposit,
+            annualInterestRate: Number(values.annualInterestRate),
+            years: Number(values.loanTermYears),
+            firstRepaymentDate: firstDate ?? ""
+          });
+          const originalFinalDate = original?.rows[original.rows.length - 1]?.paymentDate;
+          return originalFinalDate && value > originalFinalDate
+            ? "One-time overpayment date cannot be after the original final repayment date."
+            : undefined;
+        },
+        helperText: "Calendar-only date. The overpayment is applied to the first repayment on or after this date, without timezone conversion."
+      },
       { name: "annualPropertyTax", label: "Annual property tax", type: "number", min: 0, step: 0.01, helperText: "Optional. Divided by 12 for the monthly housing-cost estimate." },
       { name: "annualHomeInsurance", label: "Annual home insurance", type: "number", min: 0, step: 0.01, helperText: "Optional. Divided by 12 for the monthly housing-cost estimate." },
       { name: "monthlyHOA", label: "Monthly HOA/Service charge", type: "number", min: 0, step: 0.01, helperText: "Optional monthly association or service charge." }
@@ -103,32 +139,73 @@ export const calculatorRegistry: CalculatorConfig[] = [
       const depositPercentage = homePrice > 0 ? depositAmount / homePrice * 100 : 0;
       const mortgageAmount = homePrice - depositAmount;
       const years = Number(values.loanTermYears) || 0;
-      const schedule = buildAmortizationSchedule({
+      const monthlyOverpayment = Number(values.monthlyOverpayment ?? 0);
+      const oneTimeOverpayment = Number(values.oneTimeOverpayment ?? 0);
+      if (!Number.isFinite(monthlyOverpayment) || monthlyOverpayment < 0) {
+        return { validationError: "Monthly overpayment cannot be negative or non-finite." };
+      }
+      if (!Number.isFinite(oneTimeOverpayment) || oneTimeOverpayment < 0) {
+        return { validationError: "One-time overpayment cannot be negative or non-finite." };
+      }
+      const originalSchedule = buildAmortizationSchedule({
         principal: mortgageAmount,
         annualInterestRate: Number(values.annualInterestRate) || 0,
         years,
         firstRepaymentDate
       });
-      if (!schedule) return { validationError: LOAN_PAYMENT_INVALID_MESSAGE };
+      if (!originalSchedule) return { validationError: LOAN_PAYMENT_INVALID_MESSAGE };
+      const originalFinalRow = originalSchedule.rows[originalSchedule.rows.length - 1];
+      if (!originalFinalRow) return { validationError: LOAN_PAYMENT_INVALID_MESSAGE };
+      const oneTimeDate = oneTimeOverpayment > 0 ? normalizeCalendarDate(values.oneTimeOverpaymentDate) : null;
+      if (oneTimeOverpayment > 0 && !oneTimeDate) return { validationError: "Enter a one-time overpayment date." };
+      if (oneTimeDate && oneTimeDate < firstRepaymentDate) return { validationError: "One-time overpayment date cannot be before the first repayment date." };
+      if (oneTimeDate && oneTimeDate > originalFinalRow.paymentDate) return { validationError: "One-time overpayment date cannot be after the original final repayment date." };
+      const revisedSchedule = buildAmortizationSchedule({
+        principal: mortgageAmount,
+        annualInterestRate: Number(values.annualInterestRate) || 0,
+        years,
+        firstRepaymentDate,
+        monthlyOverpayment,
+        oneTimeOverpayment,
+        oneTimeOverpaymentDate: oneTimeDate ?? undefined
+      });
+      if (!revisedSchedule) return { validationError: LOAN_PAYMENT_INVALID_MESSAGE };
 
       const monthlyPropertyTax = (Number(values.annualPropertyTax) || 0) / 12;
       const monthlyInsurance = (Number(values.annualHomeInsurance) || 0) / 12;
       const monthlyHOA = Number(values.monthlyHOA) || 0;
-      const finalRow = schedule.rows[schedule.rows.length - 1];
-      if (!finalRow) return { validationError: LOAN_PAYMENT_INVALID_MESSAGE };
-      const finalRepaymentDate = finalRow.paymentDate;
+      const revisedFinalRow = revisedSchedule.rows[revisedSchedule.rows.length - 1];
+      if (!revisedFinalRow) return { validationError: LOAN_PAYMENT_INVALID_MESSAGE };
+      const paymentsSaved = Math.max(originalSchedule.rows.length - revisedSchedule.rows.length, 0);
+      const interestSaved = Math.max(originalSchedule.totalInterest - revisedSchedule.totalInterest, 0);
+      const savedYears = Math.floor(paymentsSaved / 12);
+      const savedMonths = paymentsSaved % 12;
       return {
         propertyPrice: formatCurrency(homePrice, currency),
         depositAmount: formatCurrency(depositAmount, currency),
         depositPercentage: `${depositPercentage.toFixed(2)}%`,
         mortgageAmount: formatCurrency(mortgageAmount, currency),
         loanToValue: `${(mortgageAmount / homePrice * 100).toFixed(2)}%`,
-        monthlyPrincipalAndInterest: formatCurrency(schedule.monthlyPayment, currency),
-        totalMonthlyPayment: formatCurrency(schedule.monthlyPayment + monthlyPropertyTax + monthlyInsurance + monthlyHOA, currency),
-        totalLoanPayment: formatCurrency(schedule.totalRepayments, currency),
-        totalInterestPaid: formatCurrency(schedule.totalInterest, currency),
+        monthlyPrincipalAndInterest: formatCurrency(originalSchedule.monthlyPayment, currency),
+        totalMonthlyPayment: formatCurrency(originalSchedule.monthlyPayment + monthlyPropertyTax + monthlyInsurance + monthlyHOA, currency),
+        totalLoanPayment: formatCurrency(originalSchedule.totalRepayments, currency),
+        totalInterestPaid: formatCurrency(originalSchedule.totalInterest, currency),
         firstRepaymentDate,
-        finalRepaymentDate
+        finalRepaymentDate: originalFinalRow.paymentDate,
+        overpaymentComparison: monthlyOverpayment === 0 && oneTimeOverpayment === 0
+          ? "No overpayment scenario entered; savings are zero."
+          : "Original schedule compared with the overpayment schedule",
+        comparisonMonthlyOverpayment: formatCurrency(monthlyOverpayment, currency),
+        comparisonOneTimeOverpayment: formatCurrency(oneTimeOverpayment, currency),
+        originalPayoffDate: originalFinalRow.paymentDate,
+        revisedPayoffDate: revisedFinalRow.paymentDate,
+        originalTotalRepayments: formatCurrency(originalSchedule.totalRepayments, currency),
+        revisedTotalRepayments: formatCurrency(revisedSchedule.totalRepayments, currency),
+        originalTotalInterest: formatCurrency(originalSchedule.totalInterest, currency),
+        revisedTotalInterest: formatCurrency(revisedSchedule.totalInterest, currency),
+        interestSaved: formatCurrency(interestSaved, currency),
+        monthlyPaymentsSaved: paymentsSaved,
+        repaymentTimeSaved: `${savedYears} ${savedYears === 1 ? "year" : "years"} and ${savedMonths} ${savedMonths === 1 ? "month" : "months"}`
       };
     },
     resultLabels: {
@@ -136,7 +213,13 @@ export const calculatorRegistry: CalculatorConfig[] = [
       mortgageAmount: "Mortgage amount", loanToValue: "Loan-to-value (mortgage amount as a percentage of property price)",
       monthlyPrincipalAndInterest: "Monthly mortgage repayment", totalMonthlyPayment: "Estimated total monthly housing cost",
       totalLoanPayment: "Total mortgage repayments (ownership costs excluded)", totalInterestPaid: "Total interest (ownership costs excluded)",
-      firstRepaymentDate: "First repayment date", finalRepaymentDate: "Estimated final repayment date", validationError: "Validation error"
+      firstRepaymentDate: "First repayment date", finalRepaymentDate: "Estimated final repayment date", validationError: "Validation error",
+      overpaymentComparison: "Scenario", comparisonMonthlyOverpayment: "Monthly overpayment",
+      comparisonOneTimeOverpayment: "One-time overpayment", originalPayoffDate: "Original payoff date",
+      revisedPayoffDate: "Revised payoff date", originalTotalRepayments: "Original total mortgage repayments",
+      revisedTotalRepayments: "Revised total mortgage repayments", originalTotalInterest: "Original total interest",
+      revisedTotalInterest: "Revised total interest", interestSaved: "Interest saved",
+      monthlyPaymentsSaved: "Monthly payments saved", repaymentTimeSaved: "Repayment time saved"
     },
     relatedSlugs: ["loan-calculator", "amortization-calculator", "compound-interest-calculator"]
   },

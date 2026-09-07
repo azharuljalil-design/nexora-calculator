@@ -26,6 +26,7 @@ export function validateInput(
   }
 
   if (isInputRequired(input, values) && rawValue.trim() === "") {
+    if (input.requiredError) return input.requiredError;
     return input.type === "select" || input.type === "date" || input.type === "datetime"
       ? "Please choose a value."
       : "This field is required.";
@@ -38,7 +39,7 @@ export function validateInput(
       return "Enter a valid number.";
     }
     if (input.min !== undefined && n < input.min) {
-      return `Value must be at least ${input.min}.`;
+      return input.minError ?? `Value must be at least ${input.min}.`;
     }
     if (input.max !== undefined && n > input.max) {
       return `Value must be at most ${input.max}.`;

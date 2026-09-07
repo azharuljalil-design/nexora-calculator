@@ -64,16 +64,20 @@ export function CalculatorResult({
               config.resultLabels?.[key] ?? key.replace(/_/g, " ");
 
             return (
-              <div
-                key={key}
-                className="rounded-xl bg-primary/5 px-3 py-2 text-xs"
-              >
-                <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
-                  {label}
-                </p>
-                <p className="text-sm font-semibold text-text">
-                  {formatResultValue(value)}
-                </p>
+              <div key={key}>
+                {key === "overpaymentComparison" ? (
+                  <h3 className="mb-3 mt-5 border-t border-slate-200 pt-5 text-sm font-semibold text-slate-800">
+                    Overpayment comparison
+                  </h3>
+                ) : null}
+                <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs">
+                  <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500">
+                    {label}
+                  </p>
+                  <p className="text-sm font-semibold text-text">
+                    {formatResultValue(value)}
+                  </p>
+                </div>
               </div>
             );
           })}
@@ -82,4 +86,3 @@ export function CalculatorResult({
     </div>
   );
 }
-
