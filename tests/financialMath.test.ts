@@ -274,6 +274,126 @@ test("shared amortization schedules reconcile normal and zero-rate totals to a z
   }
 });
 
+test("zero overpayments preserve every baseline amortization value", () => {
+  const args = { principal: 280000, annualInterestRate: 4.75, years: 25, firstRepaymentDate: "2026-01-31" };
+  const baseline = buildAmortizationSchedule(args);
+  const zero = buildAmortizationSchedule({ ...args, monthlyOverpayment: 0, oneTimeOverpayment: 0 });
+  assert.ok(baseline && zero);
+  assert.equal(zero.monthlyPayment, baseline.monthlyPayment);
+  assert.equal(zero.totalRepayments, baseline.totalRepayments);
+  assert.equal(zero.totalInterest, baseline.totalInterest);
+  assert.equal(zero.rows.length, baseline.rows.length);
+  assert.deepEqual(zero.rows, baseline.rows);
+  assert.ok(zero.rows.every((row) => row.paymentAmount === row.totalPayment));
+});
+
+test("monthly, one-time, and combined overpayments shorten schedules and reconcile", () => {
+  const args = { principal: 200000, annualInterestRate: 5, years: 30, firstRepaymentDate: "2026-01-15" };
+  const original = buildAmortizationSchedule(args);
+  const monthly = buildAmortizationSchedule({ ...args, monthlyOverpayment: 250 });
+  const oneTime = buildAmortizationSchedule({ ...args, oneTimeOverpayment: 10000, oneTimeOverpaymentDate: "2027-01-15" });
+  const both = buildAmortizationSchedule({ ...args, monthlyOverpayment: 250, oneTimeOverpayment: 10000, oneTimeOverpaymentDate: "2027-01-15" });
+  assert.ok(original && monthly && oneTime && both);
+  assert.equal(monthly.rows[0].monthlyOverpayment, 250);
+  assert.equal(monthly.rows[0].paymentNumber, 1);
+  assert.equal(oneTime.rows[12].oneTimeOverpayment, 10000);
+  assert.equal(oneTime.rows.filter((row) => row.oneTimeOverpayment > 0).length, 1);
+  assert.ok(monthly.rows.length < original.rows.length);
+  assert.ok(oneTime.rows.length < original.rows.length);
+  assert.ok(both.rows.length < monthly.rows.length);
+  for (const schedule of [monthly, oneTime, both]) {
+    assert.equal(schedule.rows.at(-1)?.remainingBalance, 0);
+    assert.ok(schedule.rows.every((row) => row.remainingBalance >= 0 && row.principal >= 0));
+    assert.ok(Math.abs(schedule.totalRepayments - schedule.rows.reduce((sum, row) => sum + row.totalPayment, 0)) < 1e-8);
+    assert.ok(Math.abs(schedule.totalInterest - schedule.rows.reduce((sum, row) => sum + row.interest, 0)) < 1e-8);
+  }
+});
+
+test("one-time dates use the first scheduled repayment on or after the calendar date", () => {
+  const args = { principal: 12000, annualInterestRate: 6, years: 2, firstRepaymentDate: "2026-01-31", oneTimeOverpayment: 1000 };
+  const first = buildAmortizationSchedule({ ...args, oneTimeOverpaymentDate: "2026-01-31" });
+  const between = buildAmortizationSchedule({ ...args, oneTimeOverpaymentDate: "2026-02-15" });
+  assert.ok(first && between);
+  assert.equal(first.rows[0].oneTimeOverpayment, 1000);
+  assert.equal(between.rows[0].oneTimeOverpayment, 0);
+  assert.equal(between.rows[1].paymentDate, "2026-02-28");
+  assert.equal(between.rows[1].oneTimeOverpayment, 1000);
+});
+
+test("large and late overpayments are capped without negative balances", () => {
+  const args = { principal: 10000, annualInterestRate: 5, years: 2, firstRepaymentDate: "2026-01-01" };
+  const original = buildAmortizationSchedule(args);
+  const hugeMonthly = buildAmortizationSchedule({ ...args, monthlyOverpayment: 1e9 });
+  assert.ok(original && hugeMonthly);
+  assert.equal(hugeMonthly.rows.length, 1);
+  assert.equal(hugeMonthly.rows[0].remainingBalance, 0);
+  assert.equal(hugeMonthly.rows[0].totalPayment, 10000 + hugeMonthly.rows[0].interest);
+  const hugeOneTime = buildAmortizationSchedule({
+    ...args,
+    oneTimeOverpayment: 1e9,
+    oneTimeOverpaymentDate: args.firstRepaymentDate
+  });
+  assert.ok(hugeOneTime);
+  assert.equal(hugeOneTime.rows.length, 1);
+  assert.equal(hugeOneTime.rows[0].remainingBalance, 0);
+  assert.ok(hugeOneTime.rows[0].oneTimeOverpayment < 1e9);
+  const late = buildAmortizationSchedule({
+    ...args,
+    oneTimeOverpayment: 100,
+    oneTimeOverpaymentDate: original.rows[original.rows.length - 2].paymentDate
+  });
+  assert.ok(late);
+  assert.ok(late.rows.some((row) => row.oneTimeOverpayment > 0));
+  assert.equal(late.rows.at(-1)?.remainingBalance, 0);
+  assert.ok(late.rows.every((row) => row.remainingBalance >= 0));
+});
+
+test("overpayment engine supports genuine zero interest and rejects invalid amounts or dates", () => {
+  const args = { principal: 12000, annualInterestRate: 0, years: 2, firstRepaymentDate: "2026-01-01" };
+  const schedule = buildAmortizationSchedule({ ...args, monthlyOverpayment: 500, oneTimeOverpayment: 1000, oneTimeOverpaymentDate: "2026-06-15" });
+  assert.ok(schedule);
+  assert.equal(schedule.totalInterest, 0);
+  assert.equal(schedule.rows.at(-1)?.remainingBalance, 0);
+  assert.equal(buildAmortizationSchedule({ ...args, monthlyOverpayment: -1 }), null);
+  assert.equal(buildAmortizationSchedule({ ...args, oneTimeOverpayment: -1 }), null);
+  assert.equal(buildAmortizationSchedule({ ...args, monthlyOverpayment: Number.POSITIVE_INFINITY }), null);
+  assert.equal(buildAmortizationSchedule({ ...args, oneTimeOverpayment: 1, oneTimeOverpaymentDate: "2026-02-30" }), null);
+});
+
+test("mortgage overpayment validation covers amount and calendar boundaries", () => {
+  const mortgage = loadCalculator("mortgage-calculator") as CalculatorConfigForTest;
+  const validate = (overrides: Record<string, string>) => validateAll(mortgage as CalculatorConfig, {
+    ...validMortgageValues, monthlyOverpayment: "0", oneTimeOverpayment: "0", ...overrides
+  });
+  assert.equal(validate({ monthlyOverpayment: "-1" }).monthlyOverpayment, "Monthly overpayment cannot be negative.");
+  assert.equal(validate({ oneTimeOverpayment: "-1" }).oneTimeOverpayment, "One-time overpayment cannot be negative.");
+  assert.equal(validate({ monthlyOverpayment: "Infinity" }).monthlyOverpayment, "Enter a valid number.");
+  assert.equal(validate({ oneTimeOverpayment: "1000", oneTimeOverpaymentDate: "" }).oneTimeOverpaymentDate, "Enter a one-time overpayment date.");
+  assert.equal(validate({ oneTimeOverpayment: "1000", oneTimeOverpaymentDate: "not-a-date" }).oneTimeOverpaymentDate, "Enter a valid one-time overpayment date in YYYY-MM-DD format.");
+  assert.equal(validate({ oneTimeOverpayment: "1000", oneTimeOverpaymentDate: "2025-12-31" }).oneTimeOverpaymentDate, "One-time overpayment date cannot be before the first repayment date.");
+  assert.equal(validate({ oneTimeOverpayment: "1000", oneTimeOverpaymentDate: "2051-01-01" }).oneTimeOverpaymentDate, "One-time overpayment date cannot be after the original final repayment date.");
+  assert.equal(validate({ oneTimeOverpayment: "0", oneTimeOverpaymentDate: "bad" }).oneTimeOverpaymentDate, undefined);
+});
+
+test("mortgage comparison reports reconciled interest and years-and-months saved in all currencies", () => {
+  const mortgage = loadCalculator("mortgage-calculator");
+  const baseline = mortgage.calculate({ ...validMortgageValues, monthlyOverpayment: 0, oneTimeOverpayment: 0 });
+  assert.equal(baseline.revisedPayoffDate, baseline.originalPayoffDate);
+  assert.equal(baseline.interestSaved, "£0.00");
+  assert.equal(baseline.monthlyPaymentsSaved, 0);
+  assert.equal(baseline.repaymentTimeSaved, "0 years and 0 months");
+  const revised = mortgage.calculate({ ...validMortgageValues, monthlyOverpayment: 200, oneTimeOverpayment: 5000, oneTimeOverpaymentDate: "2027-02-15" });
+  assert.ok(Number(revised.monthlyPaymentsSaved) > 0);
+  const count = Number(revised.monthlyPaymentsSaved);
+  assert.equal(revised.repaymentTimeSaved, `${Math.floor(count / 12)} years and ${count % 12} months`);
+  assert.notEqual(revised.interestSaved, "£0.00");
+  for (const currency of ["GBP", "EUR", "USD"]) {
+    const result = mortgage.calculate({ ...validMortgageValues, currency, monthlyOverpayment: 200 });
+    assert.equal(typeof result.revisedTotalInterest, "string");
+    assert.equal(typeof result.interestSaved, "string");
+  }
+});
+
 test("mortgage calculator links only to the intended related calculators", () => {
   assert.deepEqual(loadCalculator("mortgage-calculator").relatedSlugs, [
     "loan-calculator",

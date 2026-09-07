@@ -80,51 +80,62 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "mortgage-calculator": {
     slug: "mortgage-calculator",
-    metaTitle: "Mortgage Calculator with Deposit, LTV and Dates",
-    metaDescription: "Estimate fixed-rate mortgage repayments, deposit equivalents, LTV, repayment dates, and optional recurring ownership costs.",
+    metaTitle: "Mortgage Calculator with Deposit and Overpayments",
+    metaDescription: "Estimate fixed-rate mortgage repayments, LTV, payoff dates, and potential interest and time savings from optional overpayments.",
     whatItDoes: [
       "Estimates a fixed-rate repayment mortgage from the property price, deposit, annual rate, term, and first repayment date.",
       "Shows both deposit amount and percentage, the mortgage amount, and loan-to-value (LTV), which is the mortgage amount as a percentage of property price.",
-      "Estimates monthly and lifetime mortgage totals plus the final scheduled repayment date."
+      "Compares the original schedule with a revised schedule containing optional monthly and one-time overpayments, including estimated interest and repayment time saved."
     ],
     howToUse: [
       "Select GBP, EUR, or USD. The choice formats results in that currency but does not perform currency conversion.",
       "Enter the property price, then choose Deposit amount or Deposit percentage and complete only the displayed deposit field.",
       "Enter the fixed annual interest rate, whole-year term, and required first repayment calendar date.",
+      "Optionally enter a monthly overpayment. It is added from payment 1 until the balance is cleared.",
+      "For a one-time overpayment, enter its amount and date. The amount is assigned to the first scheduled repayment on or after that calendar date.",
       "Optionally enter property tax, insurance, and HOA/service charges for the monthly housing-cost estimate.",
-      "Calculate and review the deposit equivalents, LTV, repayment estimate, and dates."
+      "Calculate and review the original mortgage results and the revised payoff, interest, and time-saving comparison."
     ],
     methodology: [
       "Deposit percentage = deposit amount ÷ property price × 100; percentage-mode deposits are converted to an amount using property price × percentage ÷ 100.",
       "Mortgage amount = property price − deposit, and LTV = mortgage amount ÷ property price × 100. LTV is descriptive and is not a lending-eligibility assessment.",
       "For a positive fixed rate, monthly repayment uses M = P × r × (1 + r)^n ÷ ((1 + r)^n − 1). At 0%, it uses P ÷ n.",
       "The schedule caps the last principal payment at the remaining balance. Total repayments and interest are sums of its rows.",
+      "The original schedule contains no overpayments. The revised schedule adds the monthly amount from payment 1 and applies a one-time amount to the first scheduled payment on or after its selected date. Either amount is capped so it cannot make the balance negative.",
+      "Interest saved = original total interest − revised total interest. Payments saved = original row count − revised row count; that count is expressed as whole years and remaining months.",
+      "Overpayments reduce principal sooner, so later monthly interest can be lower and the final payment can occur earlier. At a genuine 0% rate they can shorten the schedule but cannot create interest savings.",
       "The first date is treated as YYYY-MM-DD calendar data without timezone conversion. Each date uses the original day where available and otherwise the target month's last day; the final date belongs to the last scheduled payment.",
       "Optional ownership costs affect only estimated total monthly housing cost and are excluded from lifetime mortgage repayment and interest totals."
     ],
     example: {
-      scenario: "A £350,000 property has a 20% deposit, a 4.75% fixed annual rate, a 25-year term, and a first repayment on 2026-01-31.",
+      scenario: "A £350,000 property has a 20% deposit, a 4.75% fixed annual rate, a 25-year term, a first repayment on 2026-01-31, and an optional £200 monthly overpayment.",
       steps: [
         "Deposit amount = £350,000 × 20% = £70,000; mortgage amount = £280,000",
         "LTV = £280,000 ÷ £350,000 × 100 = 80.00%",
         "There are 300 monthly schedule rows, with month-end dates clamped where the 31st is unavailable.",
-        "Optional ownership costs are added only to the monthly housing-cost estimate."
+        "The original schedule uses the normal repayment; the revised schedule adds £200 from its first payment and stops when its balance reaches zero.",
+        "Optional ownership costs are added only to the monthly housing-cost estimate, not either repayment schedule."
       ],
-      result: "The estimated monthly mortgage repayment is about £1,596.33. The final scheduled repayment date is 2050-12-31."
+      result: "The normal repayment is about £1,596.33. The comparison estimates how the £200 overpayment changes the payoff date and interest, while retaining the original figures for reference."
     },
     mistakesOrLimitations: [
       "This is an estimate, not a mortgage offer, approval, eligibility decision, affordability assessment, or financial advice.",
-      "The entered rate is assumed fixed for the whole term; variable rates, remortgaging, missed payments, and overpayments are not modelled.",
-      "Lender-specific daily interest, rounding, fees, taxes, and payment processing can differ from this monthly schedule.",
+      "The entered rate is assumed fixed for the whole term; variable rates, remortgaging, and missed payments are not modelled.",
+      "Lenders may calculate daily interest or round and process payments differently, so statements and actual savings can differ from this monthly estimate.",
+      "Mortgage products can impose annual overpayment limits or early repayment charges. Check the lender's current conditions before making an overpayment.",
       "Currency selection formats values only. Do not mix amounts denominated in different currencies.",
       "The calculator does not provide charts, downloads, or a mortgage schedule; use the Amortization Calculator to inspect a schedule."
     ],
-    disclaimer: "This calculator provides a general fixed-rate estimate based on your inputs. It makes no lending-eligibility claim. Confirm product terms, costs, dates, and eligibility with a regulated adviser or lender.",
+    disclaimer: "This calculator provides a general fixed-rate estimate, not financial advice, an offer, or an eligibility decision. Check overpayment allowances, early repayment charges, product terms, costs, and dates with your lender or a regulated adviser before acting.",
     faqs: [
       { question: "Can I enter my deposit as an amount or percentage?", answer: "Yes. Select one mode and enter only its displayed field; results show both equivalent forms." },
       { question: "What does LTV mean here?", answer: "Loan-to-value is the mortgage amount divided by property price, expressed as a percentage. The displayed LTV does not predict approval or product eligibility." },
       { question: "How are repayment dates handled?", answer: "Dates are calendar-only values with no UTC conversion. The original day of month is retained when possible and otherwise clamped to month-end, including leap years." },
       { question: "Are ownership costs included in lifetime totals?", answer: "No. Tax, insurance, and HOA/service charges are included only in estimated total monthly housing cost, not total mortgage repayments or interest." },
+      { question: "When does a monthly overpayment begin?", answer: "It begins with payment 1 and is added each month until the mortgage is repaid. The final amount is capped so you do not pay more than that month's balance and interest." },
+      { question: "How is a one-time overpayment date used?", answer: "It is a strict calendar-only date. The amount is applied to the first scheduled repayment on or after that date, rather than being treated as a separate daily transaction." },
+      { question: "Why can overpayments save interest and time?", answer: "They reduce principal earlier. With less principal outstanding, later interest can be lower and fewer scheduled payments may be needed. Actual lender results can differ." },
+      { question: "What are the original and revised schedules?", answer: "The original schedule excludes all overpayments and preserves the contracted estimate. The revised schedule applies the entered monthly and one-time amounts so the two outcomes can be compared." },
       { question: "Does the calculation allow changing rates?", answer: "No. It assumes the entered fixed rate applies throughout the term. Recalculate separate scenarios if your rate may change." }
     ]
   },

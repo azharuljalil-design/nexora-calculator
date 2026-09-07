@@ -9,6 +9,11 @@ export type CalendarDate = {
 export type AmortizationRow = {
   paymentNumber: number;
   paymentDate: string;
+  regularPaymentAmount: number;
+  monthlyOverpayment: number;
+  oneTimeOverpayment: number;
+  totalPayment: number;
+  /** Kept as an alias of totalPayment for existing calculator consumers. */
   paymentAmount: number;
   principal: number;
   interest: number;
@@ -62,11 +67,24 @@ export function buildAmortizationSchedule(args: {
   annualInterestRate: number;
   years: number;
   firstRepaymentDate: string;
+  monthlyOverpayment?: number;
+  oneTimeOverpayment?: number;
+  oneTimeOverpaymentDate?: string;
 }): AmortizationSchedule | null {
   const { principal, annualInterestRate, years } = args;
   const firstDate = parseCalendarDate(args.firstRepaymentDate);
+  const monthlyOverpayment = args.monthlyOverpayment ?? 0;
+  const oneTimeOverpayment = args.oneTimeOverpayment ?? 0;
+  const oneTimeDate = oneTimeOverpayment > 0
+    ? parseCalendarDate(args.oneTimeOverpaymentDate)
+    : null;
   const paymentCount = years * 12;
-  if (!firstDate || !Number.isInteger(paymentCount) || paymentCount <= 0) return null;
+  if (
+    !firstDate || !Number.isInteger(paymentCount) || paymentCount <= 0 ||
+    !Number.isFinite(monthlyOverpayment) || monthlyOverpayment < 0 ||
+    !Number.isFinite(oneTimeOverpayment) || oneTimeOverpayment < 0 ||
+    (oneTimeOverpayment > 0 && !oneTimeDate)
+  ) return null;
 
   const monthlyPayment = calculateMonthlyPayment({ principal, annualInterestRate, years });
   if (monthlyPayment === null) return null;
@@ -74,17 +92,35 @@ export function buildAmortizationSchedule(args: {
   const monthlyRate = annualInterestRate / 12 / 100;
   const rows: AmortizationRow[] = [];
   let balance = principal;
+  let oneTimeApplied = false;
 
   for (let index = 0; index < paymentCount; index += 1) {
     const interest = monthlyRate === 0 ? 0 : balance * monthlyRate;
-    const principalPayment = Math.min(Math.max(monthlyPayment - interest, 0), balance);
-    const isFinalPayment = index === paymentCount - 1 || principalPayment >= balance;
-    const paymentAmount = isFinalPayment ? principalPayment + interest : monthlyPayment;
+    const paymentDate = formatCalendarDate(addCalendarMonths(firstDate, index));
+    const amountDue = balance + interest;
+    const regularPaymentAmount = Math.min(monthlyPayment, amountDue);
+    let amountRemaining = Math.max(amountDue - regularPaymentAmount, 0);
+    const appliedMonthlyOverpayment = Math.min(monthlyOverpayment, amountRemaining);
+    amountRemaining = Math.max(amountRemaining - appliedMonthlyOverpayment, 0);
+    const isOneTimeDue = !oneTimeApplied && oneTimeDate !== null &&
+      paymentDate >= formatCalendarDate(oneTimeDate);
+    const appliedOneTimeOverpayment = isOneTimeDue
+      ? Math.min(oneTimeOverpayment, amountRemaining)
+      : 0;
+    if (isOneTimeDue) oneTimeApplied = true;
+    const totalPayment = regularPaymentAmount + appliedMonthlyOverpayment + appliedOneTimeOverpayment;
+    const principalPayment = Math.min(Math.max(totalPayment - interest, 0), balance);
+    const isFinalPayment = index === paymentCount - 1 || principalPayment >= balance ||
+      balance - principalPayment < 1e-8;
     balance = isFinalPayment ? 0 : Math.max(balance - principalPayment, 0);
     rows.push({
       paymentNumber: index + 1,
-      paymentDate: formatCalendarDate(addCalendarMonths(firstDate, index)),
-      paymentAmount,
+      paymentDate,
+      regularPaymentAmount,
+      monthlyOverpayment: appliedMonthlyOverpayment,
+      oneTimeOverpayment: appliedOneTimeOverpayment,
+      totalPayment,
+      paymentAmount: totalPayment,
       principal: principalPayment,
       interest,
       remainingBalance: balance

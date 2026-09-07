@@ -15,10 +15,12 @@ export type CalculatorInputBase = {
   type: CalculatorInputType;
   required?: boolean;
   requiredWhen?: (values: CalculatorFormValues) => boolean;
+  requiredError?: string;
   showWhen?: (values: CalculatorFormValues) => boolean;
   defaultValue?: string;
   helperText?: string | ((values: CalculatorFormValues) => string);
   min?: number;
+  minError?: string;
   max?: number;
   step?: number;
   inputMode?: "decimal" | "numeric";

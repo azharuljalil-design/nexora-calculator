@@ -78,7 +78,7 @@ export function AmortizationCalculator({ config }: AmortizationCalculatorProps) 
                   </label>
 
                   {renderInputControl({
-                    input: { ...input, name: `${config.slug}-${input.name}` },
+                    input: { ...input, name: `${config.slug}-${input.name}`, required: isInputRequired(input, engine.values) },
                     value,
                     values: engine.values,
                     onChange: (val) => engine.handleChange(input.name, val),
