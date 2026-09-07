@@ -212,6 +212,22 @@ export const calculatorRegistry: CalculatorConfig[] = [
           hasOverpayment: monthlyOverpayment > 0 || oneTimeOverpayment > 0,
           monthlyOverpayment,
           oneTimeOverpayment,
+          assumptions: {
+            propertyPrice: homePrice,
+            depositAmount,
+            depositPercentage,
+            mortgageAmount,
+            ltv: homePrice > 0 ? mortgageAmount / homePrice * 100 : 0,
+            annualInterestRate: Number(values.annualInterestRate) || 0,
+            termYears: years,
+            firstRepaymentDate,
+            monthlyOverpayment,
+            oneTimeOverpayment,
+            oneTimeOverpaymentDate: oneTimeDate,
+            annualPropertyTax: Number(values.annualPropertyTax) || 0,
+            annualHomeInsurance: Number(values.annualHomeInsurance) || 0,
+            monthlyHOA
+          },
           original: originalSchedule,
           revised: revisedSchedule,
           comparison: {

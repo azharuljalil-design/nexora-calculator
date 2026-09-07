@@ -18,6 +18,7 @@ import {
   normalizeCalendarDate
 } from "../src/lib/amortization";
 import type { CalculatorConfig } from "../src/types/calculatorTypes";
+import { CSV_HEADINGS, createMortgageCsv, escapeCsvField, mortgageCsvFilename, reconcileAmortizationRow, reconcileSchedule } from "../src/lib/mortgageOutputs";
 
 type CalculatorConfigForTest = {
   calculate: (values: Record<string, number | string>) => Record<string, any>;
@@ -312,6 +313,69 @@ test("mortgage calculation exposes engine-generated original and overpayment sch
   assert.equal(revisedData.revised.rows.at(-1).remainingBalance, 0);
   assert.equal(revisedData.comparison.paymentsSaved, revisedData.original.rows.length - revisedData.revised.rows.length);
   assert.ok(Math.abs(revisedData.revised.rows.reduce((sum: number, row: { totalPayment: number }) => sum + row.totalPayment, 0) - revisedData.revised.totalRepayments) < 1e-7);
+});
+
+test("mortgage presentation reconciles the observed 623.45 row and never shows negative cents", () => {
+  const row = reconcileAmortizationRow({
+    paymentNumber: 1, paymentDate: "2026-01-01", regularPaymentAmount: 623.445,
+    monthlyOverpayment: 0, oneTimeOverpayment: 0, totalPayment: 623.445,
+    paymentAmount: 623.445, principal: 151.134, interest: 472.311, remainingBalance: -0.0001
+  }, true);
+  assert.equal(row.totalPayment, 623.45);
+  assert.equal(row.principal + row.interest, row.totalPayment);
+  assert.equal(row.regularPaymentAmount + row.monthlyOverpayment + row.oneTimeOverpayment, row.totalPayment);
+  assert.ok(Object.values(row).filter((value): value is number => typeof value === "number").every((value) => value >= 0));
+  assert.equal(row.remainingBalance, 0);
+});
+
+test("display reconciliation holds for normal, zero-rate, and every overpayment combination", () => {
+  const base = { principal: 123456, annualInterestRate: 4.31, years: 20, firstRepaymentDate: "2026-03-31" };
+  const schedules = [
+    buildAmortizationSchedule(base), buildAmortizationSchedule({ ...base, annualInterestRate: 0 }),
+    buildAmortizationSchedule({ ...base, monthlyOverpayment: 75.55 }),
+    buildAmortizationSchedule({ ...base, oneTimeOverpayment: 1000.01, oneTimeOverpaymentDate: "2027-01-31" }),
+    buildAmortizationSchedule({ ...base, monthlyOverpayment: 75.55, oneTimeOverpayment: 1000.01, oneTimeOverpaymentDate: "2027-01-31" })
+  ];
+  for (const schedule of schedules) {
+    assert.ok(schedule);
+    const rows = reconcileSchedule(schedule);
+    assert.equal(rows.at(-1)?.remainingBalance, 0);
+    assert.ok(rows.every((row) => Math.round((row.principal + row.interest) * 100) === Math.round(row.totalPayment * 100)));
+    assert.ok(rows.every((row) => Math.round((row.regularPaymentAmount + row.monthlyOverpayment + row.oneTimeOverpayment) * 100) === Math.round(row.totalPayment * 100)));
+    assert.ok(rows.every((row) => [row.principal, row.interest, row.remainingBalance].every((value) => value >= 0)));
+  }
+});
+
+test("mortgage CSV is selected-schedule ready, safe, quoted, and currency-neutral", () => {
+  const mortgage = loadCalculator("mortgage-calculator");
+  for (const currency of ["GBP", "EUR", "USD"] as const) {
+    const result = mortgage.calculate({ ...validMortgageValues, currency, monthlyOverpayment: 100 });
+    const schedule = result.mortgageScenarios.revised;
+    const csv = createMortgageCsv(schedule, currency);
+    const lines = csv.slice(1).split("\r\n");
+    assert.equal(lines[0], `"Currency code","${currency}"`);
+    assert.equal(lines[1], CSV_HEADINGS.map(escapeCsvField).join(","));
+    assert.match(lines[2], /^"1","2026-01-31","\d+\.\d{2}"/);
+    assert.equal(lines.length, schedule.rows.length + 3);
+    assert.ok(csv.startsWith("\uFEFF"));
+    assert.ok(!csv.slice(1).includes("\n") || csv.slice(1).split("\n").every((part, index, all) => index === all.length - 1 || part.endsWith("\r")));
+  }
+  assert.equal(escapeCsvField('=2+2,"x"'), "\"'=2+2,\"\"x\"\"\"");
+  assert.equal(mortgageCsvFilename("overpayment", new Date("2026-09-07T12:00:00Z")), "nexora-mortgage-overpayment-2026-09-07.csv");
+});
+
+test("mortgage result exposes reusable print assumptions without recalculating in the UI", () => {
+  const result = loadCalculator("mortgage-calculator").calculate({ ...validMortgageValues, monthlyOverpayment: 200, annualPropertyTax: 1200 });
+  const assumptions = result.mortgageScenarios.assumptions;
+  assert.equal(assumptions.propertyPrice, 350000);
+  assert.equal(assumptions.mortgageAmount, 280000);
+  assert.equal(assumptions.monthlyOverpayment, 200);
+  assert.equal(assumptions.annualPropertyTax, 1200);
+  const component = fs.readFileSync(path.join(process.cwd(), "src/components/calculators/MortgageScenarioResults.tsx"), "utf8");
+  assert.match(component, /onClick=\{\(\) => window\.print\(\)\}/);
+  assert.match(component, /rows=\{displayRows\}/);
+  assert.match(component, /print-only print-schedule/);
+  assert.match(component, /slice\(0, visibleRows\)/);
 });
 
 test("a 40-year mortgage schedule is bounded at 480 engine rows", () => {
