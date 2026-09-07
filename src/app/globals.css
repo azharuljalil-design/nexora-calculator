@@ -19,6 +19,27 @@ a {
   background-image: repeating-linear-gradient(135deg, rgb(120 53 15 / 35%) 0 2px, transparent 2px 5px);
 }
 
+.print-only {
+  display: none;
+}
+
+@media print {
+  @page { size: A4 landscape; margin: 10mm; }
+  body * { visibility: hidden !important; }
+  .mortgage-results, .mortgage-results * { visibility: visible !important; }
+  .mortgage-results { position: absolute; inset: 0; width: 100%; color: #000; }
+  .no-print, .mortgage-results button, .mortgage-results details { display: none !important; }
+  .print-only { display: block !important; }
+  .mortgage-results section { border: 1px solid #000 !important; box-shadow: none !important; break-inside: avoid; margin-bottom: 5mm; }
+  .mortgage-results .print-schedule { break-inside: auto; }
+  .mortgage-results .print-schedule > div { overflow: visible !important; border: 0 !important; }
+  .mortgage-results table { min-width: 0 !important; width: 100% !important; font-size: 8pt; }
+  .mortgage-results thead { display: table-header-group; background: #fff !important; }
+  .mortgage-results tr { break-inside: avoid; }
+  .mortgage-results th, .mortgage-results td { color: #000 !important; padding: 2mm !important; border-bottom: 1px solid #999; }
+  .mortgage-results svg, .mortgage-results ul[aria-label*="chart"] { filter: grayscale(1); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     scroll-behavior: auto !important;

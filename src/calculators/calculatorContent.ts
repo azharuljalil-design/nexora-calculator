@@ -80,8 +80,8 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "mortgage-calculator": {
     slug: "mortgage-calculator",
-    metaTitle: "Mortgage Calculator with Deposit and Overpayments",
-    metaDescription: "Estimate fixed-rate mortgage repayments, LTV, payoff dates, and potential interest and time savings from optional overpayments.",
+    metaTitle: "Mortgage Calculator, Overpayments & Schedule",
+    metaDescription: "Estimate fixed-rate mortgage repayments, interest and LTV; compare overpayments and download or print a complete amortization schedule.",
     whatItDoes: [
       "Estimates a fixed-rate repayment mortgage from the property price, deposit, annual rate, term, and first repayment date.",
       "Shows both deposit amount and percentage, the mortgage amount, and loan-to-value (LTV), which is the mortgage amount as a percentage of property price.",
@@ -96,7 +96,8 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
       "For a one-time overpayment, enter its amount and date. The amount is assigned to the first scheduled repayment on or after that calendar date.",
       "Optionally enter property tax, insurance, and HOA/service charges for the monthly housing-cost estimate.",
       "Calculate and review the original mortgage results and the revised payoff, interest, and time-saving comparison.",
-      "Open the repayment schedule to see its first 12 payments, then reveal further groups safely. Use the scenario controls to keep the schedule and annual chart on the same original or overpayment estimate."
+      "Open the repayment schedule to see its first 12 payments, then reveal further groups safely. Use the scenario controls to keep the schedule and annual chart on the same original or overpayment estimate.",
+      "Use Print / Save as PDF to open your browser's native print dialog, or download the selected schedule as a CSV created locally on your device."
     ],
     methodology: [
       "Deposit percentage = deposit amount ÷ property price × 100; percentage-mode deposits are converted to an amount using property price × percentage ÷ 100.",
@@ -110,7 +111,8 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
       "Optional ownership costs affect only estimated total monthly housing cost and are excluded from lifetime mortgage repayment and interest totals.",
       "An amortization row shows the regular payment, monthly and one-time overpayments, total paid, the part reducing principal, the interest charged, and the balance remaining. The original schedule excludes overpayments; the revised schedule applies them.",
       "Early payments commonly contain a larger interest share because the outstanding principal is higher. As principal falls, interest usually falls and more of the regular payment reduces principal; overpayments can accelerate that change.",
-      "The chart groups the monthly schedule estimates by calendar year. A partial first or final calendar year can therefore contain fewer than 12 payments."
+      "The chart groups the monthly schedule estimates by calendar year. A partial first or final calendar year can therefore contain fewer than 12 payments.",
+      "Calculations retain full precision. For display and downloads, each row is reconciled deterministically to cents so principal plus interest and regular payment plus overpayments both equal total payment; the final displayed balance is exactly zero."
     ],
     example: {
       scenario: "A £350,000 property has a 20% deposit, a 4.75% fixed annual rate, a 25-year term, a first repayment on 2026-01-31, and an optional £200 monthly overpayment.",
@@ -145,7 +147,9 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
       { question: "What does the amortization schedule show?", answer: "It lists each estimated payment date and separates the regular payment, optional overpayments, principal, interest, total payment, and remaining mortgage balance." },
       { question: "Why does the principal and interest split change?", answer: "Interest is estimated from the outstanding balance, which normally becomes smaller. That usually reduces the interest portion and increases the principal share of a regular payment over time." },
       { question: "How should I read the annual chart?", answer: "Each bar aggregates principal and interest from monthly schedule rows in that calendar year. The accessible data table gives the same currency-formatted figures without relying on colour." },
-      { question: "Will my lender's schedule match exactly?", answer: "Not necessarily. This tool uses monthly estimates; a lender may use daily interest, different rounding or timing, and product fees. Results are estimates and not financial advice." }
+      { question: "Will my lender's schedule match exactly?", answer: "Not necessarily. This tool uses monthly estimates; a lender may use daily interest, different rounding or timing, and product fees. Results are estimates and not financial advice." },
+      { question: "How can I print or download my schedule?", answer: "Print / Save as PDF opens the browser's native print dialog after you select it and includes the complete selected schedule. Download schedule CSV creates a UTF-8 file locally in your browser; it does not upload your calculation." },
+      { question: "Why can displayed row values differ by a cent from unrounded calculations?", answer: "The repayment calculator keeps full precision internally, then reconciles each displayed amortization row to two decimals. This ensures the visible parts always add to the visible total and the final balance is zero." }
     ]
   },
 
