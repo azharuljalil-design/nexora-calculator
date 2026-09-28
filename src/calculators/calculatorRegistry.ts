@@ -1349,6 +1349,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     category: "Financial Calculators",
     description:
       "Estimate a simplified retirement savings projection based on your inputs for contributions and expected returns.",
+    renderer: "retirement",
     inputs: [
       {
         name: "currency",
@@ -1362,11 +1363,11 @@ export const calculatorRegistry: CalculatorConfig[] = [
           { value: "USD", label: "USD ($)" }
         ]
       },
-      { name: "currentAge", label: "Current age", type: "number", required: true, min: 16, max: 80 },
-      { name: "retirementAge", label: "Retirement age", type: "number", required: true, min: 40, max: 90 },
-      { name: "currentSavings", label: "Current savings", type: "number", required: true, min: 0, helperText: "Starting balance for this simplified projection; include only savings you want modeled." },
-      { name: "monthlyContribution", label: "Monthly contribution", type: "number", required: true, min: 0, helperText: "Amount assumed to be added every month until retirement." },
-      { name: "expectedAnnualReturn", label: "Expected annual return (%)", type: "number", required: true, min: 0, max: 50, step: 0.01, helperText: "Assumption only; future returns are not guaranteed and fees, taxes, inflation, and withdrawals are not modeled." }
+      { name: "currentAge", label: "Current age", type: "number", required: true, min: 16, max: 80, defaultValue: "30", step: 1, validate: value => Number.isInteger(Number(value)) ? undefined : "Enter your age in whole years." },
+      { name: "retirementAge", label: "Planned retirement age", type: "number", required: true, min: 17, max: 90, defaultValue: "67", step: 1, validate: (value, values) => !Number.isInteger(Number(value)) ? "Enter retirement age in whole years." : Number(value) <= Number(values.currentAge) ? "Retirement age must be greater than current age." : undefined },
+      { name: "currentSavings", label: "Current savings", type: "number", required: true, min: 0, defaultValue: "20000", step: 0.01, helperText: "Enter 0 if you have no starting savings." },
+      { name: "monthlyContribution", label: "Monthly contribution", type: "number", required: true, min: 0, defaultValue: "300", step: 0.01, helperText: "Constant amount added at the end of each month." },
+      { name: "expectedAnnualReturn", label: "Expected annual return (%)", type: "number", required: true, min: -100, max: 50, defaultValue: "5", step: 0.01, helperText: "Supported range: −100% to 50%. This is an assumption, not a guarantee." }
     ],
     calculate: (values) => {
       const currency = (values.currency as CurrencyCode) || "GBP";
