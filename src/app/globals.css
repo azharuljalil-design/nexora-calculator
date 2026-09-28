@@ -52,3 +52,8 @@ a {
 .mortgage-article section { @apply space-y-4; }
 .mortgage-article h3 { @apply text-xl font-bold text-slate-900; }
 .mortgage-article h4 { @apply mt-6 text-base font-bold text-slate-900; }
+
+.loan-article section { @apply space-y-4; }
+.loan-article h3 { @apply text-xl font-bold text-slate-900; }
+.loan-article h4 { @apply mt-6 text-base font-bold text-slate-900; }
+.loan-calculator input, .loan-calculator select { min-height: 2.75rem; }

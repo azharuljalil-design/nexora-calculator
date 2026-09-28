@@ -7,6 +7,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ScientificCalculator } from "@/components/calculators/ScientificCalculator";
 import { AmortizationCalculator } from "@/components/calculators/AmortizationCalculator";
 import { MortgageCalculator } from "@/components/calculators/MortgageCalculator";
+import { LoanCalculator } from "@/components/calculators/LoanCalculator";
 import { calculatorCategories } from "@/data/categories";
 import { routes } from "@/lib/routes";
 import { findCalculatorBySlug } from "@/calculators/calculatorRegistry";
@@ -53,7 +54,7 @@ export function CalculatorClient({ slug }: CalculatorClientProps) {
       </nav>
 
       <SectionHeading
-        title={calculator.name}
+        title={slug === "loan-calculator" ? "UK Loan Calculator" : calculator.name}
         subtitle={calculator.description}
       />
 
@@ -65,6 +66,8 @@ export function CalculatorClient({ slug }: CalculatorClientProps) {
             <AmortizationCalculator config={calculator} />
           ) : calculator.renderer === "mortgage" ? (
             <MortgageCalculator config={calculator} />
+          ) : calculator.renderer === "loan" ? (
+            <LoanCalculator config={calculator} />
           ) : (
             <CalculatorForm config={calculator} />
           )}

@@ -5,6 +5,7 @@ import { CalculatorClient } from "@/components/calculators/CalculatorClient";
 import { calculatorContentBySlug } from "@/calculators/calculatorContent";
 import { CalculatorPageSections } from "@/components/calculators/CalculatorPageSections";
 import { MortgageArticle } from "@/components/calculators/MortgageArticle";
+import { LoanArticle } from "@/components/calculators/LoanArticle";
 
 type CalculatorPageProps = {
   params: {
@@ -47,7 +48,7 @@ export default function CalculatorEnginePage({
   return (
     <div className="space-y-10">
       <CalculatorClient slug={params.slug} />
-      {params.slug === "mortgage-calculator" ? <MortgageArticle /> : <CalculatorPageSections slug={params.slug} />}
+      {params.slug === "mortgage-calculator" ? <MortgageArticle /> : params.slug === "loan-calculator" ? <LoanArticle /> : <CalculatorPageSections slug={params.slug} />}
     </div>
   );
 }
