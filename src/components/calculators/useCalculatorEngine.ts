@@ -20,6 +20,7 @@ export function useCalculatorEngine(config: CalculatorConfig) {
   const [errors, setErrors] = useState<CalculatorErrors>({});
   const [result, setResult] = useState<CalculatorResultShape | null>(null);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [lastCalculatedValues, setLastCalculatedValues] = useState<Record<string, number | string> | null>(null);
 
   function handleChange(name: string, value: string) {
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -31,6 +32,7 @@ export function useCalculatorEngine(config: CalculatorConfig) {
     setErrors({});
     setResult(null);
     setHasSubmitted(false);
+    setLastCalculatedValues(null);
   }
 
   function handleSubmit() {
@@ -47,6 +49,7 @@ export function useCalculatorEngine(config: CalculatorConfig) {
     const parsedValues = parseValues(config, values);
     const calculation = runCalculation(config, parsedValues);
     setResult(calculation);
+    setLastCalculatedValues(parsedValues);
   }
 
   return {
@@ -56,6 +59,7 @@ export function useCalculatorEngine(config: CalculatorConfig) {
     hasSubmitted,
     handleChange,
     handleSubmit,
-    handleReset
+    handleReset,
+    lastCalculatedValues
   };
 }

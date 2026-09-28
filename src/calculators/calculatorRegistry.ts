@@ -267,7 +267,8 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "loan-calculator",
     category: "Financial Calculators",
     description:
-      "Estimate fixed-rate loan repayments, total repaid, and interest based on principal, annual rate, and term.",
+      "Estimate monthly repayments, total repayment and total interest from your loan amount, annual interest rate and repayment term.",
+    renderer: "loan",
     inputs: [
       {
         name: "currency",
@@ -285,7 +286,8 @@ export const calculatorRegistry: CalculatorConfig[] = [
         label: "Loan amount",
         type: "number",
         required: true,
-        min: 0,
+        min: 0.01,
+        minError: "Enter a loan amount greater than zero.",
         helperText: "Principal borrowed or financed, before any lender fees unless you add them manually."
       },
       {
@@ -294,7 +296,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
         type: "number",
         required: true,
         min: 0,
-        helperText: "Annual percentage rate-style input. The calculator converts it to a monthly rate."
+        helperText: "Enter the annual interest rate; zero is accepted."
       },
       {
         name: "loanTermYears",
@@ -335,8 +337,8 @@ export const calculatorRegistry: CalculatorConfig[] = [
       };
     },
     resultLabels: {
-      monthlyPayment: "Monthly payment",
-      totalPayment: "Total paid over term",
+      monthlyPayment: "Monthly repayment",
+      totalPayment: "Total repayment",
       totalInterest: "Total interest"
     },
     relatedSlugs: ["mortgage-calculator", "compound-interest-calculator"]
