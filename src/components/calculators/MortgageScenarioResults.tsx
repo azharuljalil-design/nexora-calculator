@@ -40,7 +40,8 @@ const PAGE_SIZE = 12;
 export function MortgageScenarioResults({ data }: { data: unknown }) {
   const scenarios = data as ScenarioData;
   const [selected, setSelected] = useState<"original" | "revised">("original");
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
+  const [scheduleView, setScheduleView] = useState<"annual" | "monthly">("annual");
   const [visibleRows, setVisibleRows] = useState(PAGE_SIZE);
   const scheduleId = useId();
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -87,22 +88,11 @@ export function MortgageScenarioResults({ data }: { data: unknown }) {
         )}
       </section>
 
-      <section aria-labelledby="breakdown-heading" className="space-y-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <h2 id="breakdown-heading" className="text-base font-semibold text-slate-800">Principal versus interest by year</h2>
-            <p className="mt-1 text-xs text-slate-600">Annual values are aggregated from the monthly estimates. Selected: <strong>{scenarioName} schedule</strong>.</p>
-          </div>
-          <ScenarioSelector selected={selected} hasOverpayment={scenarios.hasOverpayment} onSelect={chooseScenario} />
-        </div>
-        <AnnualChart rows={selectedSchedule.annualBreakdown} currency={scenarios.currency} scenario={scenarioName} />
-      </section>
-
-      <section aria-labelledby="schedule-heading" className="no-print rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <section aria-labelledby="schedule-heading" className="no-print rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 id="schedule-heading" className="text-base font-semibold text-slate-800">Mortgage amortization schedule</h2>
-            <p className="mt-1 text-xs text-slate-600">Each payment shows how regular payments and overpayments divide between principal and interest.</p>
+            <h2 id="schedule-heading" className="text-xl font-bold text-slate-900">Mortgage repayment schedule</h2>
+            <p className="mt-1 text-xs text-slate-600">Payments, interest and capital are taken from the selected scenario. Chart interest and payments are cumulative.</p>
           </div>
           <button ref={toggleRef} type="button" aria-expanded={expanded} aria-controls={scheduleId} onClick={() => { setExpanded((value) => !value); if (expanded) requestAnimationFrame(() => toggleRef.current?.focus()); }} className="rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
             {expanded ? "Hide repayment schedule" : "Show repayment schedule"}
@@ -112,13 +102,15 @@ export function MortgageScenarioResults({ data }: { data: unknown }) {
         {expanded ? (
           <div id={scheduleId} className="mt-5 space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className="text-xs text-slate-600" aria-live="polite">Selected: <strong>{scenarioName} schedule</strong></p>
+              <div role="group" aria-label="Repayment schedule view" className="inline-flex rounded-lg border border-slate-300 p-1"><button type="button" aria-pressed={scheduleView === "annual"} onClick={() => setScheduleView("annual")} className={`rounded px-3 py-1.5 text-xs font-semibold ${scheduleView === "annual" ? "bg-primary text-white" : "text-slate-700"}`}>Annual</button><button type="button" aria-pressed={scheduleView === "monthly"} onClick={() => setScheduleView("monthly")} className={`rounded px-3 py-1.5 text-xs font-semibold ${scheduleView === "monthly" ? "bg-primary text-white" : "text-slate-700"}`}>Monthly</button></div>
               <ScenarioSelector selected={selected} hasOverpayment={scenarios.hasOverpayment} onSelect={chooseScenario} />
             </div>
-            <ScheduleTable rows={displayRows.slice(0, visibleRows)} scenario={scenarioName} currency={scenarios.currency} />
+            <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,3fr)_minmax(20rem,2fr)]">
+              {scheduleView === "monthly" ? <ScheduleTable rows={displayRows.slice(0, visibleRows)} scenario={scenarioName} currency={scenarios.currency} /> : <AnnualDataTable rows={selectedSchedule.annualBreakdown} currency={scenarios.currency} />}
+              <CumulativeChart schedule={selectedSchedule} currency={scenarios.currency} />
+            </div>
             <div className="flex flex-wrap items-center gap-3">
-              <p className="text-xs text-slate-600" aria-live="polite">Showing {Math.min(visibleRows, selectedSchedule.rows.length)} of {selectedSchedule.rows.length} payments</p>
-              {visibleRows < selectedSchedule.rows.length ? <button type="button" onClick={() => setVisibleRows((count) => Math.min(count + PAGE_SIZE, selectedSchedule.rows.length))} className="rounded-lg border border-primary px-3 py-1.5 text-xs font-semibold text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">Show 12 more payments</button> : null}
+              {scheduleView === "monthly" ? <><p className="text-xs text-slate-600" aria-live="polite">Showing {Math.min(visibleRows, selectedSchedule.rows.length)} of {selectedSchedule.rows.length} payments</p>{visibleRows < selectedSchedule.rows.length ? <button type="button" onClick={() => setVisibleRows((count) => Math.min(count + PAGE_SIZE, selectedSchedule.rows.length))} className="rounded-lg border border-primary px-3 py-1.5 text-xs font-semibold text-primary">Show 12 more payments</button> : null}</> : <p className="text-xs text-slate-600">Annual totals are grouped by calendar year.</p>}
             </div>
           </div>
         ) : null}
@@ -145,7 +137,7 @@ function ScheduleTable({ rows, scenario, currency }: { rows: DisplayAmortization
     <table className="w-full min-w-[980px] text-left text-xs">
       <caption className="sr-only">{scenario} mortgage repayment schedule</caption>
       <thead className="bg-slate-50 text-slate-700"><tr>
-        {["Payment number", "Payment date", "Regular payment", "Monthly overpayment", "One-time overpayment", "Total payment", "Principal", "Interest", "Remaining balance"].map((label) => <th key={label} scope="col" className="whitespace-nowrap px-3 py-2 font-semibold">{label}</th>)}
+        {["Payment number", "Payment date", "Regular payment", "Monthly overpayment", "One-time overpayment", "Total payment", "Capital repaid", "Interest", "Ending balance"].map((label) => <th key={label} scope="col" className="whitespace-nowrap px-3 py-2 font-semibold">{label}</th>)}
       </tr></thead>
       <tbody>{rows.map((row) => <tr key={row.paymentNumber} className="border-t border-slate-100 text-slate-700">
         <th scope="row" className="whitespace-nowrap px-3 py-2 font-semibold">{row.paymentNumber}</th>
@@ -200,7 +192,17 @@ function AnnualChart({ rows, currency, scenario }: { rows: AnnualAmortizationSum
 }
 
 function AnnualDataTable({ rows, currency }: { rows: AnnualAmortizationSummary[]; currency: CurrencyCode }) {
-  return <div className="mt-2 max-w-full overflow-x-auto"><table className="min-w-[480px] w-full"><caption className="sr-only">Accessible annual principal and interest values</caption><thead><tr><th scope="col" className="p-2 text-left">Year</th><th scope="col" className="p-2 text-left">Principal</th><th scope="col" className="p-2 text-left">Interest</th><th scope="col" className="p-2 text-left">Total</th></tr></thead><tbody>{rows.map((row) => <tr key={row.calendarYear} className="border-t"><th scope="row" className="p-2 text-left">{row.calendarYear}</th><td className="p-2">{formatCurrency(row.principal, currency)}</td><td className="p-2">{formatCurrency(row.interest, currency)}</td><td className="p-2">{formatCurrency(row.totalPayment, currency)}</td></tr>)}</tbody></table></div>;
+  return <div className="max-w-full overflow-x-auto rounded-lg border border-slate-200"><table className="min-w-[480px] w-full text-xs"><caption className="sr-only">Accessible annual capital and interest values</caption><thead className="bg-primary text-white"><tr><th scope="col" className="p-2 text-left">Year</th><th scope="col" className="p-2 text-right">Capital repaid</th><th scope="col" className="p-2 text-right">Interest</th><th scope="col" className="p-2 text-right">Total payments</th></tr></thead><tbody>{rows.map((row) => <tr key={row.calendarYear} className="border-t odd:bg-white even:bg-slate-50"><th scope="row" className="p-2 text-left">{row.calendarYear}</th><td className="p-2 text-right tabular-nums">{formatCurrency(row.principal, currency)}</td><td className="p-2 text-right tabular-nums">{formatCurrency(row.interest, currency)}</td><td className="p-2 text-right tabular-nums">{formatCurrency(row.totalPayment, currency)}</td></tr>)}</tbody></table></div>;
+}
+
+function CumulativeChart({ schedule, currency }: { schedule: AmortizationSchedule; currency: CurrencyCode }) {
+  const rows = schedule.rows;
+  let interest = 0, payments = 0;
+  const points = rows.map((row) => { interest += row.interest; payments += row.totalPayment; return { balance: row.remainingBalance, interest, payments }; });
+  const sampled = points.filter((_, i) => i % Math.max(1, Math.ceil(points.length / 80)) === 0 || i === points.length - 1);
+  const max = Math.max(schedule.totalRepayments, ...points.map(p => p.balance), 1);
+  const path = (key: "balance" | "interest" | "payments") => sampled.map((p, i) => `${i ? "L" : "M"}${(i / Math.max(sampled.length - 1, 1) * 360 + 42).toFixed(1)},${(190 - p[key] / max * 160).toFixed(1)}`).join(" ");
+  return <figure className="rounded-lg border border-slate-200 p-3"><figcaption className="font-semibold text-slate-900">Mortgage balance and cumulative costs</figcaption><div className="mt-2 flex flex-wrap gap-3 text-xs"><span className="text-blue-700">● Outstanding balance</span><span className="text-emerald-700">● Cumulative interest</span><span className="text-rose-700">● Cumulative payments</span></div><svg viewBox="0 0 420 220" className="mt-2 h-auto w-full" role="img" aria-label={`Line chart ending with balance ${formatCurrency(points.at(-1)?.balance ?? 0, currency)}, cumulative interest ${formatCurrency(schedule.totalInterest, currency)}, and cumulative payments ${formatCurrency(schedule.totalRepayments, currency)}`}><line x1="42" y1="30" x2="42" y2="190" stroke="#94a3b8"/><line x1="42" y1="190" x2="402" y2="190" stroke="#94a3b8"/><text x="2" y="35" fontSize="10">{formatCurrency(max, currency).replace(/\.00$/, "")}</text><text x="18" y="194" fontSize="10">£0</text><path d={path("balance")} fill="none" stroke="#1d4ed8" strokeWidth="3"/><path d={path("interest")} fill="none" stroke="#15803d" strokeWidth="3"/><path d={path("payments")} fill="none" stroke="#be123c" strokeWidth="3"/></svg><p className="mt-2 text-xs text-slate-600">The schedule table provides the same underlying values in text.</p></figure>;
 }
 
 function Comparison({ data }: { data: ScenarioData }) {
