@@ -8,6 +8,7 @@ import { ScientificCalculator } from "@/components/calculators/ScientificCalcula
 import { AmortizationCalculator } from "@/components/calculators/AmortizationCalculator";
 import { MortgageCalculator } from "@/components/calculators/MortgageCalculator";
 import { LoanCalculator } from "@/components/calculators/LoanCalculator";
+import { RetirementCalculator } from "@/components/calculators/RetirementCalculator";
 import { calculatorCategories } from "@/data/categories";
 import { routes } from "@/lib/routes";
 import { findCalculatorBySlug } from "@/calculators/calculatorRegistry";
@@ -53,10 +54,7 @@ export function CalculatorClient({ slug }: CalculatorClientProps) {
         </ol>
       </nav>
 
-      <SectionHeading
-        title={slug === "loan-calculator" ? "UK Loan Calculator" : calculator.name}
-        subtitle={calculator.description}
-      />
+      {slug === "retirement-calculator" ? <header className="space-y-2"><h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">UK Retirement Calculator</h1><p className="max-w-3xl text-sm leading-6 text-slate-600">Estimate how your current savings and fixed monthly contributions could grow by your planned retirement age using an expected annual return.</p></header> : <SectionHeading title={slug === "loan-calculator" ? "UK Loan Calculator" : calculator.name} subtitle={calculator.description} />}
 
       <div className="grid gap-6">
         <div>
@@ -68,6 +66,8 @@ export function CalculatorClient({ slug }: CalculatorClientProps) {
             <MortgageCalculator config={calculator} />
           ) : calculator.renderer === "loan" ? (
             <LoanCalculator config={calculator} />
+          ) : calculator.renderer === "retirement" ? (
+            <RetirementCalculator config={calculator} />
           ) : (
             <CalculatorForm config={calculator} />
           )}

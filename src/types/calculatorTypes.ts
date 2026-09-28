@@ -69,7 +69,7 @@ export type CalculatorConfig = {
   description: string;
   inputs: CalculatorInputConfig[];
   calculate: (values: Record<string, number | string>) => CalculatorResultShape;
-  renderer?: "default" | "scientific" | "amortization" | "mortgage" | "loan";
+  renderer?: "default" | "scientific" | "amortization" | "mortgage" | "loan" | "retirement";
   resultLabels?: Record<string, string>;
   relatedSlugs?: string[];
 };

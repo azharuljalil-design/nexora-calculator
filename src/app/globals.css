@@ -57,3 +57,11 @@ a {
 .loan-article h3 { @apply text-xl font-bold text-slate-900; }
 .loan-article h4 { @apply mt-6 text-base font-bold text-slate-900; }
 .loan-calculator input, .loan-calculator select { min-height: 2.75rem; }
+
+.retirement-calculator input, .retirement-calculator select { min-height: 2.75rem; border-radius: 0.375rem; border-color: rgb(148 163 184); }
+.retirement-article section { @apply space-y-4; }
+.retirement-article h3 { @apply text-xl font-bold text-slate-950 sm:text-2xl; }
+.retirement-article h4 { @apply mt-6 text-lg font-bold text-slate-900; }
+.retirement-article ul { @apply list-disc space-y-1 pl-6; }
+.retirement-article ol { @apply list-decimal space-y-2 pl-6; }
+.retirement-article strong { @apply font-bold text-slate-900; }
