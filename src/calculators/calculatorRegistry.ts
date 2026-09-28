@@ -47,7 +47,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     relatedSlugs: ["unit-converter", "gpa-calculator", "grade-calculator"]
   },
   {
-    name: "Mortgage Calculator",
+    name: "UK Mortgage Calculator",
     slug: "mortgage-calculator",
     category: "Financial Calculators",
     description: "Estimate fixed-rate mortgage repayments, deposit equivalents, LTV, payoff dates, optional overpayments, and ownership costs.",
