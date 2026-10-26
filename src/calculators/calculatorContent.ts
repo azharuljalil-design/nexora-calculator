@@ -1588,59 +1588,75 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
   },
 
   "amortization-calculator": {
-    slug: "amortization-calculator",
-    metaTitle: "Amortization Calculator with Monthly Payment Schedule",
-    metaDescription:
-      "Estimate a fixed loan payment and view a month-by-month amortization schedule showing interest, principal, and remaining balance.",
-    whatItDoes: [
-      "Estimates the fixed monthly payment for a fixed-rate amortised loan based on the loan amount, annual interest rate, term, and payment schedule assumptions entered.",
-      "Creates a month-by-month schedule showing each payment, the interest portion, the principal portion, and the remaining balance.",
-      "Helps explain why early payments usually contain more interest, while later payments reduce the principal faster."
+    "slug": "amortization-calculator",
+    "metaTitle": "Amortization Calculator: Extra Payments & Loan Schedule",
+    "metaDescription": "Calculate monthly loan payments, extra repayments and payoff dates. Explore annual and monthly amortization schedules with principal and interest charts.",
+    "whatItDoes": [
+        "Estimates fixed-rate monthly repayments, total interest and the number of payments for a loan term entered in years and months.",
+        "Includes optional extra monthly payments, a first repayment date, annual and monthly tables, and charts from one consistent calculation."
     ],
-    howToUse: [
-      "Select the currency for the displayed schedule.",
-      "Enter the loan amount, which is the starting principal balance you want to repay.",
-      "Enter the annual interest rate as a percentage. The calculator converts it to a monthly rate for the schedule.",
-      "Enter the loan term in years. The calculator converts it into a monthly payment schedule by multiplying years by 12.",
-      "Click Calculate to generate the monthly payment, total interest, total payment, and repayment table."
+    "howToUse": [
+        "Choose USD, GBP or EUR for display; currency selection does not convert amounts.",
+        "Enter the principal, annual rate, and years plus additional months. A term must be between one and 600 months.",
+        "Optionally choose the first payment date and enable an extra monthly repayment.",
+        "Select Calculate, then switch between Annual Schedule and Monthly Schedule. Editing a field clears the old estimate; Reset restores the example inputs."
     ],
-    methodology: [
-      "Monthly rate r = annual interest rate ÷ 12 ÷ 100. Number of payments n = loan term in years × 12.",
-      "For interest-bearing loans, the fixed payment is M = P × r × (1 + r)^n ÷ ((1 + r)^n − 1), where P is the loan amount.",
-      "For a 0% interest loan, the payment is P ÷ n and each scheduled interest amount is 0.",
-      "For each month, interest = opening balance × monthly rate, principal repaid = payment − interest, and remaining balance = opening balance − principal repaid.",
-      "The final row caps principal repayment at the remaining balance to avoid showing a negative balance. Displayed currency values are rounded to 2 decimal places."
+    "methodology": [
+        "The rate stays fixed and interest is calculated monthly on the outstanding principal. Fees and daily interest are excluded.",
+        "Extra payments apply from the first repayment onwards, after interest and the regular payment. The final payment clears only the remaining amount due.",
+        "Calculations keep full precision. Cumulative amounts are reconciled to cents so row payments equal principal plus interest, total principal equals the original loan, and the final balance is zero."
     ],
-    example: {
-      scenario: "A £18,000 loan at 6% annual interest over 4 years with monthly payments.",
-      steps: [
-        "Loan amount = £18,000",
-        "Monthly rate = 6 ÷ 12 ÷ 100 = 0.005",
-        "Number of payments = 4 × 12 = 48",
-        "Using the fixed-payment formula, monthly payment ≈ £422.73",
-        "First-month interest = £18,000 × 0.005 = £90.00, so first-month principal ≈ £422.73 − £90.00 = £332.73",
-        "Total repayment ≈ £422.73 × 48 = £20,291.07, so total interest ≈ £2,291.07"
-      ],
-      result:
-        "The calculator would estimate a £422.73 monthly payment. Month 1 would show about £90.00 interest, £332.73 principal, and a remaining balance of about £17,667.27."
+    "example": {
+        "scenario": "A 1,200 loan at 0% for one year, with an extra monthly payment of 100.",
+        "steps": [
+            "Regular repayment = 1,200 ÷ 12 = 100.",
+            "Monthly payment including the extra amount = 200.",
+            "Six payments of 200 clear the loan; total interest is zero."
+        ],
+        "result": "The extra payments shorten repayment by six months. Currency selection changes the display label only."
     },
-    mistakesOrLimitations: [
-      "This is an estimate based on your inputs and is not a lender statement, loan quote, or financial advice.",
-      "It assumes a fixed annual rate, regular monthly payments, no missed payments, no extra repayments, no fees, and no variable-rate changes.",
-      "It does not model lender fees, insurance, taxes, late charges, early repayment charges, daily interest, payment holidays, overpayments, or product changes unless you manually adjust assumptions outside the calculator.",
-      "Rounding displayed row values to 2 decimals can create small differences from lender statements or from unrounded internal calculations.",
-      "If your real loan uses daily interest, irregular payment dates, or changing rates, recalculate whenever assumptions change and compare with lender documents."
+    "mistakesOrLimitations": [
+        "This model excludes lender fees, insurance, taxes, early repayment charges, daily interest, missed payments and rate changes.",
+        "Annual groups mean loan years of up to twelve payments, not calendar years. Optional dates are repayment dates, not loan origination dates.",
+        "Lender rounding conventions can differ. Full-precision payments may differ from displayed regular payments by a cent after schedule reconciliation.",
+        "The calculator models loan repayment, not accounting expenses or tax deductions."
     ],
-    disclaimer:
-      "This amortization calculator is for general education and planning. It provides an estimate based on your inputs and is not financial advice, a loan quote, or a substitute for lender statements or professional guidance.",
-    faqs: [
-      { question: "What is amortization?", answer: "Amortization is the process of gradually repaying a loan through scheduled payments that cover interest and reduce principal." },
-      { question: "What do loan amount, interest rate, term, and payment schedule mean?", answer: "Loan amount is the starting principal, interest rate is the annual percentage used to calculate monthly interest, term is how long repayment lasts, and the schedule shows each monthly payment split between interest and principal." },
-      { question: "Why is the first payment more interest-heavy?", answer: "Interest is calculated on the outstanding balance. The balance is highest at the start, so early payments generally include more interest." },
-      { question: "Can I model overpayments or variable rates?", answer: "Not in this version. The schedule assumes a fixed rate and regular monthly payments with no extra repayments." },
-      { question: "When should I use the Mortgage Calculator instead?", answer: "Use the Mortgage Calculator when the loan is tied to a property purchase and you want deposit and optional ownership-cost inputs." }
+    "disclaimer": "Estimates are for education and planning, not financial advice, a loan offer or a lender statement. Check your loan agreement and repayment charges before making extra payments.",
+    "faqs": [
+        {
+            "question": "What is amortization?",
+            "answer": "Loan amortization gradually repays principal through scheduled payments that also cover interest. Accounting amortization instead allocates an intangible asset’s cost over time."
+        },
+        {
+            "question": "Can I enter a term shorter than one year?",
+            "answer": "Yes. Enter zero years and one to eleven additional months. A loan must last at least one month."
+        },
+        {
+            "question": "How do extra loan payments work?",
+            "answer": "The extra amount reduces principal each month after interest and the regular payment. It can reduce future interest and bring forward repayment. Any final excess is capped at the amount due."
+        },
+        {
+            "question": "Does the calculator handle zero interest?",
+            "answer": "Yes. The regular payment is principal divided by the number of months. All interest entries are zero, and the last payment adjusts to clear the balance."
+        },
+        {
+            "question": "Do I need to enter a first payment date?",
+            "answer": "No. Without a date, the schedule uses payment numbers and no payoff date is shown. With a date, it projects monthly repayment dates and the final payment date."
+        },
+        {
+            "question": "Can I use this for a variable-rate or interest-only loan?",
+            "answer": "No. It assumes a fixed rate and monthly principal-and-interest repayments. Variable-rate changes, interest-only periods and balloon payments require a different model."
+        },
+        {
+            "question": "Are accounting amortization and depreciation the same?",
+            "answer": "Both allocate costs over time, but amortization generally applies to intangible assets and depreciation to tangible assets. Applicable accounting and tax rules can differ."
+        },
+        {
+            "question": "Why might my lender’s schedule differ?",
+            "answer": "Lenders may use daily interest, different rounding, fees or different payment conventions. This model uses a fixed monthly rate and reconciles display amounts from full-precision calculations."
+        }
     ]
-  },
+},
 
   "income-tax-calculator": {
     slug: "income-tax-calculator",

@@ -54,10 +54,10 @@ export function CalculatorClient({ slug }: CalculatorClientProps) {
         </ol>
       </nav>
 
-      {slug === "retirement-calculator" ? <header className="space-y-2"><h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">UK Retirement Calculator</h1><p className="max-w-3xl text-sm leading-6 text-slate-600">Estimate how your current savings and fixed monthly contributions could grow by your planned retirement age using an expected annual return.</p></header> : <SectionHeading title={slug === "loan-calculator" ? "UK Loan Calculator" : calculator.name} subtitle={calculator.description} />}
+      {slug === "amortization-calculator" ? <header className="space-y-2"><h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Amortization Calculator</h1><p className="max-w-3xl text-sm leading-6 text-slate-600">{calculator.description}</p></header> : slug === "retirement-calculator" ? <header className="space-y-2"><h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">UK Retirement Calculator</h1><p className="max-w-3xl text-sm leading-6 text-slate-600">Estimate how your current savings and fixed monthly contributions could grow by your planned retirement age using an expected annual return.</p></header> : <SectionHeading title={slug === "loan-calculator" ? "UK Loan Calculator" : calculator.name} subtitle={calculator.description} />}
 
       <div className="grid gap-6">
-        <div>
+        <div className={slug === "amortization-calculator" ? "min-w-0" : undefined}>
           {calculator.renderer === "scientific" ? (
             <ScientificCalculator config={calculator} />
           ) : calculator.renderer === "amortization" ? (

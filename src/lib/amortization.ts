@@ -94,6 +94,8 @@ export function buildAmortizationSchedule(args: {
   principal: number;
   annualInterestRate: number;
   years: number;
+  /** Explicit integer term for mixed year/month inputs; existing consumers use years. */
+  termMonths?: number;
   firstRepaymentDate: string;
   monthlyOverpayment?: number;
   oneTimeOverpayment?: number;
@@ -106,7 +108,7 @@ export function buildAmortizationSchedule(args: {
   const oneTimeDate = oneTimeOverpayment > 0
     ? parseCalendarDate(args.oneTimeOverpaymentDate)
     : null;
-  const paymentCount = years * 12;
+  const paymentCount = args.termMonths ?? years * 12;
   if (
     !firstDate || !Number.isInteger(paymentCount) || paymentCount <= 0 ||
     !Number.isFinite(monthlyOverpayment) || monthlyOverpayment < 0 ||
@@ -114,7 +116,7 @@ export function buildAmortizationSchedule(args: {
     (oneTimeOverpayment > 0 && !oneTimeDate)
   ) return null;
 
-  const monthlyPayment = calculateMonthlyPayment({ principal, annualInterestRate, years });
+  const monthlyPayment = calculateMonthlyPayment({ principal, annualInterestRate, years: paymentCount / 12 });
   if (monthlyPayment === null) return null;
 
   const monthlyRate = annualInterestRate / 12 / 100;
