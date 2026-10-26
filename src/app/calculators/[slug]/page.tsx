@@ -1,3 +1,4 @@
+import { InvestmentArticle } from "@/components/calculators/InvestmentArticle";
 import { AmortizationArticle } from "@/components/calculators/AmortizationArticle";
 import type { Metadata } from "next";
 import { createPageMetadata } from "@/lib/seo";
@@ -50,6 +51,7 @@ export default function CalculatorEnginePage({
   return (
     <div className="space-y-10">
       <CalculatorClient slug={params.slug} />
+      {params.slug === "investment-calculator" ? <InvestmentArticle /> : null}
       {params.slug === "amortization-calculator" ? <AmortizationArticle /> : null}
       {params.slug === "mortgage-calculator" ? <MortgageArticle /> : params.slug === "loan-calculator" ? <LoanArticle /> : params.slug === "retirement-calculator" ? <RetirementArticle /> : <CalculatorPageSections slug={params.slug} />}
     </div>
