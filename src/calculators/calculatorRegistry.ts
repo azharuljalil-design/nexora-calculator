@@ -1,3 +1,4 @@
+import { calculateLoanAmortization } from "@/lib/loanAmortization";
 import type { CalculatorConfig, CalculatorResultShape } from "@/types/calculatorTypes";
 import { formatCurrency, formatInteger, formatNumber } from "@/lib/format";
 import { convertCurrency, convertUnit, unitOptions, type CurrencyCode, type UnitCategory } from "@/lib/conversions";
@@ -2053,7 +2054,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "amortization-calculator",
     category: "Financial Calculators",
     description:
-      "Estimate fixed-rate loan payments and view a monthly amortization schedule.",
+      "Calculate fixed-rate loan payments, explore extra repayments, and compare annual and monthly amortization schedules.",
     renderer: "amortization",
     inputs: [
       {
@@ -2070,33 +2071,31 @@ export const calculatorRegistry: CalculatorConfig[] = [
       },
       { name: "loanAmount", label: "Loan amount", type: "number", required: true, min: 0, helperText: "Starting principal balance for the schedule." },
       { name: "annualInterestRate", label: "Annual interest rate (%)", type: "number", required: true, min: 0, max: 50, step: 0.01, helperText: "Annual percentage rate converted to a monthly rate for each schedule row." },
-      { name: "loanTermYears", label: "Loan term (years)", type: "number", required: true, min: 1, max: 50, helperText: "Term in years; the schedule assumes monthly payments." }
+      { name: "loanTermYears", label: "Loan term (years)", type: "number", required: true, min: 0, max: 50 },
+      { name: "loanTermMonths", label: "Additional months", type: "number", min: 0, max: 11, defaultValue: "0" },
+      { name: "extraMonthly", label: "Extra monthly payment", type: "number", min: 0, step: 0.01, defaultValue: "0" },
+      { name: "firstPaymentDate", label: "First payment date (optional)", type: "date" }
     ],
     calculate: (values) => {
       const currency = (values.currency as CurrencyCode) || "USD";
-      const loanAmount = Number(values.loanAmount) || 0;
-      const annualRate = Number(values.annualInterestRate) || 0;
-      const years = Number(values.loanTermYears) || 0;
-      const schedule = buildAmortizationSchedule({
-        principal: loanAmount,
-        annualInterestRate: annualRate,
-        years,
-        firstRepaymentDate: "2000-01-01"
-      });
-
-      if (!schedule) {
+      try {
+        if ([values.loanAmount, values.annualInterestRate, values.loanTermYears].some(value => value === undefined || String(value).trim() === "")) {
+          throw new Error("Missing required input");
+        }
+        const schedule = calculateLoanAmortization({
+          principal: Number(values.loanAmount), annualRate: Number(values.annualInterestRate),
+          years: Number(values.loanTermYears), months: Number(values.loanTermMonths ?? 0),
+          extraMonthly: Number(values.extraMonthly ?? 0),
+          firstPaymentDate: String(values.firstPaymentDate || "") || undefined
+        });
         return {
-          monthlyPayment: LOAN_PAYMENT_INVALID_MESSAGE,
-          totalInterest: LOAN_PAYMENT_INVALID_MESSAGE,
-          totalPayment: LOAN_PAYMENT_INVALID_MESSAGE
+          monthlyPayment: formatCurrency(schedule.monthlyPaymentCents / 100, currency),
+          totalInterest: formatCurrency(schedule.totalInterestCents / 100, currency),
+          totalPayment: formatCurrency(schedule.totalPaymentCents / 100, currency)
         };
+      } catch {
+        return { monthlyPayment: LOAN_PAYMENT_INVALID_MESSAGE, totalInterest: LOAN_PAYMENT_INVALID_MESSAGE, totalPayment: LOAN_PAYMENT_INVALID_MESSAGE };
       }
-
-      return {
-        monthlyPayment: formatCurrency(schedule.monthlyPayment, currency),
-        totalInterest: formatCurrency(schedule.totalInterest, currency),
-        totalPayment: formatCurrency(schedule.totalRepayments, currency)
-      };
     },
     resultLabels: {
       monthlyPayment: "Monthly payment",

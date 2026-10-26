@@ -34,7 +34,9 @@ export function calculateMonthlyPayment(args: {
     return null;
   }
 
-  const payment = (principal * monthlyRate * factor) / (factor - 1);
+  // log1p/expm1 avoid cancellation when the positive rate is close to zero.
+  const denominator = -Math.expm1(-months * Math.log1p(monthlyRate));
+  const payment = principal * (monthlyRate / denominator);
   return Number.isFinite(payment) ? payment : null;
 }
 
