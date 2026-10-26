@@ -829,53 +829,77 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
     ]
   },
   "investment-calculator": {
-    slug: "investment-calculator",
-    metaTitle: "Investment Calculator | Estimate Growth Scenarios",
-    metaDescription:
-      "Estimate possible investment growth using an initial amount, recurring contributions, assumed annual return, and time period. Not investment advice.",
-    whatItDoes: [
-      "Estimates a possible investment balance from an initial amount, recurring contributions, contribution frequency, assumed annual return, and time period.",
-      "Shows total contributed separately from estimated growth so the projection is easier to interpret.",
-      "Uses a constant assumed return for comparison; it does not guarantee future returns or model market volatility."
+    "slug": "investment-calculator",
+    "metaTitle": "Investment Calculator: Growth, Contributions & Return Rate",
+    "metaDescription": "Project investment growth, solve contributions, starting capital, return rate or investment length, and explore monthly and annual accumulation schedules.",
+    "whatItDoes": [
+        "Projects a possible investment balance or solves for a contribution, starting amount, nominal annual rate or time needed to reach a target.",
+        "Separates starting capital, additional contributions and investment growth or loss with charts and reconciled accumulation tables."
     ],
-    howToUse: [
-      "Select the display currency and enter the amount already invested or planned as the starting amount.",
-      "Enter the recurring contribution and choose whether it is weekly, monthly, or yearly.",
-      "Enter an assumed annual return and the number of years to project.",
-      "Treat the ending balance as a scenario estimate based on your inputs, not a forecast or recommendation."
+    "howToUse": [
+        "Choose the tab for the unknown variable. Enter a target balance for reverse calculations.",
+        "Choose currency, contribution frequency and timing, and an independent compounding frequency. Currency is a display choice, not conversion.",
+        "Enter a constant nominal annual return assumption and a whole-month duration where required. Negative rates are supported within the stated range.",
+        "Select Calculate. Switching modes or changing any input clears the old result; Reset restores the example assumptions."
     ],
-    methodology: [
-      "The calculator converts the assumed annual return into a per-period return based on the selected contribution frequency.",
-      "For each period, it applies the period return to the current balance and then adds the recurring contribution.",
-      "Total contributed equals the initial amount plus all recurring contributions during the projection.",
-      "Estimated growth equals estimated ending balance minus total contributed, rounded for display."
+    "methodology": [
+        "Equivalent monthly growth factor q = (1 + r/m)^(m/12), where r is the nominal annual rate as a decimal and m is compounding periods per year.",
+        "For beginning contributions, monthly closing balance = (opening balance + contribution due) × q. For end contributions, closing balance = opening balance × q + contribution due.",
+        "Starting amount and contribution are solved from their linear future-value factors. Return rate uses bounded bisection; length scans monthly boundaries for the first target crossing.",
+        "Cumulative rounding reconciles displayed contributions and balance; growth is the difference so monthly and annual rows sum to the summary."
     ],
-    example: {
-      scenario: "$2,000 initial investment, $50 weekly contribution, 7% assumed annual return for 8 years.",
-      steps: [
-        "Periods = 8 years × 52 weeks = 416 weekly periods",
-        "Total contributed = $2,000 + ($50 × 416) = $22,800",
-        "Per-period assumed return = 7% ÷ 52",
-        "Apply growth each week, then add the $50 contribution"
-      ],
-      result:
-        "The estimated ending balance is about $31,357.67, including about $8,557.67 of estimated growth above contributions."
+    "example": {
+        "scenario": "20,000 initially invested, 1,000 added at the end of each month, a 6% nominal annual return compounded annually, over ten years.",
+        "steps": [
+            "Starting investment: 20,000.",
+            "Additional contributions: 1,000 × 120 = 120,000.",
+            "Projected growth: 58,290.40."
+        ],
+        "result": "The projected ending balance is 198,290.40. This is an assumed constant-return scenario, not a guaranteed investment outcome."
     },
-    mistakesOrLimitations: [
-      "Future investment returns are not guaranteed, and investment values can rise or fall.",
-      "The projection may not include platform fees, fund charges, bid/ask spreads, tax, inflation, withdrawals, contribution limits, risk level, currency risk, or personal circumstances.",
-      "A constant assumed return does not represent real market volatility or sequence-of-returns risk.",
-      "The model assumes contributions are made at the end of each selected period."
+    "mistakesOrLimitations": [
+        "Rates are constant and nominal; actual investment performance can vary and losses are possible. Fees, taxes, inflation and withdrawals are excluded.",
+        "Supports monthly or annual deposits, 0–1,200 whole months, and nominal annual rates from −99.99% to 1,000%. These mathematical limits do not imply realistic investment returns.",
+        "Money inputs are limited to 1 trillion and projected balances and additional contributions to 10 trillion for reliable display. Very large or ill-conditioned reverse calculations are rejected.",
+        "Fractional compounding periods use equivalent monthly growth. This may differ from actual interest-crediting dates or day-count conventions.",
+        "Reverse solved monetary amounts retain fractional cents internally. Real cent-rounded deposits may reach a slightly different target. Length results can exceed the target because they use whole monthly boundaries."
     ],
-    disclaimer:
-      "This calculator is for educational estimates only and is not investment, financial, tax, pension, or retirement advice. Consider regulated advice for decisions involving risk.",
-    faqs: [
-      { question: "Does this guarantee future investment returns?", answer: "No. It uses the assumed return you enter to create a projection. Real investment performance can be higher or lower, and losses are possible." },
-      { question: "Does it include investment fees or taxes?", answer: "No. Platform fees, fund charges, taxes, inflation, currency effects, withdrawals, and contribution limits are not modeled unless you adjust your return assumption to reflect them." },
-      { question: "What return should I enter?", answer: "Use a cautious assumption that reflects the scenario you want to test. The calculator cannot choose a suitable return or risk level for your personal circumstances." },
-      { question: "How are contributions timed?", answer: "The calculator applies growth for each period and then adds that period's contribution, so different real contribution timing could produce different results." }
+    "disclaimer": "For educational scenario estimates only, not investment, financial or tax advice. Returns are not guaranteed and capital can fall in value. Consider your circumstances and appropriate professional advice before making investment decisions.",
+    "faqs": [
+        {
+            "question": "Are investment returns guaranteed?",
+            "answer": "No. The annual rate is an assumption or a rate required by the mathematical model. Actual returns can vary, including losses."
+        },
+        {
+            "question": "What is the difference between compounding and contribution frequency?",
+            "answer": "Compounding determines the growth factor. Contribution frequency determines when new money enters the investment. The settings are independent."
+        },
+        {
+            "question": "Can I use negative or zero returns?",
+            "answer": "Yes. Zero return gives no growth. Negative returns within the supported range can reduce the balance. The schedule shows losses rather than replacing them with zero."
+        },
+        {
+            "question": "What does beginning or end of period mean?",
+            "answer": "Beginning deposits receive growth in that period. End deposits are added after growth. Annual beginning deposits occur in months 1, 13 and so on; annual end deposits occur in months 12, 24 and so on."
+        },
+        {
+            "question": "Why can a target have no solution?",
+            "answer": "A target might require a withdrawal, an unsupported return, more than 100 years or capital outside the supported limits. Some inputs do not have a unique rate or contribution solution. These scenarios show an error."
+        },
+        {
+            "question": "How is investment length calculated?",
+            "answer": "It is the first monthly boundary at which the cent-rounded projected balance reaches or exceeds the target, up to 100 years. A target already met at the start returns zero months."
+        },
+        {
+            "question": "Does the calculation include taxes, fees or inflation?",
+            "answer": "No. It also excludes withdrawals, changing contributions and variable returns. Include those effects in a more detailed model before relying on a projection."
+        },
+        {
+            "question": "Why can a solved contribution differ from a real payment?",
+            "answer": "The solver keeps fractional cents to solve the target accurately. A bank payment rounded to two decimals can produce a slightly different balance; test that rounded payment in End Amount mode."
+        }
     ]
-  },
+},
   "retirement-calculator": {
     slug: "retirement-calculator",
     metaTitle: "Retirement Calculator Estimate | Savings Projection",

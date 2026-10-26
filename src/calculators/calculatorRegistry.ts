@@ -1,3 +1,4 @@
+import { calculateInvestment } from "@/lib/investment";
 import { calculateLoanAmortization } from "@/lib/loanAmortization";
 import type { CalculatorConfig, CalculatorResultShape } from "@/types/calculatorTypes";
 import { formatCurrency, formatInteger, formatNumber } from "@/lib/format";
@@ -1280,7 +1281,7 @@ export const calculatorRegistry: CalculatorConfig[] = [
     slug: "investment-calculator",
     category: "Financial Calculators",
     description:
-      "Estimate possible investment growth from an initial amount, recurring contributions, assumed annual return, and time period.",
+      "Project investment growth or solve for contributions, starting capital, return rate and investment length. Explore annual and monthly accumulation schedules.",
     inputs: [
       {
         name: "currency",
@@ -1303,45 +1304,34 @@ export const calculatorRegistry: CalculatorConfig[] = [
         required: true,
         defaultValue: "monthly",
         options: [
-          { value: "weekly", label: "Weekly" },
           { value: "monthly", label: "Monthly" },
-          { value: "yearly", label: "Yearly" }
+          { value: "annual", label: "Annually" }
         ]
       },
-      { name: "annualReturnRate", label: "Assumed annual return (%)", type: "number", required: true, min: 0, max: 50, step: 0.01, helperText: "Assumption for projection only; future returns are not guaranteed and losses are possible." },
-      { name: "years", label: "Time period (years)", type: "number", required: true, min: 1, max: 60, helperText: "Length of the investment projection in whole years." }
+      { name: "annualReturnRate", label: "Nominal annual return (%)", type: "number", required: true, min: -99.99, max: 1000, step: 0.01, helperText: "Assumption for projection only; future returns are not guaranteed and losses are possible." },
+      { name: "compoundsPerYear", label: "Compounding frequency", type: "select", defaultValue: "1", options: [{ value: "1", label: "Annually" }, { value: "2", label: "Semi-annually" }, { value: "4", label: "Quarterly" }, { value: "12", label: "Monthly" }, { value: "365", label: "Daily" }] },
+      { name: "contributionTiming", label: "Contribution timing", type: "select", defaultValue: "end", options: [{ value: "beginning", label: "Beginning of period" }, { value: "end", label: "End of period" }] },
+      { name: "years", label: "Time period (years)", type: "number", required: true, min: 0, max: 100, helperText: "Length of the investment projection in whole years." }
     ],
     calculate: (values) => {
       const currency = (values.currency as CurrencyCode) || "GBP";
-      const initial = Number(values.initialAmount) || 0;
-      const contrib = Number(values.recurringContribution) || 0;
-      const freq = String(values.contributionFrequency || "monthly");
-      const annualRate = Number(values.annualReturnRate) || 0;
-      const years = Number(values.years) || 0;
-
-      const periodsPerYear = freq === "weekly" ? 52 : freq === "yearly" ? 1 : 12;
-      const totalPeriods = years * periodsPerYear;
-      const periodRate = annualRate / 100 / periodsPerYear;
-
-      let balance = initial;
-      for (let i = 0; i < totalPeriods; i++) {
-        balance = balance * (1 + periodRate) + contrib;
+      try {
+        const result = calculateInvestment({
+          mode: "end", startingAmount: Number(values.initialAmount),
+          contribution: Number(values.recurringContribution), targetAmount: 0,
+          months: Number(values.years) * 12, annualRate: Number(values.annualReturnRate),
+          compoundsPerYear: Number(values.compoundsPerYear ?? 1),
+          contributionFrequency: String(values.contributionFrequency ?? "monthly") as "monthly" | "annual",
+          timing: String(values.contributionTiming ?? "end") as "beginning" | "end"
+        });
+        return { endingBalance: formatCurrency(result.endingCents / 100, currency),
+          totalContributed: formatCurrency((result.initialCents + result.contributionCents) / 100, currency),
+          totalGrowth: formatCurrency(result.growthCents / 100, currency) };
+      } catch {
+        return { endingBalance: "Invalid investment assumptions", totalContributed: "Invalid investment assumptions", totalGrowth: "Invalid investment assumptions" };
       }
-
-      const totalContributed = initial + contrib * totalPeriods;
-      const totalGrowth = balance - totalContributed;
-
-      return {
-        endingBalance: formatCurrency(balance, currency),
-        totalContributed: formatCurrency(totalContributed, currency),
-        totalGrowth: formatCurrency(totalGrowth, currency)
-      };
     },
-    resultLabels: {
-      endingBalance: "Estimated ending balance",
-      totalContributed: "Total contributed",
-      totalGrowth: "Estimated growth"
-    },
+    resultLabels: { endingBalance: "Estimated ending balance", totalContributed: "Total invested capital", totalGrowth: "Estimated growth / loss" },
     relatedSlugs: ["savings-calculator", "compound-interest-calculator", "retirement-calculator"]
   },
   {

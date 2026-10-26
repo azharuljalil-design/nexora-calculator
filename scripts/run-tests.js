@@ -31,6 +31,7 @@ fs.writeFileSync(
         path.join(root, "tests/financialMath.test.ts"),
         path.join(root, "tests/retirement.test.ts"),
         path.join(root, "tests/loanAmortization.test.ts"),
+        path.join(root, "tests/investment.test.ts"),
         path.join(root, "src/lib/financialMath.ts"),
         path.join(root, "src/lib/amortization.ts"),
         path.join(root, "src/calculators/calculatorRegistry.ts"),
@@ -49,6 +50,6 @@ execFileSync(tscBin, ["-p", tsconfigPath], { cwd: root, stdio: "inherit" });
 
 execFileSync(
   process.execPath,
-  ["--test", path.join(outDir, "tests", "financialMath.test.js"), path.join(outDir, "tests", "retirement.test.js"), path.join(outDir, "tests", "loanAmortization.test.js")],
+  ["--test", path.join(outDir, "tests", "financialMath.test.js"), path.join(outDir, "tests", "retirement.test.js"), path.join(outDir, "tests", "loanAmortization.test.js"), path.join(outDir, "tests", "investment.test.js")],
   { cwd: root, stdio: "inherit" }
 );
