@@ -1,3 +1,4 @@
+import { calculateIncomeTax, TAX_YEAR, REGIONS, type TaxRegion, type IncomePeriod } from "@/lib/incomeTax";
 import { calculateInvestment } from "@/lib/investment";
 import { calculateLoanAmortization } from "@/lib/loanAmortization";
 import type { CalculatorConfig, CalculatorResultShape } from "@/types/calculatorTypes";
@@ -2095,54 +2096,27 @@ export const calculatorRegistry: CalculatorConfig[] = [
     relatedSlugs: ["loan-calculator", "mortgage-calculator"]
   },
   {
-    name: "Income Tax Calculator",
+    name: "UK Income Tax Calculator",
     slug: "income-tax-calculator",
     category: "Financial Calculators",
-    description:
-      "Estimate income tax and after-tax income with a simplified user-entered rate.",
+    description: "Estimate UK Income Tax, employee National Insurance and take-home pay for 2026/27, including Scotland's tax bands.",
+    renderer: "income-tax",
     inputs: [
-      {
-        name: "countryMode",
-        label: "Country/Region",
-        type: "select",
-        required: true,
-        defaultValue: "UK",
-        options: [
-          { value: "UK", label: "United Kingdom" },
-          { value: "EU", label: "Europe" },
-          { value: "USA", label: "United States" }
-        ]
-      },
-      { name: "annualIncome", label: "Annual income", type: "number", required: true, min: 0 },
-      {
-        name: "taxRate",
-        label: "Estimated effective tax rate (%)",
-        type: "number",
-        required: true,
-        min: 0,
-        max: 60,
-        step: 0.01,
-        helperText:
-          "Enter a manual effective rate. This simplified estimate does not automatically apply official brackets, allowances, credits, payroll deductions, or local taxes."
-      }
+      { name: "taxYear", label: "Tax year", type: "select", required: true, defaultValue: TAX_YEAR,
+        options: [{ value: TAX_YEAR, label: "2026/27 (6 April 2026 – 5 April 2027)" }],
+        validate: value => value === TAX_YEAR ? undefined : "Choose a supported tax year." },
+      { name: "region", label: "Tax region", type: "select", required: true, defaultValue: "England",
+        options: REGIONS.map(value => ({ value, label: value })),
+        validate: value => REGIONS.includes(value as TaxRegion) ? undefined : "Choose a UK tax region.",
+        helperText: "Choose your tax residence, which may differ from your workplace." },
+      { name: "period", label: "Income period", type: "select", required: true, defaultValue: "annual",
+        options: [{ value: "annual", label: "Annual" }, { value: "monthly", label: "Monthly" }, { value: "weekly", label: "Weekly" }],
+        validate: value => ["annual", "monthly", "weekly"].includes(value) ? undefined : "Choose an income period." },
+      { name: "income", label: "Gross employment income (£)", type: "number", required: true, min: 0, max: 100000000, step: .01,
+        inputMode: "decimal", helperText: "Before tax, for the selected income period. Assumes steady pay for a full year.",
+        validate: (value, values) => Number(value) * (values.period === "monthly" ? 12 : values.period === "weekly" ? 52 : 1) > 100000000 ? "Annual income must not exceed £100 million." : undefined }
     ],
-    calculate: (values) => {
-      const mode = String(values.countryMode || "UK");
-      const currency: CurrencyCode =
-        mode === "USA" ? "USD" : mode === "EU" ? "EUR" : "GBP";
-      const income = Number(values.annualIncome) || 0;
-      const rate = Number(values.taxRate) || 0;
-      const estimatedTax = income * (rate / 100);
-      const afterTaxIncome = income - estimatedTax;
-      return {
-        estimatedTax: formatCurrency(estimatedTax, currency),
-        afterTaxIncome: formatCurrency(afterTaxIncome, currency)
-      };
-    },
-    resultLabels: {
-      estimatedTax: "Estimated tax",
-      afterTaxIncome: "After-tax income"
-    },
+    calculate: values => calculateIncomeTax({ income: Number(values.income), period: String(values.period) as IncomePeriod, region: String(values.region) as TaxRegion, taxYear: String(values.taxYear) }),
     relatedSlugs: ["salary-calculator", "salary-to-hourly-calculator"]
   },
   {

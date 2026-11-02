@@ -625,3 +625,15 @@ test("npm test script uses dependency-free cross-platform Node cleanup", () => {
   assert.doesNotMatch(packageJson.scripts.test, /rm\s+-rf/);
   assert.match(fs.readFileSync("scripts/run-tests.js", "utf8"), /fs\.rmSync/);
 });
+
+
+test("income tax form validates required pay and supported controls", () => {
+  const config = loadCalculator("income-tax-calculator");
+  const initial = { taxYear: "2026/27", region: "England", period: "annual", income: "" };
+  const validationConfig = config as CalculatorConfig;
+  assert.ok(validateAll(validationConfig, initial).income);
+  assert.deepEqual(validateAll(validationConfig, { ...initial, income: "0" }), {});
+  assert.ok(validateAll(validationConfig, { ...initial, income: "10000000", period: "monthly" }).income);
+  for (const key of ["region", "period", "taxYear"]) assert.ok(validateAll(validationConfig, { ...initial, income: "60000", [key]: "bad" })[key]);
+  assert.equal(config.calculate({ ...initial, income: 60000 }).net, 45357.4);
+});
