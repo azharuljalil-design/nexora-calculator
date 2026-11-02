@@ -1684,63 +1684,24 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "income-tax-calculator": {
     slug: "income-tax-calculator",
-    metaTitle: "Simplified Income Tax Estimate Calculator",
-    metaDescription:
-      "Estimate income tax and after-tax income with a simplified manual effective-rate method; verify rates with official tax authorities.",
-    whatItDoes: [
-      "Estimates tax on annual income using a manual effective tax rate that you enter.",
-      "Shows the estimated tax amount and after-tax income in GBP, EUR, or USD depending on the selected region.",
-      "Provides a quick comparison tool without pretending to be an official, complete, payroll, or tax-return calculator."
-    ],
-    howToUse: [
-      "Choose UK, Europe, or United States to set the result currency.",
-      "Enter annual income before tax.",
-      "Enter the manual estimated effective tax rate you want to test, after checking whether it is appropriate for your situation.",
-      "Click Calculate and review the estimated tax and after-tax income."
-    ],
-    methodology: [
-      "Estimated tax = annual income × (estimated tax rate ÷ 100).",
-      "After-tax income = annual income − estimated tax.",
-      "The calculator uses one effective percentage rate and does not apply official brackets, National Insurance, payroll deductions, pension deductions, allowances, regional differences, credits, deductions, local taxes, or filing-status rules."
-    ],
+    metaTitle: "UK Income Tax Calculator 2026/27 – Take-Home Pay",
+    metaDescription: "Calculate UK Income Tax, employee National Insurance and take-home pay for 2026/27 with regional bands for England, Wales, Scotland and Northern Ireland.",
+    whatItDoes: ["Applies progressive 2026/27 employment Income Tax bands for your UK tax region.", "Estimates employee category A National Insurance and annual, monthly and weekly take-home pay.", "Shows the tapered Personal Allowance, effective tax rate and tax charged in each band."],
+    howToUse: ["Check the supported tax year, 2026/27.", "Choose your UK tax region based on your tax residence.", "Enter gross employment income and choose annual, monthly or weekly.", "Select Calculate. Recalculate after changing any input, or use Reset to clear the results."],
+    methodology: ["Monthly income is multiplied by 12 and weekly income by 52 to estimate full-year gross pay.", "Personal Allowance = max(0, £12,570 − max(0, gross income − £100,000) ÷ 2). Employment income is assumed to be your only adjusted net income.", "Income Tax is the sum of taxable income within each regional band multiplied by its rate. Band limits apply after deducting the tapered allowance.", "Annualised employee NI = 8% of earnings between £12,570 and £50,270 plus 2% of earnings above £50,270. Take-home pay = gross pay − Income Tax − NI.", "Monthly and weekly outputs are annual totals divided by 12 and 52. Tax and NI totals are rounded to pence; displayed band rows may differ from their total by a penny."],
     example: {
-      scenario: "Annual income of £60,000 with a manually entered effective tax rate of 25%.",
-      steps: [
-        "Estimated tax = £60,000 × (25 ÷ 100) = £15,000",
-        "After-tax income = £60,000 − £15,000 = £45,000",
-        "The UK selection displays the result in GBP"
-      ],
-      result: "The simplified estimated tax is £15,000 and the estimated after-tax income is £45,000, before any deductions, credits, payroll items, or regional rules not included in the entered rate."
+      scenario: "£60,000 annual employment income in England, Wales or Northern Ireland during 2026/27, with no other deductions or reliefs.",
+      steps: ["Personal Allowance = £12,570; taxable income = £47,430.", "Income Tax = £37,700 × 20% + £9,730 × 40% = £11,432.", "Annualised NI = £37,700 × 8% + £9,730 × 2% = £3,210.60.", "Take-home pay = £60,000 − £11,432 − £3,210.60 = £45,357.40."],
+      result: "Estimated annual take-home pay is £45,357.40, averaging £3,779.78 per month. Scottish Income Tax differs."
     },
     faqs: [
-      {
-        question: "Does this use current tax brackets?",
-        answer:
-          "No. It uses the single effective rate you enter and does not automatically look up or apply current tax bands, thresholds, allowances, credits, National Insurance, payroll deductions, or regional rules."
-      },
-      {
-        question: "Is this different from the Salary Calculator?",
-        answer:
-          "The maths is similar, but this page is focused on income tax estimates. The Salary Calculator frames the same simple method as take-home pay planning."
-      },
-      {
-        question: "Can I include deductions or credits?",
-        answer:
-          "Only indirectly. Adjust the effective rate to reflect deductions, credits, or withholdings only if you have reliable information, and verify important figures with official tax authorities or a qualified adviser."
-      },
-      {
-        question: "Why is the tax rate capped in the form?",
-        answer:
-          "The input range keeps quick estimates within a practical range for this simple calculator. It is not a statement about any country's tax law."
-      }
+      { question: "Does this use official tax bands?", answer: "Yes. This version supports 2026/27 employment Income Tax bands, the tapered standard Personal Allowance and annualised category A employee NI. Official sources and a review date are shown beside the calculator." },
+      { question: "Why is Scotland different?", answer: "Scotland has six employment Income Tax bands. Choose Scotland if you are a Scottish taxpayer. NI follows the same category A rates across the UK." },
+      { question: "Why might my payslip differ?", answer: "Payroll uses pay-period NI thresholds, PAYE tax codes and rounding. Pensions, student loans, irregular earnings and other deductions can also change actual take-home pay. Monthly and weekly outputs here are annual averages." },
+      { question: "What happens above £100,000?", answer: "The Personal Allowance falls by £1 per £2 of adjusted net income over £100,000 and reaches zero at £125,140. This tool assumes employment income is your only adjusted net income." }
     ],
-    mistakesOrLimitations: [
-      "Do not rely on this for filing, payroll, self-assessment, withholding, immigration, benefit, or legal decisions.",
-      "Tax systems often use bands, thresholds, allowances, credits, deductions, payroll taxes, National Insurance, and local or regional rules; this calculator does not model those details.",
-      "Use an effective overall rate, not a marginal rate, unless you specifically want to model a marginal-rate scenario."
-    ],
-    disclaimer:
-      "This is a simplified manual estimate only and is not official tax guidance or financial, tax, accounting, payroll, employment, immigration, or legal advice. Verify rates, thresholds, and obligations with official tax authorities or a qualified adviser."
+    mistakesOrLimitations: ["Supports 2026/27 only and assumes steady employment income over a full year.", "Excludes pensions, salary sacrifice, student loans, taxable benefits, self-employment, dividends, savings, Marriage Allowance and other reliefs.", "Annualised category A NI is an estimate for employees below State Pension age; actual payroll deductions may differ. Employer NI is not deducted from take-home pay."],
+    disclaimer: "An educational estimate, not official payroll, tax-return or financial advice. Verify your tax code, deductions and obligations with HMRC or a qualified adviser."
   },
 
   "salary-to-hourly-calculator": {

@@ -1,5 +1,6 @@
 "use client";
 
+import { IncomeTaxCalculator } from "./IncomeTaxCalculator";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalculatorForm } from "@/components/calculators/CalculatorForm";
@@ -61,6 +62,8 @@ export function CalculatorClient({ slug }: CalculatorClientProps) {
         <div className={slug === "amortization-calculator" || slug === "investment-calculator" ? "min-w-0" : undefined}>
           {slug === "investment-calculator" ? (
             <InvestmentCalculator />
+          ) : calculator.renderer === "income-tax" ? (
+            <IncomeTaxCalculator config={calculator} />
           ) : calculator.renderer === "scientific" ? (
             <ScientificCalculator config={calculator} />
           ) : calculator.renderer === "amortization" ? (
