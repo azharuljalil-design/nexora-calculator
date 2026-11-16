@@ -1,5 +1,6 @@
 "use client";
 
+import { CompoundInterestCalculator } from "./CompoundInterestCalculator";
 import { IncomeTaxCalculator } from "./IncomeTaxCalculator";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -56,11 +57,13 @@ export function CalculatorClient({ slug }: CalculatorClientProps) {
         </ol>
       </nav>
 
-      {slug === "income-tax-calculator" ? <header className="max-w-3xl space-y-3"><h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">UK Income Tax Calculator 2026/27</h1><p className="text-base leading-7 text-slate-600">Understand your take-home pay and plan your finances with an estimate of employment Income Tax and employee National Insurance. Enter your pay and UK tax region to compare annual, monthly and weekly results, including Scotland’s different Income Tax bands.</p></header> : slug === "investment-calculator" ? <header className="space-y-2"><h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Investment Calculator</h1><p className="max-w-3xl text-sm leading-6 text-slate-600">{calculator.description}</p></header> : slug === "amortization-calculator" ? <header className="space-y-2"><h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Amortization Calculator</h1><p className="max-w-3xl text-sm leading-6 text-slate-600">{calculator.description}</p></header> : slug === "retirement-calculator" ? <header className="space-y-2"><h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">UK Retirement Calculator</h1><p className="max-w-3xl text-sm leading-6 text-slate-600">Estimate how your current savings and fixed monthly contributions could grow by your planned retirement age using an expected annual return.</p></header> : <SectionHeading title={slug === "loan-calculator" ? "UK Loan Calculator" : calculator.name} subtitle={calculator.description} />}
+      {slug === "compound-interest-calculator" ? <header className="max-w-3xl space-y-3"><h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">UK Compound Interest Calculator</h1><p className="text-base leading-7 text-slate-600">Explore how your savings could grow from an initial amount and fixed monthly deposits. Compare nominal annual rate assumptions, time periods and compounding frequencies using examples in pounds. Results are illustrations, not guaranteed savings or investment returns.</p></header> : slug === "income-tax-calculator" ? <header className="max-w-3xl space-y-3"><h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">UK Income Tax Calculator 2026/27</h1><p className="text-base leading-7 text-slate-600">Understand your take-home pay and plan your finances with an estimate of employment Income Tax and employee National Insurance. Enter your pay and UK tax region to compare annual, monthly and weekly results, including Scotland’s different Income Tax bands.</p></header> : slug === "investment-calculator" ? <header className="space-y-2"><h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Investment Calculator</h1><p className="max-w-3xl text-sm leading-6 text-slate-600">{calculator.description}</p></header> : slug === "amortization-calculator" ? <header className="space-y-2"><h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Amortization Calculator</h1><p className="max-w-3xl text-sm leading-6 text-slate-600">{calculator.description}</p></header> : slug === "retirement-calculator" ? <header className="space-y-2"><h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">UK Retirement Calculator</h1><p className="max-w-3xl text-sm leading-6 text-slate-600">Estimate how your current savings and fixed monthly contributions could grow by your planned retirement age using an expected annual return.</p></header> : <SectionHeading title={slug === "loan-calculator" ? "UK Loan Calculator" : calculator.name} subtitle={calculator.description} />}
 
       <div className="grid gap-6">
-        <div className={slug === "amortization-calculator" || slug === "investment-calculator" ? "min-w-0" : undefined}>
-          {slug === "investment-calculator" ? (
+        <div className={slug === "amortization-calculator" || slug === "investment-calculator" || slug === "compound-interest-calculator" ? "min-w-0" : undefined}>
+          {slug === "compound-interest-calculator" ? (
+            <CompoundInterestCalculator config={calculator} />
+          ) : slug === "investment-calculator" ? (
             <InvestmentCalculator />
           ) : calculator.renderer === "income-tax" ? (
             <IncomeTaxCalculator config={calculator} />

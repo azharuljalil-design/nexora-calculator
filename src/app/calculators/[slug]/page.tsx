@@ -1,3 +1,4 @@
+import { CompoundInterestArticle } from "@/components/calculators/CompoundInterestArticle";
 import { IncomeTaxArticle } from "@/components/calculators/IncomeTaxArticle";
 import { InvestmentArticle } from "@/components/calculators/InvestmentArticle";
 import { AmortizationArticle } from "@/components/calculators/AmortizationArticle";
@@ -54,7 +55,7 @@ export default function CalculatorEnginePage({
       <CalculatorClient slug={params.slug} />
       {params.slug === "investment-calculator" ? <InvestmentArticle /> : null}
       {params.slug === "amortization-calculator" ? <AmortizationArticle /> : null}
-      {params.slug === "income-tax-calculator" ? <IncomeTaxArticle /> : params.slug === "mortgage-calculator" ? <MortgageArticle /> : params.slug === "loan-calculator" ? <LoanArticle /> : params.slug === "retirement-calculator" ? <RetirementArticle /> : <CalculatorPageSections slug={params.slug} />}
+      {params.slug === "compound-interest-calculator" ? <CompoundInterestArticle /> : params.slug === "income-tax-calculator" ? <IncomeTaxArticle /> : params.slug === "mortgage-calculator" ? <MortgageArticle /> : params.slug === "loan-calculator" ? <LoanArticle /> : params.slug === "retirement-calculator" ? <RetirementArticle /> : <CalculatorPageSections slug={params.slug} />}
     </div>
   );
 }
