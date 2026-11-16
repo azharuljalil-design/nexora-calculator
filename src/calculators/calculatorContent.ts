@@ -1,3 +1,4 @@
+import { compoundInterestFaqs } from "./compoundInterestArticleContent";
 import { incomeTaxFaqs } from "./incomeTaxArticleContent";
 
 export type CalculatorFaq = { question: string; answer: string };
@@ -311,9 +312,9 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
 
   "compound-interest-calculator": {
     slug: "compound-interest-calculator",
-    metaTitle: "Compound Interest Calculator | Projection, Not Advice",
+    metaTitle: "Compound Interest Calculator UK | Savings Growth",
     metaDescription:
-      "Estimate compound growth from principal, monthly contributions, an assumed rate, time, and compounding frequency. Projection only, not financial advice.",
+      "Use our UK compound interest calculator to estimate savings growth with monthly deposits. Compare compounding frequencies and explore worked examples in pounds.",
     whatItDoes: [
       "Estimates how a starting principal may grow when interest or an assumed return compounds over time.",
       "Includes user-entered monthly contributions and separates total contributions from estimated interest or growth.",
@@ -350,12 +351,7 @@ export const calculatorContentBySlug: Record<string, CalculatorContent> = {
     ],
     disclaimer:
       "This calculator provides an estimate based on your inputs and is not financial, investment, tax, pension, or savings advice.",
-    faqs: [
-      { question: "Is the compound interest result guaranteed?", answer: "No. It is a projection using the rate and compounding settings you enter. Real savings rates, provider terms, fees, taxes, inflation, withdrawals, and investment performance can change the outcome." },
-      { question: "What does compounding frequency mean?", answer: "It is how often interest is applied to the starting principal in the model. More frequent compounding can slightly increase the estimate when all other inputs are unchanged." },
-      { question: "Why are monthly contributions handled separately?", answer: "The calculator compounds the initial principal using the selected frequency and models regular contributions with a monthly growth assumption, which is suitable for a recurring monthly contribution estimate." },
-      { question: "Can I use this for investments?", answer: "You can enter an assumed return, but investments can fall as well as rise. Treat the result as a scenario estimate, not advice or a forecast." }
-    ]
+    faqs: compoundInterestFaqs
   },
   "vat-calculator": {
     slug: "vat-calculator",
